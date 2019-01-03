@@ -8,20 +8,19 @@ import { WorkLogModule } from './work-log/work-log.module';
 import { ConfigService } from './shared/config.service';
 
 @Module({
-    imports: [
-        MongooseModule.forRootAsync({
-            imports: [SharedModule],
-            useFactory: async (configService: ConfigService) => ({
-                uri: configService.dbUri
-            }),
-            inject: [ConfigService]
-        }),
-        AdminModule,
-        SharedModule,
-        WorkLogModule
-    ],
-    controllers: [AppController],
-    providers: [AppService],
+  imports: [
+    MongooseModule.forRootAsync({
+      imports: [SharedModule],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.dbUri
+      }),
+      inject: [ConfigService]
+    }),
+    AdminModule,
+    SharedModule,
+    WorkLogModule
+  ],
+  controllers: [AppController],
+  providers: [AppService]
 })
-export class AppModule {
-}
+export class AppModule {}

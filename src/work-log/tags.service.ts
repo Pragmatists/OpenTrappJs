@@ -6,10 +6,9 @@ import { from, Observable } from 'rxjs';
 
 @Injectable()
 export class TagsService {
-    constructor(@InjectModel('WorkLog') private readonly workLogModel: Model<WorkLog>) {
-    }
+  constructor(@InjectModel('WorkLog') private readonly workLogModel: Model<WorkLog>) {}
 
-    public findAll(): Observable<string[]> {
-        return from(this.workLogModel.distinct('projectNames.name').exec());
-    }
+  public findAll(): Observable<string[]> {
+    return from(this.workLogModel.distinct('projectNames.name').exec());
+  }
 }
