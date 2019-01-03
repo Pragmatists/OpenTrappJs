@@ -30,9 +30,6 @@ Application will be available under `localhost:3000`.
 # unit tests
 $ yarn test
 
-# e2e tests
-$ yarn test:e2e
-
 # test coverage
 $ yarn test:cov
 ```
