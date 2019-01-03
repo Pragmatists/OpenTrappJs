@@ -1,5 +1,6 @@
+import { Document } from 'mongoose';
 
-export interface WorkLog {
+export interface WorkLog extends Document {
     _id: {
         _id: string
     },
