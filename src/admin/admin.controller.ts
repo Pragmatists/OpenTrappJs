@@ -1,8 +1,8 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ParseDatePipe } from '../shared/parse-date.pipe';
 import { WorkLogService } from '../work-log/work-log.service';
 import { Observable } from 'rxjs';
-import { WorkLogDTO } from '../work-log/work-log.model';
+import { RegisterWorkloadDTO, WorkLogDTO } from '../work-log/work-log.model';
 import { TagsService } from '../work-log/tags.service';
 
 @Controller('admin')
@@ -16,8 +16,15 @@ export class AdminController {
         return this.workLogService.find(date, user);
     }
 
+    @Post('/work-log/:username/entries')
+    @HttpCode(201)
+    @UsePipes(new ValidationPipe({transform: true}))
+    public registerWorkLoad(@Param('username') username: string, @Body() registerWorkloadDTO: RegisterWorkloadDTO): Observable<{id: string}> {
+        return this.workLogService.register(username, registerWorkloadDTO);
+    }
+
     @Get('/tags')
-    public tags() {
+    public tags(): Observable<string[]> {
         return this.tagsService.findAll();
     }
 }

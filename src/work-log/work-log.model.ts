@@ -1,4 +1,5 @@
 import { Document } from 'mongoose';
+import { ArrayMinSize, IsInt, Matches, Min } from 'class-validator';
 
 export interface WorkLog extends Document {
     _id: {
@@ -28,4 +29,15 @@ export interface WorkLogDTO {
     workload: number;
     projectNames: string[];
     note?: string;
+}
+
+export class RegisterWorkloadDTO {
+    @Matches(/^\d{4}\/(0[1-9]|1[012])\/(0[1-9]|[12][0-9]|3[01])$/)
+    readonly day: string;
+    @IsInt()
+    @Min(0)
+    readonly workload: number;
+    @ArrayMinSize(1)
+    readonly projectNames: string[];
+    readonly note?: string;
 }
