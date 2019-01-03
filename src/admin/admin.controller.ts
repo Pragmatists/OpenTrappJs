@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ParseDatePipe } from '../shared/parse-date.pipe';
 import { WorkLogService } from '../work-log/work-log.service';
 import { Observable } from 'rxjs';
@@ -8,7 +8,8 @@ import { TagsService } from '../work-log/tags.service';
 @Controller('admin')
 export class AdminController {
 
-    constructor(private readonly workLogService: WorkLogService, private readonly tagsService: TagsService) {
+    constructor(private readonly workLogService: WorkLogService,
+                private readonly tagsService: TagsService) {
     }
 
     @Get('/work-log/entries')

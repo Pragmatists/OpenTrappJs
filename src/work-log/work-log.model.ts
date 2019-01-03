@@ -1,5 +1,5 @@
 import { Document } from 'mongoose';
-import { ArrayMinSize, IsInt, Matches, Min } from 'class-validator';
+import { ArrayNotEmpty, IsInt, Matches, Min } from 'class-validator';
 
 export interface WorkLog extends Document {
     _id: {
@@ -37,7 +37,7 @@ export class RegisterWorkloadDTO {
     @IsInt()
     @Min(0)
     readonly workload: number;
-    @ArrayMinSize(1)
+    @ArrayNotEmpty()
     readonly projectNames: string[];
     readonly note?: string;
 }
