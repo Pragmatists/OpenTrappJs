@@ -15,7 +15,10 @@ export interface WorkLog extends Document {
         minutes: number
     },
     projectNames: { name: string }[],
-    createdAt: Date
+    createdAt: Date,
+    note: {
+        text: string
+    }
 }
 
 export interface WorkLogDTO {
@@ -24,4 +27,5 @@ export interface WorkLogDTO {
     day: string;
     workload: number;
     projectNames: string[];
+    note?: string;
 }

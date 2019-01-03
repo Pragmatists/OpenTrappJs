@@ -30,7 +30,8 @@ export class WorkLogService {
             day: entity.day.date,
             employeeID: entity.employeeID._id,
             projectNames: entity.projectNames.map(project => project.name),
-            workload: entity.workload.minutes
+            workload: entity.workload.minutes,
+            note: entity.note ? entity.note.text : undefined
         }
     }
 }

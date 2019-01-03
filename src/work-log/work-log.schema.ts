@@ -19,5 +19,8 @@ export const WorkLogSchema = new mongoose.Schema({
             name: String
         }
     ],
-    createdAt: Date
+    createdAt: Date,
+    note: {
+        text: String
+    }
 });
