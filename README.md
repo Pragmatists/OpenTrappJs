@@ -13,7 +13,8 @@ $ yarn install
 
 Before starting the application you have to set:
  * `OPEN_TRAPP_DB_URI` environment variable. The value should be MongoDB connection URI.
- * `OPEN_TRAPP_OAUTH_CONFIG` path to private key file from Google (for example `open-trap-js.json`). 
+ * `OPEN_TRAPP_OAUTH_EMAIL` email of Service Account (see [Google Docs](https://developers.google.com/identity/protocols/OAuth2ServiceAccount)).
+ * `OPEN_TRAPP_OAUTH_PRIVATE_KEY` private key for above account
 
 ```bash
 # development (incremental rebuild with webpack)

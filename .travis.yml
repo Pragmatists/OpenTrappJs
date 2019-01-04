@@ -3,9 +3,9 @@ node_js:
 - 10
 before_deploy:
 - npm run build
-deploy:
-  on: master
-  provider: heroku
-  app: open-trapp-js
-  api_key:
-    secure: tQb8/k8ivDObGF4F2XooUKx6pp0gos4elVzk8/Icyyig/GMjrncHpYdxjKY+S2LsJ60bXaSWkD/JoG3X4K61vsmePNpX3DZGta3hlIcCW+S544/yXYsZybocxPLoon1CbIEpxTN+7YY1Hx2tfT1GO/5TBFCPAdTY0NHcmC6z4jDLcpr+j1I9sb1Rxk6UWLMqKOF0PO5pPlKI0uQDJ/pWWqFt/Qcxuj7fqNtbmrowb2ba2TvU+/pISwWWFGQHziUh4l+FYyCrD/Paahw64iHRlFDOfQW+3L9P6NWtZH+UZVoawEjVUkZBj3Ow4bAwY7UGMWO6qDjjVE+rfl4+hQTXiTwlGWTh3fQAnEF+a1Oj19vikTsfgLFl4wlT26OZixlEmeuPqjQzg1ys35WquFfY5nBFAl6UEbKdOzbyZjkVg8BOjTk+UaBUSb3kC04PNtawNQ5ZK5hayKOcyDqxW+6Niz8/tLGoL51UhYk5V7GqMo4vhzsz+REpE+bk/wTEU9KuDr2WW/DKWw9zC5v9gY6hpoR4+hg6xKDql0K2rzsFKvxEjqIQOEKbRxF69kLqLX7GmDoMrPoOnp9K+HsohuR2PwCIuMiENPYNJC/grAVsJLG2hPTojrRmmrEUhwP37vUsnam30KjLbE4f492/t9PeVz9+yp6LhCPRFsd2Asu9CXk=
+#deploy:
+#  on: master
+#  provider: heroku
+#  app: open-trapp-js
+#  api_key:
+#    secure: tQb8/k8ivDObGF4F2XooUKx6pp0gos4elVzk8/Icyyig/GMjrncHpYdxjKY+S2LsJ60bXaSWkD/JoG3X4K61vsmePNpX3DZGta3hlIcCW+S544/yXYsZybocxPLoon1CbIEpxTN+7YY1Hx2tfT1GO/5TBFCPAdTY0NHcmC6z4jDLcpr+j1I9sb1Rxk6UWLMqKOF0PO5pPlKI0uQDJ/pWWqFt/Qcxuj7fqNtbmrowb2ba2TvU+/pISwWWFGQHziUh4l+FYyCrD/Paahw64iHRlFDOfQW+3L9P6NWtZH+UZVoawEjVUkZBj3Ow4bAwY7UGMWO6qDjjVE+rfl4+hQTXiTwlGWTh3fQAnEF+a1Oj19vikTsfgLFl4wlT26OZixlEmeuPqjQzg1ys35WquFfY5nBFAl6UEbKdOzbyZjkVg8BOjTk+UaBUSb3kC04PNtawNQ5ZK5hayKOcyDqxW+6Niz8/tLGoL51UhYk5V7GqMo4vhzsz+REpE+bk/wTEU9KuDr2WW/DKWw9zC5v9gY6hpoR4+hg6xKDql0K2rzsFKvxEjqIQOEKbRxF69kLqLX7GmDoMrPoOnp9K+HsohuR2PwCIuMiENPYNJC/grAVsJLG2hPTojrRmmrEUhwP37vUsnam30KjLbE4f492/t9PeVz9+yp6LhCPRFsd2Asu9CXk=

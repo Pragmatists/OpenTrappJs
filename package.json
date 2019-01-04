@@ -24,7 +24,6 @@
     "class-transformer": "^0.2.0",
     "class-validator": "^0.9.1",
     "google-auth-library": "^2.0.2",
-    "load-json-file": "^5.1.0",
     "moment": "^2.23.0",
     "mongoose": "^5.4.1",
     "passport": "^0.4.0",
