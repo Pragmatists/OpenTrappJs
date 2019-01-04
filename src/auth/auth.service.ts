@@ -23,13 +23,20 @@ export class AuthService {
             throw new UnauthorizedException(`Invalid token ${token}`);
         }
         const user = await this.userService.findByEmail(info.email);
-        if (!user) {
+        if (!this.isUserValid(user)) {
             throw new UnauthorizedException(`Unauthorized user for ${info.email}`);
         }
         return {
             email: info.email,
             roles: user.roles
         };
+    }
+
+    private isUserValid(user: AuthorizedUser): boolean {
+        if (!user) {
+            return false;
+        }
+        return user.roles.some(role => role === 'ROLE_ADMIN');
     }
 
     private async getTokenInfo(token: string): Promise<any> {
