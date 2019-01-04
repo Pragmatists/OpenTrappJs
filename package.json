@@ -6,7 +6,8 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "start": "node dist/server",
+    "postinstall": "yarn build",
+    "start": "node dist/main",
     "webpack": "webpack --config webpack.config.js",
     "prestart:prod": "rimraf dist && tsc",
     "start:prod": "node dist/main.js",
@@ -67,5 +68,8 @@
     },
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "engines": {
+    "node": "10.x"
   }
 }
