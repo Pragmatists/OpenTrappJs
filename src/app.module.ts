@@ -4,6 +4,7 @@ import { SharedModule } from './shared/shared.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { WorkLogModule } from './work-log/work-log.module';
 import { ConfigService } from './shared/config.service';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import { ConfigService } from './shared/config.service';
     }),
     AdminModule,
     SharedModule,
-    WorkLogModule
+    WorkLogModule,
+    AuthModule
   ]
 })
 export class AppModule {}

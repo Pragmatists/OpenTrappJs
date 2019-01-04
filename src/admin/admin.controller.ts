@@ -1,11 +1,13 @@
-import { Body, Controller, Get, HttpCode, Param, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post, Query, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ParseDatePipe } from '../shared/parse-date.pipe';
 import { WorkLogService } from '../work-log/work-log.service';
 import { Observable } from 'rxjs';
 import { RegisterWorkloadDTO, WorkLogDTO } from '../work-log/work-log.model';
 import { TagsService } from '../work-log/tags.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('admin')
+@UseGuards(AuthGuard())
 export class AdminController {
   constructor(private readonly workLogService: WorkLogService,
               private readonly tagsService: TagsService) {}
