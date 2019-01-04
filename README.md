@@ -35,3 +35,6 @@ $ yarn test
 # test coverage
 $ yarn test:cov
 ```
+
+## Swagger
+Swagger is available under `/swagger` path, e.g. [https://open-trapp-js.herokuapp.com/swagger](https://open-trapp-js.herokuapp.com/swagger)

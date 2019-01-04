@@ -1,5 +1,6 @@
 import { Document } from 'mongoose';
 import { ArrayNotEmpty, IsInt, Matches, Min } from 'class-validator';
+import { ApiModelProperty } from '@nestjs/swagger';
 
 export interface WorkLog extends Document {
   _id: {
@@ -32,12 +33,16 @@ export interface WorkLogDTO {
 }
 
 export class RegisterWorkloadDTO {
+  @ApiModelProperty({example: '2019-01-05'})
   @Matches(/^\d{4}\/(0[1-9]|1[012])\/(0[1-9]|[12][0-9]|3[01])$/)
   readonly day: string;
+  @ApiModelProperty({example: 60})
   @IsInt()
   @Min(0)
   readonly workload: number;
+  @ApiModelProperty({example: ['internal', 'hackathon']})
   @ArrayNotEmpty()
   readonly projectNames: string[];
+  @ApiModelProperty({required: false, example: 'Working remotely'})
   readonly note?: string;
 }
