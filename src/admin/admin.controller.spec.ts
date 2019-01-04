@@ -6,6 +6,7 @@ import {TagsService} from '../work-log/tags.service';
 import {INestApplication} from '@nestjs/common';
 import {getModelToken} from '@nestjs/mongoose';
 import {of} from 'rxjs';
+import {MockAuthModule} from '../auth/mock-auth.module';
 
 class TestWorkLogModel {
   distinct(field: string) {
@@ -22,6 +23,7 @@ describe('AdminController', () => {
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
+      imports: [MockAuthModule],
       controllers: [AdminController],
       providers: [
         WorkLogService,
@@ -37,9 +39,10 @@ describe('AdminController', () => {
     await app.init();
   });
 
-  xit('GET /tags should return list of available tags', () => {
+  it('GET /tags should return list of available tags', () => {
     return request(app.getHttpServer())
       .get('/admin/tags')
+      .set('Authorization', 'Bearer test-token')
       .expect(200)
       .expect(['projects', 'syniverse-dsp', 'holidays']);
   });

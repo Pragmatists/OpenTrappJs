@@ -36,5 +36,9 @@ $ yarn test
 $ yarn test:cov
 ```
 
+### Mock security
+To mock security in controller test you should import `MockAuthModule`
+and then add `Authorization` header with value `Bearer test-token` to each request to protected endpoint.
+
 ## Swagger
 Swagger is available under `/swagger` path, e.g. [https://open-trapp-js.herokuapp.com/swagger](https://open-trapp-js.herokuapp.com/swagger)
