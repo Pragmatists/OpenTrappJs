@@ -15,7 +15,7 @@ async function bootstrap() {
     .setDescription('OpenTrapp API description')
     .setVersion('1.0')
     .addTag('admin')
-    .setSchemes('http', 'https')
+    .setSchemes('https', 'http')
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('swagger', app, document);
