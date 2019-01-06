@@ -1,11 +1,10 @@
 import * as request from 'supertest';
-import mongoose from 'mongoose';
 import {AdminController} from './admin.controller';
 import {INestApplication} from '@nestjs/common';
 import {MockAuthModule} from '../auth/mock-auth.module';
 import {WorkLogModule} from '../work-log/work-log.module';
 import {Model} from 'mongoose';
-import {WorkLog} from '../work-log/work-log.model';
+import {WorkLog, WorkLogDTO} from '../work-log/work-log.model';
 import {someWorkLog, testModuleWithInMemoryDb} from '../utils/test-utils';
 import MongoMemoryServer from 'mongodb-memory-server';
 
@@ -34,7 +33,7 @@ describe('AdminController', () => {
   });
 
   afterAll(async () => {
-    await mongoose.disconnect();
+    await app.close();
     await mongoServer.stop();
   });
 
@@ -57,7 +56,10 @@ describe('AdminController', () => {
       return authorizedGetRequest('/admin/work-log/entries')
         .expect(200)
         .then(response => {
-          const workLogs = response.body;
+          const workLogs: WorkLogDTO[] = response.body;
+          return workLogs.sort(reverseSortByEmployee);
+        })
+        .then(workLogs => {
           expect(workLogs).toHaveLength(3);
           expect(workLogs[0]).toEqual(jasmine.objectContaining({
             day: '2019/01/05',
@@ -99,4 +101,6 @@ describe('AdminController', () => {
       .get(url)
       .set('Authorization', 'Bearer test-token');
   }
+
+  const reverseSortByEmployee = (a, b) => (-1 * a.employeeID.localeCompare(b.employeeID));
 });
