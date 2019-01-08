@@ -2,7 +2,7 @@ import { Body, Controller, Get, HttpCode, Param, Post, Query, UseGuards, UsePipe
 import { ParseDatePipe } from '../shared/parse-date.pipe';
 import { WorkLogService } from '../work-log/work-log.service';
 import { Observable } from 'rxjs';
-import { RegisterWorkloadDTO, WorkLogDTO } from '../work-log/work-log.model';
+import { RegisterWorkLogDTO, WorkLogDTO } from '../work-log/work-log.model';
 import { TagsService } from '../work-log/tags.service';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiImplicitQuery, ApiUseTags } from '@nestjs/swagger';
@@ -27,7 +27,7 @@ export class AdminController {
   @HttpCode(201)
   @UsePipes(new ValidationPipe({transform: true}))
   public registerWorkLoad(@Param('username') username: string,
-                          @Body() registerWorkloadDTO: RegisterWorkloadDTO): Observable<{id: string}> {
+                          @Body() registerWorkloadDTO: RegisterWorkLogDTO): Observable<{id: string}> {
     return this.workLogService.register(username, registerWorkloadDTO);
   }
 

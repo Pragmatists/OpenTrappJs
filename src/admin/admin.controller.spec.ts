@@ -45,14 +45,14 @@ describe('AdminController', () => {
     await workLogModel.deleteMany({});
   });
 
-  it('GET /tags should return list of available tags', (done) => {
+  it('GET /tags should return list of available tags', done => {
     return authorizedGetRequest('/admin/tags')
       .expect(200)
       .expect(['holidays', 'projects', 'syniverse-dsp'], done);
   });
 
   describe('GET /work-log/entries', () => {
-    it('should return complete list of entries if neither user nor date is specified', (done) => {
+    it('should return complete list of entries if neither user nor date is specified', done => {
       return authorizedGetRequest('/admin/work-log/entries')
         .expect(200)
         .then(response => {
@@ -72,7 +72,7 @@ describe('AdminController', () => {
         });
     });
 
-    it('should return entries for user', (done) => {
+    it('should return entries for user', done => {
       return authorizedGetRequest('/admin/work-log/entries?user=john.doe')
         .expect(200)
         .then(response => {
@@ -83,7 +83,7 @@ describe('AdminController', () => {
         });
     });
 
-    it('should return entries for date', (done) => {
+    it('should return entries for date', done => {
       return authorizedGetRequest('/admin/work-log/entries?date=2019-01-05')
         .expect(200)
         .then(response => {
@@ -96,9 +96,58 @@ describe('AdminController', () => {
     });
   });
 
+  describe('POST /work-log/:username/entries', () => {
+    it('should create entry for valid input', done => {
+      const username = 'tom.hanks';
+      const requestBody = {day: '2019-01-07', workload: 120, projectNames: ['projects', 'nvm']};
+
+      return authorizedPostRequest(`/admin/work-log/${username}/entries`, requestBody)
+        .expect(201)
+        .then(async () => {
+          const matchingWorkLogs = await workLogModel.find({'employeeID._id': username}).exec();
+          expect(matchingWorkLogs).toHaveLength(1);
+          expect(matchingWorkLogs[0].day.date).toEqual('2019/01/07');
+          expect(matchingWorkLogs[0].workload.minutes).toEqual(120);
+          expect(matchingWorkLogs[0].projectNames.map(p => p.name)).toEqual(['projects', 'nvm']);
+          done();
+        });
+    });
+
+    it('should return BAD REQUEST for invalid date', done => {
+      const username = 'tom.hanks';
+      const requestBody = {day: '11-01-07a', workload: 120, projectNames: ['projects', 'nvm']};
+
+      return authorizedPostRequest(`/admin/work-log/${username}/entries`, requestBody)
+        .expect(400, done);
+    });
+
+    it('should return BAD REQUEST for empty projects list', done => {
+      const username = 'tom.hanks';
+      const requestBody = {day: '2019-01-07', workload: 120, projectNames: []};
+
+      return authorizedPostRequest(`/admin/work-log/${username}/entries`, requestBody)
+        .expect(400, done);
+    });
+
+    it('should return BAD REQUEST for workload less than 0', done => {
+      const username = 'tom.hanks';
+      const requestBody = {day: '2019-01-07', workload: -10, projectNames: ['nvm']};
+
+      return authorizedPostRequest(`/admin/work-log/${username}/entries`, requestBody)
+        .expect(400, done);
+    });
+  });
+
   function authorizedGetRequest(url: string) {
     return request(app.getHttpServer())
       .get(url)
+      .set('Authorization', 'Bearer test-token');
+  }
+
+  function authorizedPostRequest(url: string, body: string | object) {
+    return request(app.getHttpServer())
+      .post(url)
+      .send(body)
       .set('Authorization', 'Bearer test-token');
   }
 

@@ -32,9 +32,9 @@ export interface WorkLogDTO {
   note?: string;
 }
 
-export class RegisterWorkloadDTO {
+export class RegisterWorkLogDTO {
   @ApiModelProperty({example: '2019-01-05'})
-  @Matches(/^\d{4}\/(0[1-9]|1[012])\/(0[1-9]|[12][0-9]|3[01])$/)
+  @Matches(/^\d{4}[\/\-](0[1-9]|1[012])[\/\-](0[1-9]|[12][0-9]|3[01])$/)
   readonly day: string;
   @ApiModelProperty({example: 60})
   @IsInt()

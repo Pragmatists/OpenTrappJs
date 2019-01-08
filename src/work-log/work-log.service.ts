@@ -1,7 +1,7 @@
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { RegisterWorkloadDTO, WorkLog, WorkLogDTO } from './work-log.model';
+import { RegisterWorkLogDTO, WorkLog, WorkLogDTO } from './work-log.model';
 import { from, Observable } from 'rxjs';
 import * as moment from 'moment';
 import { map } from 'rxjs/operators';
@@ -35,23 +35,23 @@ export class WorkLogService {
     };
   }
 
-  register(username: string, registerWorkloadDTO: RegisterWorkloadDTO): Observable<{id: string}> {
+  register(username: string, registerWorkLogDTO: RegisterWorkLogDTO): Observable<{id: string}> {
     const workLog = {
       _id: {
         _id: `WL.${uuid()}`
       },
       day: {
-        date: registerWorkloadDTO.day
+        date: moment(registerWorkLogDTO.day).format('YYYY/MM/DD')
       },
       employeeID: {
         _id: username
       },
-      projectNames: registerWorkloadDTO.projectNames.map(name => ({name})),
+      projectNames: registerWorkLogDTO.projectNames.map(name => ({name})),
       workload: {
-        minutes: registerWorkloadDTO.workload
+        minutes: registerWorkLogDTO.workload
       },
       note: {
-        text: registerWorkloadDTO.note
+        text: registerWorkLogDTO.note
       },
       createdAt: new Date()
     } as WorkLog;

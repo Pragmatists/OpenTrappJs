@@ -41,7 +41,7 @@ To mock security in controller test you should import `MockAuthModule`
 and then add `Authorization` header with value `Bearer test-token` to each request to protected endpoint.
 
 ### In-memory Mongo database
-To use in-memory Mongo in test you should import `InMemoryDatabaseModule` in your test module.
+To use in-memory Mongo in test you should `testModuleWithInMemoryDb` function from `utils/test-utils.ts` to build your test module.
 
 ## Swagger
 Swagger is available under `/swagger` path, e.g. [https://open-trapp-js.herokuapp.com/swagger](https://open-trapp-js.herokuapp.com/swagger)
