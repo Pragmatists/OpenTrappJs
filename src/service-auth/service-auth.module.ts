@@ -15,5 +15,5 @@ import { AuthorizedUserSchema } from './authorized-user.schema';
   providers: [AuthService, HttpStrategy, SharedModule, AuthorizedUserService],
   exports: [PassportModule]
 })
-export class AuthModule {
+export class ServiceAuthModule {
 }

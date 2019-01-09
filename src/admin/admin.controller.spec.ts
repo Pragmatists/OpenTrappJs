@@ -1,7 +1,7 @@
 import * as request from 'supertest';
 import {AdminController} from './admin.controller';
 import {INestApplication} from '@nestjs/common';
-import {MockAuthModule} from '../auth/mock-auth.module';
+import {MockServiceAuthModule} from '../service-auth/mock-service-auth.module';
 import {WorkLogModule} from '../work-log/work-log.module';
 import {Model} from 'mongoose';
 import {WorkLog, WorkLogDTO} from '../work-log/work-log.model';
@@ -21,7 +21,7 @@ describe('AdminController', () => {
 
   beforeAll(async () => {
     const moduleWithDb = await testModuleWithInMemoryDb({
-      imports: [MockAuthModule, WorkLogModule],
+      imports: [MockServiceAuthModule, WorkLogModule],
       controllers: [AdminController]
     });
     const module = moduleWithDb.module;

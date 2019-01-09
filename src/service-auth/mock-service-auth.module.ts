@@ -22,5 +22,5 @@ export class MockHttpStrategy extends PassportStrategy(Strategy) {
   providers: [MockHttpStrategy],
   exports: [PassportModule]
 })
-export class MockAuthModule {
+export class MockServiceAuthModule {
 }
