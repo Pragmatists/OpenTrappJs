@@ -4,6 +4,7 @@ import { SharedModule } from './shared/shared.module';
 import { WorkLogModule } from './work-log/work-log.module';
 import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
+import { CalendarModule } from './calendar/calendar.module';
 
 @Module({
   imports: [
@@ -11,7 +12,8 @@ import { DatabaseModule } from './database/database.module';
     AdminModule,
     SharedModule,
     WorkLogModule,
-    AuthModule
+    AuthModule,
+    CalendarModule
   ]
 })
 export class AppModule {}
