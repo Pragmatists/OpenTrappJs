@@ -3,7 +3,7 @@ import {Observable} from 'rxjs';
 import {TagsService} from '../../work-log/tags.service';
 
 @Controller('endpoints/v1/projects')
-export class ProjectNamesController {
+export class ProjectsController {
 
   constructor(private readonly tagsService: TagsService) {
   }

@@ -1,5 +1,5 @@
 import * as request from 'supertest';
-import {ProjectNamesController} from './project-names.controller';
+import {ProjectsController} from './projects.controller';
 import {someWorkLog, testModuleWithInMemoryDb} from '../../utils/test-utils';
 import {INestApplication} from '@nestjs/common';
 import {Model} from 'mongoose';
@@ -13,7 +13,7 @@ const workLogEntries = [
   someWorkLog('2019/01/06', 'james.bond', 480, ['projects', 'syniverse-dsp'])
 ];
 
-describe('ProjectNames Controller', () => {
+describe('Projects Controller', () => {
   let app: INestApplication;
   let workLogModel: Model<WorkLog>;
   let mongoServer: MongoMemoryServer;
@@ -21,7 +21,7 @@ describe('ProjectNames Controller', () => {
   beforeAll(async () => {
     const moduleWithDb = await testModuleWithInMemoryDb({
       imports: [WorkLogModule],
-      controllers: [ProjectNamesController]
+      controllers: [ProjectsController]
     });
     const module = moduleWithDb.module;
     mongoServer = moduleWithDb.mongoServer;
