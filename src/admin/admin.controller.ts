@@ -13,7 +13,8 @@ import { ApiBearerAuth, ApiImplicitQuery, ApiUseTags } from '@nestjs/swagger';
 @ApiBearerAuth()
 export class AdminController {
   constructor(private readonly workLogService: WorkLogService,
-              private readonly tagsService: TagsService) {}
+              private readonly tagsService: TagsService) {
+  }
 
   @Get('/work-log/entries')
   @ApiImplicitQuery({name: 'date', required: false, description: 'Day in format "YYYY-MM-DD"'})

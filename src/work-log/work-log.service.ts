@@ -9,7 +9,8 @@ import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class WorkLogService {
-  constructor(@InjectModel('WorkLog') private readonly workLogModel: Model<WorkLog>) {}
+  constructor(@InjectModel('WorkLog') private readonly workLogModel: Model<WorkLog>) {
+  }
 
   find(date: Date, user: string): Observable<WorkLogDTO[]> {
     let query = {};

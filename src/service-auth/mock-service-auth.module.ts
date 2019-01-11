@@ -1,4 +1,4 @@
-import {Module, UnauthorizedException} from '@nestjs/common';
+import { Module, UnauthorizedException } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { Strategy } from 'passport-http-bearer';
 import { PassportStrategy } from '@nestjs/passport';

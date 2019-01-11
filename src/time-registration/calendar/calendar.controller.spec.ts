@@ -1,8 +1,8 @@
 import * as request from 'supertest';
-import {Test} from '@nestjs/testing';
-import {CalendarController} from './calendar.controller';
-import {INestApplication} from '@nestjs/common';
-import {CalendarService} from './calendar.service';
+import { Test } from '@nestjs/testing';
+import { CalendarController } from './calendar.controller';
+import { INestApplication } from '@nestjs/common';
+import { CalendarService } from './calendar.service';
 
 describe('Calendar Controller', () => {
   let app: INestApplication;

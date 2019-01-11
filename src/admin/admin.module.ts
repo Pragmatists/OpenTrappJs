@@ -8,4 +8,5 @@ import { ServiceAuthModule } from '../service-auth/service-auth.module';
   imports: [SharedModule, WorkLogModule, ServiceAuthModule],
   controllers: [AdminController]
 })
-export class AdminModule {}
+export class AdminModule {
+}

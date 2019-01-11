@@ -1,7 +1,7 @@
 import { v4 as uuid } from 'uuid';
 import { ModuleMetadata } from '@nestjs/common/interfaces';
 import { Test } from '@nestjs/testing';
-import {MongooseModule} from '@nestjs/mongoose';
+import { MongooseModule } from '@nestjs/mongoose';
 import MongoMemoryServer from 'mongodb-memory-server';
 
 export function someWorkLog(date: string, employee: string, workload: number, tags: string[], note?: string) {

@@ -1,11 +1,11 @@
 import * as request from 'supertest';
-import {ProjectsController} from './projects.controller';
-import {someWorkLog, testModuleWithInMemoryDb} from '../../utils/test-utils';
-import {INestApplication} from '@nestjs/common';
-import {Model} from 'mongoose';
-import {WorkLog} from '../../work-log/work-log.model';
+import { ProjectsController } from './projects.controller';
+import { someWorkLog, testModuleWithInMemoryDb } from '../../utils/test-utils';
+import { INestApplication } from '@nestjs/common';
+import { Model } from 'mongoose';
+import { WorkLog } from '../../work-log/work-log.model';
 import MongoMemoryServer from 'mongodb-memory-server';
-import {WorkLogModule} from '../../work-log/work-log.module';
+import { WorkLogModule } from '../../work-log/work-log.module';
 
 const workLogEntries = [
   someWorkLog('2019/01/05', 'john.doe', 480, ['holidays'], 'National holidays'),

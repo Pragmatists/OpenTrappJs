@@ -1,7 +1,7 @@
-import {Injectable} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import * as moment from 'moment';
-import {DayDTO, MonthDTO, YearDTO} from './calendar.model';
-import {range} from 'lodash';
+import { DayDTO, MonthDTO, YearDTO } from './calendar.model';
+import { range } from 'lodash';
 
 @Injectable()
 export class CalendarService {

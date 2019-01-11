@@ -1,12 +1,13 @@
-import {Controller, Get, Param, ParseIntPipe} from '@nestjs/common';
-import {CalendarService} from './calendar.service';
+import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
+import { CalendarService } from './calendar.service';
 
 const CALENDAR_ROOT_URL = '/endpoints/v1/calendar';
 
 @Controller(CALENDAR_ROOT_URL)
 export class CalendarController {
 
-  constructor(private readonly calendarService: CalendarService) {}
+  constructor(private readonly calendarService: CalendarService) {
+  }
 
   @Get(':year/:month')
   public getMonth(@Param('year', ParseIntPipe) year: number, @Param('month', ParseIntPipe) month: number) {

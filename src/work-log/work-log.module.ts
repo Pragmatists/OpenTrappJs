@@ -11,4 +11,5 @@ import { TagsService } from './tags.service';
   providers: [WorkLogService, TagsService],
   exports: [WorkLogService, TagsService]
 })
-export class WorkLogModule {}
+export class WorkLogModule {
+}

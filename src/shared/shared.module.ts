@@ -6,4 +6,5 @@ import { ConfigService } from './config.service';
   providers: [ParseDatePipe, ConfigService],
   exports: [ParseDatePipe, ConfigService]
 })
-export class SharedModule {}
+export class SharedModule {
+}

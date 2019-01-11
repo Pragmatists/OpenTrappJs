@@ -1,11 +1,11 @@
 import * as request from 'supertest';
-import {AdminController} from './admin.controller';
-import {INestApplication} from '@nestjs/common';
-import {MockServiceAuthModule} from '../service-auth/mock-service-auth.module';
-import {WorkLogModule} from '../work-log/work-log.module';
-import {Model} from 'mongoose';
-import {WorkLog, WorkLogDTO} from '../work-log/work-log.model';
-import {someWorkLog, testModuleWithInMemoryDb} from '../utils/test-utils';
+import { AdminController } from './admin.controller';
+import { INestApplication } from '@nestjs/common';
+import { MockServiceAuthModule } from '../service-auth/mock-service-auth.module';
+import { WorkLogModule } from '../work-log/work-log.module';
+import { Model } from 'mongoose';
+import { WorkLog, WorkLogDTO } from '../work-log/work-log.model';
+import { someWorkLog, testModuleWithInMemoryDb } from '../utils/test-utils';
 import MongoMemoryServer from 'mongodb-memory-server';
 
 const workLogEntries = [
