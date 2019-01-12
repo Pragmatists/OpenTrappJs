@@ -1,3 +1,5 @@
+import { Matches } from 'class-validator';
+
 export class YearDTO {
   readonly id: string;
   readonly link: string;
@@ -57,4 +59,11 @@ export class DayDTO {
 
 export interface LinkDTO {
   readonly link: string;
+}
+
+export class FindByYearAndMonthParams {
+  @Matches(/^\d{4}$/)
+  year: string;
+  @Matches(/^(0[1-9]|1[012])$/)
+  month: string;
 }

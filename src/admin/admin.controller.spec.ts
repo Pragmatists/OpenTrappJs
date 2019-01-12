@@ -1,6 +1,6 @@
 import * as request from 'supertest';
 import { AdminController } from './admin.controller';
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { MockServiceAuthModule } from '../service-auth/mock-service-auth.module';
 import { WorkLogModule } from '../work-log/work-log.module';
 import { Model } from 'mongoose';
@@ -47,14 +47,14 @@ describe('AdminController', () => {
 
   it('GET /tags should return list of available tags', done => {
     return authorizedGetRequest('/admin/tags')
-      .expect(200)
+      .expect(HttpStatus.OK)
       .expect(['holidays', 'projects', 'syniverse-dsp'], done);
   });
 
   describe('GET /work-log/entries', () => {
     it('should return complete list of entries if neither user nor date is specified', done => {
       return authorizedGetRequest('/admin/work-log/entries')
-        .expect(200)
+        .expect(HttpStatus.OK)
         .then(response => {
           const workLogs: WorkLogDTO[] = response.body;
           return workLogs.sort(reverseSortByEmployee);
@@ -74,7 +74,7 @@ describe('AdminController', () => {
 
     it('should return entries for user', done => {
       return authorizedGetRequest('/admin/work-log/entries?user=john.doe')
-        .expect(200)
+        .expect(HttpStatus.OK)
         .then(response => {
           const workLogs = response.body;
           expect(workLogs).toHaveLength(1);
@@ -85,7 +85,7 @@ describe('AdminController', () => {
 
     it('should return entries for date', done => {
       return authorizedGetRequest('/admin/work-log/entries?date=2019-01-05')
-        .expect(200)
+        .expect(HttpStatus.OK)
         .then(response => {
           const workLogs = response.body;
           expect(workLogs).toHaveLength(2);
@@ -102,7 +102,7 @@ describe('AdminController', () => {
       const requestBody = {day: '2019-01-07', workload: 120, projectNames: ['projects', 'nvm']};
 
       return authorizedPostRequest(`/admin/work-log/${username}/entries`, requestBody)
-        .expect(201)
+        .expect(HttpStatus.CREATED)
         .then(async () => {
           const matchingWorkLogs = await workLogModel.find({'employeeID._id': username}).exec();
           expect(matchingWorkLogs).toHaveLength(1);
@@ -118,7 +118,7 @@ describe('AdminController', () => {
       const requestBody = {day: '11-01-07a', workload: 120, projectNames: ['projects', 'nvm']};
 
       return authorizedPostRequest(`/admin/work-log/${username}/entries`, requestBody)
-        .expect(400, done);
+        .expect(HttpStatus.BAD_REQUEST, done);
     });
 
     it('should return BAD REQUEST for empty projects list', done => {
@@ -126,7 +126,7 @@ describe('AdminController', () => {
       const requestBody = {day: '2019-01-07', workload: 120, projectNames: []};
 
       return authorizedPostRequest(`/admin/work-log/${username}/entries`, requestBody)
-        .expect(400, done);
+        .expect(HttpStatus.BAD_REQUEST, done);
     });
 
     it('should return BAD REQUEST for workload less than 0', done => {
@@ -134,7 +134,7 @@ describe('AdminController', () => {
       const requestBody = {day: '2019-01-07', workload: -10, projectNames: ['nvm']};
 
       return authorizedPostRequest(`/admin/work-log/${username}/entries`, requestBody)
-        .expect(400, done);
+        .expect(HttpStatus.BAD_REQUEST, done);
     });
   });
 

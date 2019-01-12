@@ -1,17 +1,34 @@
 import * as request from 'supertest';
-import { Test } from '@nestjs/testing';
 import { CalendarController } from './calendar.controller';
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { CalendarService } from './calendar.service';
+import { someWorkLog, testModuleWithInMemoryDb } from '../../utils/test-utils';
+import { Model } from 'mongoose';
+import { WorkLog } from '../../work-log/work-log.model';
+import MongoMemoryServer from 'mongodb-memory-server';
+import { WorkLogModule } from '../../work-log/work-log.module';
+
+const workLogEntries = [
+  someWorkLog('2018/11/05', 'john.doe', 480, ['holidays'], 'National holidays'),
+  someWorkLog('2018/12/05', 'james.bond', 480, ['projects', 'syniverse-dsp']),
+  someWorkLog('2019/01/06', 'james.bond', 480, ['projects', 'syniverse-dsp']),
+  someWorkLog('2019/01/11', 'tom.hanks', 480, ['projects', 'nvm'])
+];
 
 describe('Calendar Controller', () => {
   let app: INestApplication;
+  let workLogModel: Model<WorkLog>;
+  let mongoServer: MongoMemoryServer;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
+    const moduleWithDb = await testModuleWithInMemoryDb({
+      imports: [WorkLogModule],
       controllers: [CalendarController],
       providers: [CalendarService]
-    }).compile();
+    });
+    const module = moduleWithDb.module;
+    mongoServer = moduleWithDb.mongoServer;
+    workLogModel = module.get('WorkLogModel');
 
     app = module.createNestApplication();
     await app.init();
@@ -19,12 +36,21 @@ describe('Calendar Controller', () => {
 
   afterAll(async () => {
     await app.close();
+    await mongoServer.stop();
+  });
+
+  beforeEach(async () => {
+    await workLogModel.create(workLogEntries);
+  });
+
+  afterEach(async () => {
+    await workLogModel.deleteMany({});
   });
 
   it('should return particular year', done => {
-    request(app.getHttpServer())
+    return request(app.getHttpServer())
       .get('/endpoints/v1/calendar/2014')
-      .expect(200)
+      .expect(HttpStatus.OK)
       .then(response => {
         expect(response.body.id).toEqual('2014');
         expect(response.body.link).toEqual('/endpoints/v1/calendar/2014');
@@ -48,9 +74,9 @@ describe('Calendar Controller', () => {
   });
 
   it('should return particular month', done => {
-    request(app.getHttpServer())
+    return request(app.getHttpServer())
       .get('/endpoints/v1/calendar/2014/01')
-      .expect(200)
+      .expect(HttpStatus.OK)
       .then(response => {
         expect(response.body.id).toEqual('2014/01');
         expect(response.body.link).toEqual('/endpoints/v1/calendar/2014/01');
@@ -69,5 +95,32 @@ describe('Calendar Controller', () => {
         });
         done();
       });
+  });
+
+  describe('GET /calendar/:year/:month:/work-log/entries', () => {
+    it('should return entries for given year and month', done => {
+      return request(app.getHttpServer())
+        .get('/endpoints/v1/calendar/2019/01/work-log/entries')
+        .expect(HttpStatus.OK)
+        .then(response => {
+          const entries = response.body.items;
+          expect(entries).toHaveLength(2);
+          expect(entries[0].day).toEqual('2019/01/06');
+          expect(entries[1].day).toEqual('2019/01/11');
+          done();
+        });
+    });
+
+    it('should return BAD REQUEST for invalid year', done => {
+      return request(app.getHttpServer())
+        .get('/endpoints/v1/calendar/19a4/01/work-log/entries')
+        .expect(HttpStatus.BAD_REQUEST, done);
+    });
+
+    it('should return BAD REQUEST for invalid month', done => {
+      return request(app.getHttpServer())
+        .get('/endpoints/v1/calendar/2018/22/work-log/entries')
+        .expect(HttpStatus.BAD_REQUEST, done);
+    });
   });
 });

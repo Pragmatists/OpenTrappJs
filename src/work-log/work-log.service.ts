@@ -6,6 +6,7 @@ import { from, Observable } from 'rxjs';
 import * as moment from 'moment';
 import { map } from 'rxjs/operators';
 import { v4 as uuid } from 'uuid';
+import { WorkLogSearchCriteria } from './work-log-search-criteria';
 
 @Injectable()
 export class WorkLogService {
@@ -13,15 +14,30 @@ export class WorkLogService {
   }
 
   find(date: Date, user: string): Observable<WorkLogDTO[]> {
-    let query = {};
-    if (date) {
-      query = {...query, 'day.date': moment(date).format('YYYY/MM/DD')};
-    }
-    if (user) {
-      query = {...query, 'employeeID._id': user};
-    }
+    const query = WorkLogSearchCriteria.builer
+      .date(date)
+      .user(user)
+      .build();
     return from(this.workLogModel.find(query).exec()).pipe(
-      map((worklog: WorkLog[]) => worklog.map(w => WorkLogService.workLogEntityToDTO(w)))
+      map(workLogs => workLogs.map(w => WorkLogService.workLogEntityToDTO(w)))
+    );
+  }
+
+  findByProject(projectName: string): Observable<WorkLogDTO[]> {
+    const query = WorkLogSearchCriteria.builer
+      .projectName(projectName)
+      .build();
+    return from(this.workLogModel.find(query).exec()).pipe(
+      map(workLogs => workLogs.map(w => WorkLogService.workLogEntityToDTO(w)))
+    );
+  }
+
+  findByMonth(year: string, month: string): Observable<WorkLogDTO[]> {
+    const query = WorkLogSearchCriteria.builer
+      .yearAndMonth(year, month)
+      .build();
+    return from(this.workLogModel.find(query).exec()).pipe(
+      map(workLogs => workLogs.map(w => WorkLogService.workLogEntityToDTO(w)))
     );
   }
 
