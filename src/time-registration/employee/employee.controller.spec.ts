@@ -8,7 +8,7 @@ import { someWorkLog, testModuleWithInMemoryDb } from '../../utils/test-utils';
 import { WorkLogModule } from '../../work-log/work-log.module';
 
 const workLogEntries = [
-  someWorkLog('2018/11/05', 'john.doe', 480, ['holidays'], 'National holidays'),
+  someWorkLog('2018/11/05', 'john.doe', 480, ['holidays']),
   someWorkLog('2018/12/05', 'james.bond', 480, ['projects', 'syniverse-dsp']),
   someWorkLog('2019/01/06', 'james.bond', 480, ['projects', 'syniverse-dsp']),
   someWorkLog('2019/01/11', 'tom.hanks', 480, ['projects', 'nvm'])

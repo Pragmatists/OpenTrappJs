@@ -1,13 +1,14 @@
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { RegisterWorkLogDTO, WorkLog, WorkLogDTO } from './work-log.model';
 import { from, Observable } from 'rxjs';
 import * as moment from 'moment';
-import { map } from 'rxjs/operators';
+import { filter, map, mapTo, throwIfEmpty } from 'rxjs/operators';
 import { v4 as uuid } from 'uuid';
 import { WorkLogSearchCriteria } from './work-log-search-criteria';
 import { YearMonthDTO } from '../time-registration/calendar/calendar.model';
+import { isNil } from 'lodash';
 
 @Injectable()
 export class WorkLogService {
@@ -72,6 +73,14 @@ export class WorkLogService {
     } as WorkLog;
     return from(this.workLogModel.create(workLog)).pipe(
       map(document => ({id: document._id._id}))
+    );
+  }
+
+  delete(id: string): Observable<{}> {
+    return from(this.workLogModel.findByIdAndDelete({_id: id}).exec()).pipe(
+      filter(workLog => !isNil(workLog)),
+      mapTo({}),
+      throwIfEmpty(() => new NotFoundException(`Entity with id ${id} doesn't exist`))
     );
   }
 

@@ -4,10 +4,11 @@ import { WorkLogModule } from '../work-log/work-log.module';
 import { CalendarController } from './calendar/calendar.controller';
 import { CalendarService } from './calendar/calendar.service';
 import { EmployeeController } from './employee/employee.controller';
+import { WorkLogController } from './work-log/work-log.controller';
 
 @Module({
   imports: [WorkLogModule],
-  controllers: [ProjectsController, CalendarController, EmployeeController],
+  controllers: [ProjectsController, CalendarController, EmployeeController, WorkLogController],
   providers: [CalendarService]
 })
 export class TimeRegistrationModule {

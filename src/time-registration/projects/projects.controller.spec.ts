@@ -9,7 +9,7 @@ import { WorkLogModule } from '../../work-log/work-log.module';
 import { includes } from 'lodash';
 
 const workLogEntries = [
-  someWorkLog('2019/01/05', 'john.doe', 480, ['holidays'], 'National holidays'),
+  someWorkLog('2019/01/05', 'john.doe', 480, ['holidays']),
   someWorkLog('2019/01/05', 'james.bond', 480, ['projects', 'syniverse-dsp']),
   someWorkLog('2019/01/06', 'james.bond', 480, ['projects', 'syniverse-dsp']),
   someWorkLog('2019/01/11', 'tom.hanks', 480, ['projects', 'nvm'])

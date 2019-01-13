@@ -4,10 +4,15 @@ import { Test } from '@nestjs/testing';
 import { MongooseModule } from '@nestjs/mongoose';
 import MongoMemoryServer from 'mongodb-memory-server';
 
-export function someWorkLog(date: string, employee: string, workload: number, tags: string[], note?: string) {
+export function someWorkLog(date: string,
+                            employee: string,
+                            workload: number,
+                            tags: string[],
+                            note?: string,
+                            id = `WL.${uuid()}`) {
   return {
     _id: {
-      _id: `WL.${uuid()}`
+      _id: id
     },
     day: {
       date
