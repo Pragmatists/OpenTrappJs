@@ -59,4 +59,53 @@ describe('Employee Controller', () => {
         });
     });
   });
+
+  describe('POST /employee/:employeeID/work-log/entries', () => {
+    it('should register new work log', done => {
+      const employee = 'andy.white';
+      const requestBody = {day: '2019-01-12', workload: 120, projectNames: ['projects', 'nvm']};
+
+      return request(app.getHttpServer())
+        .post(`/endpoints/v1/employee/${employee}/work-log/entries`)
+        .send(requestBody)
+        .expect(HttpStatus.CREATED)
+        .then(async () => {
+          const entry = await workLogModel.findOne({'employeeID._id': employee}).exec();
+          expect(entry.day.date).toEqual('2019/01/12');
+          expect(entry.workload.minutes).toEqual(120);
+          expect(entry.projectNames.map(p => p.name)).toEqual(['projects', 'nvm']);
+          done();
+        });
+    });
+
+    it('should return BAD REQUEST for invalid date', done => {
+      const employee = 'andy.white';
+      const requestBody = {day: '11-01-07a', workload: 120, projectNames: ['projects', 'nvm']};
+
+      return request(app.getHttpServer())
+        .post(`/endpoints/v1/employee/${employee}/work-log/entries`)
+        .send(requestBody)
+        .expect(HttpStatus.BAD_REQUEST, done);
+    });
+
+    it('should return BAD REQUEST for empty projects list', done => {
+      const employee = 'andy.white';
+      const requestBody = {day: '2019-01-07', workload: 120, projectNames: []};
+
+      return request(app.getHttpServer())
+        .post(`/endpoints/v1/employee/${employee}/work-log/entries`)
+        .send(requestBody)
+        .expect(HttpStatus.BAD_REQUEST, done);
+    });
+
+    it('should return BAD REQUEST for workload less than 0', done => {
+      const employee = 'andy.white';
+      const requestBody = {day: '2019-01-07', workload: -10, projectNames: ['nvm']};
+
+      return request(app.getHttpServer())
+        .post(`/endpoints/v1/employee/${employee}/work-log/entries`)
+        .send(requestBody)
+        .expect(HttpStatus.BAD_REQUEST, done);
+    });
+  });
 });
