@@ -32,10 +32,7 @@ export interface WorkLogDTO {
   note?: string;
 }
 
-export class RegisterWorkLogDTO {
-  @ApiModelProperty({example: '2019-01-05'})
-  @Matches(/^\d{4}[\/\-](0[1-9]|1[012])[\/\-](0[1-9]|[12][0-9]|3[01])$/)
-  readonly day: string;
+export class UpdateWorkLogDTO {
   @ApiModelProperty({example: 60})
   @IsInt()
   @Min(0)
@@ -45,4 +42,10 @@ export class RegisterWorkLogDTO {
   readonly projectNames: string[];
   @ApiModelProperty({required: false, example: 'Working remotely'})
   readonly note?: string;
+}
+
+export class RegisterWorkLogDTO extends UpdateWorkLogDTO {
+  @ApiModelProperty({example: '2019-01-05'})
+  @Matches(/^\d{4}[\/\-](0[1-9]|1[012])[\/\-](0[1-9]|[12][0-9]|3[01])$/)
+  readonly day: string;
 }

@@ -1,7 +1,7 @@
 import { Model } from 'mongoose';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { RegisterWorkLogDTO, WorkLog, WorkLogDTO } from './work-log.model';
+import { RegisterWorkLogDTO, UpdateWorkLogDTO, WorkLog, WorkLogDTO } from './work-log.model';
 import { from, Observable } from 'rxjs';
 import * as moment from 'moment';
 import { filter, map, mapTo, throwIfEmpty } from 'rxjs/operators';
@@ -73,6 +73,15 @@ export class WorkLogService {
     } as WorkLog;
     return from(this.workLogModel.create(workLog)).pipe(
       map(document => ({id: document._id._id}))
+    );
+  }
+
+  update(id: string, updateDTO: UpdateWorkLogDTO) {
+    const workLog = {};
+    return from(this.workLogModel.findByIdAndUpdate({_id: id}, workLog).exec()).pipe(
+      filter(updatedWorkLog => !isNil(updatedWorkLog)),
+      mapTo({}),
+      throwIfEmpty(() => new NotFoundException(`Entity with id ${id} doesn't exist`))
     );
   }
 
