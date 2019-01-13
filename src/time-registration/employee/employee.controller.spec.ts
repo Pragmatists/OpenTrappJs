@@ -63,7 +63,7 @@ describe('Employee Controller', () => {
   describe('POST /employee/:employeeID/work-log/entries', () => {
     it('should register new work log', done => {
       const employee = 'andy.white';
-      const requestBody = {day: '2019-01-12', workload: 120, projectNames: ['projects', 'nvm']};
+      const requestBody = {day: '2019-01-12', workload: '2h', projectNames: ['projects', 'nvm']};
 
       return request(app.getHttpServer())
         .post(`/endpoints/v1/employee/${employee}/work-log/entries`)
@@ -80,7 +80,7 @@ describe('Employee Controller', () => {
 
     it('should return BAD REQUEST for invalid date', done => {
       const employee = 'andy.white';
-      const requestBody = {day: '11-01-07a', workload: 120, projectNames: ['projects', 'nvm']};
+      const requestBody = {day: '11-01-07a', workload: '2h', projectNames: ['projects', 'nvm']};
 
       return request(app.getHttpServer())
         .post(`/endpoints/v1/employee/${employee}/work-log/entries`)
@@ -90,7 +90,7 @@ describe('Employee Controller', () => {
 
     it('should return BAD REQUEST for empty projects list', done => {
       const employee = 'andy.white';
-      const requestBody = {day: '2019-01-07', workload: 120, projectNames: []};
+      const requestBody = {day: '2019-01-07', workload: '120m', projectNames: []};
 
       return request(app.getHttpServer())
         .post(`/endpoints/v1/employee/${employee}/work-log/entries`)
@@ -100,7 +100,7 @@ describe('Employee Controller', () => {
 
     it('should return BAD REQUEST for workload less than 0', done => {
       const employee = 'andy.white';
-      const requestBody = {day: '2019-01-07', workload: -10, projectNames: ['nvm']};
+      const requestBody = {day: '2019-01-07', workload: '-10m', projectNames: ['nvm']};
 
       return request(app.getHttpServer())
         .post(`/endpoints/v1/employee/${employee}/work-log/entries`)

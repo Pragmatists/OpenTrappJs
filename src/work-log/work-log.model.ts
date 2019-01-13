@@ -1,6 +1,7 @@
 import { Document } from 'mongoose';
-import { ArrayNotEmpty, IsInt, Matches, Min } from 'class-validator';
+import { ArrayNotEmpty, Matches } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
+import { WorkloadParser } from './workload-parser';
 
 export interface WorkLog extends Document {
   _id: {
@@ -33,15 +34,28 @@ export interface WorkLogDTO {
 }
 
 export class UpdateWorkLogDTO {
-  @ApiModelProperty({example: 60})
-  @IsInt()
-  @Min(0)
-  readonly workload: number;
+  private workloadMin: number;
+  private workloadExpr: string;
   @ApiModelProperty({example: ['internal', 'hackathon']})
   @ArrayNotEmpty()
   readonly projectNames: string[];
   @ApiModelProperty({required: false, example: 'Working remotely'})
   readonly note?: string;
+
+  @ApiModelProperty({example: '1h 30m'})
+  @Matches(WorkloadParser.PATTERN)
+  set workload(expression: string) {
+    this.workloadMin = WorkloadParser.toMinutes(expression);
+    this.workloadExpr = expression;
+  }
+
+  get workload(): string {
+    return this.workloadExpr;
+  }
+
+  get workloadMinutes(): number {
+    return this.workloadMin;
+  }
 }
 
 export class RegisterWorkLogDTO extends UpdateWorkLogDTO {

@@ -46,7 +46,7 @@ describe('WorkLog Controller', () => {
   describe('POST /work-log/entries/:id', () => {
     it('should update existing entry', done => {
       const idToUpdate = 'id-to-update';
-      const requestBody = {workload: 60, projectNames: ['nvm']};
+      const requestBody = {workload: '60m', projectNames: ['nvm']};
 
       request(app.getHttpServer())
         .post(`/endpoints/v1/work-log/entries/${idToUpdate}`)
@@ -64,7 +64,7 @@ describe('WorkLog Controller', () => {
 
     it('should return NOT FOUND if entry with id does not exist', done => {
       const idToUpdate = 'not-existing-id';
-      const requestBody = {workload: 60, projectNames: ['nvm']};
+      const requestBody = {workload: '60m', projectNames: ['nvm']};
 
       request(app.getHttpServer())
         .post(`/endpoints/v1/work-log/entries/${idToUpdate}`)
@@ -74,7 +74,7 @@ describe('WorkLog Controller', () => {
 
     it('should return BAD REQUEST for empty projects list', done => {
       const idToUpdate = 'not-existing-id';
-      const requestBody = {day: '2019-01-07', workload: 120, projectNames: []};
+      const requestBody = {day: '2019-01-07', workload: '120m', projectNames: []};
 
       return request(app.getHttpServer())
         .post(`/endpoints/v1/work-log/entries/${idToUpdate}`)
@@ -84,7 +84,7 @@ describe('WorkLog Controller', () => {
 
     it('should return BAD REQUEST for workload less than 0', done => {
       const idToUpdate = 'not-existing-id';
-      const requestBody = {day: '2019-01-07', workload: -10, projectNames: ['nvm']};
+      const requestBody = {day: '2019-01-07', workload: '-10', projectNames: ['nvm']};
 
       return request(app.getHttpServer())
         .post(`/endpoints/v1/work-log/entries/${idToUpdate}`)

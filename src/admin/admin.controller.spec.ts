@@ -99,7 +99,7 @@ describe('AdminController', () => {
   describe('POST /work-log/:username/entries', () => {
     it('should create entry for valid input', done => {
       const username = 'tom.hanks';
-      const requestBody = {day: '2019-01-07', workload: 120, projectNames: ['projects', 'nvm']};
+      const requestBody = {day: '2019-01-07', workload: '2h', projectNames: ['projects', 'nvm']};
 
       return authorizedPostRequest(`/admin/work-log/${username}/entries`, requestBody)
         .expect(HttpStatus.CREATED)
@@ -115,7 +115,7 @@ describe('AdminController', () => {
 
     it('should return BAD REQUEST for invalid date', done => {
       const username = 'tom.hanks';
-      const requestBody = {day: '11-01-07a', workload: 120, projectNames: ['projects', 'nvm']};
+      const requestBody = {day: '11-01-07a', workload: '2h', projectNames: ['projects', 'nvm']};
 
       return authorizedPostRequest(`/admin/work-log/${username}/entries`, requestBody)
         .expect(HttpStatus.BAD_REQUEST, done);
@@ -123,7 +123,7 @@ describe('AdminController', () => {
 
     it('should return BAD REQUEST for empty projects list', done => {
       const username = 'tom.hanks';
-      const requestBody = {day: '2019-01-07', workload: 120, projectNames: []};
+      const requestBody = {day: '2019-01-07', workload: '2h', projectNames: []};
 
       return authorizedPostRequest(`/admin/work-log/${username}/entries`, requestBody)
         .expect(HttpStatus.BAD_REQUEST, done);
@@ -131,7 +131,7 @@ describe('AdminController', () => {
 
     it('should return BAD REQUEST for workload less than 0', done => {
       const username = 'tom.hanks';
-      const requestBody = {day: '2019-01-07', workload: -10, projectNames: ['nvm']};
+      const requestBody = {day: '2019-01-07', workload: '-10m', projectNames: ['nvm']};
 
       return authorizedPostRequest(`/admin/work-log/${username}/entries`, requestBody)
         .expect(HttpStatus.BAD_REQUEST, done);

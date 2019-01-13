@@ -64,7 +64,7 @@ export class WorkLogService {
       },
       projectNames: registerWorkLogDTO.projectNames.map(name => ({name})),
       workload: {
-        minutes: registerWorkLogDTO.workload
+        minutes: registerWorkLogDTO.workloadMinutes
       },
       note: {
         text: registerWorkLogDTO.note
