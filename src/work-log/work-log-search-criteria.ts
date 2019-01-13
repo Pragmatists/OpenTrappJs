@@ -1,4 +1,5 @@
 import * as moment from 'moment';
+import { YearMonthDTO } from '../time-registration/calendar/calendar.model';
 
 export class WorkLogSearchCriteria {
   private criteria: {[key: string]: any} = {};
@@ -31,9 +32,17 @@ export class WorkLogSearchCriteria {
     return this;
   }
 
-  yearAndMonth(year: string, month: string): WorkLogSearchCriteria {
-    if (year && month) {
-      this.criteria = {...this.criteria, 'day.date': {$regex: `${year}/${month}/(\\d{2})`}};
+  month(yearMonth: YearMonthDTO): WorkLogSearchCriteria {
+    if (yearMonth && yearMonth.month && yearMonth.year) {
+      this.criteria = {...this.criteria, 'day.date': {$regex: yearMonth.searchRegex}};
+    }
+    return this;
+  }
+
+  monthList(monthList: YearMonthDTO[]): WorkLogSearchCriteria {
+    if (monthList && monthList.length > 0) {
+      const dateCriteria = monthList.map(m => `(${m.searchRegex})`).join('|');
+      this.criteria = {...this.criteria, 'day.date': {$regex: dateCriteria}};
     }
     return this;
   }

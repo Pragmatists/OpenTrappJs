@@ -67,3 +67,25 @@ export class FindByYearAndMonthParams {
   @Matches(/^(0[1-9]|1[012])$/)
   month: string;
 }
+
+export class YearMonthDTO {
+  constructor(readonly year: string,
+              readonly month: string) {
+  }
+
+  get searchRegex(): string {
+    return `${this.year}/${this.month}/(\\d{2})`;
+  }
+}
+
+export class FindByYearMonthListParams {
+  @Matches(/^(?:[\d]{6})(?:\,[\d]{6})*$/)
+  yearMonthList: string;
+
+  toList(): YearMonthDTO[] {
+    return this.yearMonthList
+      .split(',')
+      .map(yearMonthString => yearMonthString.match(/(^\d{4})|(\d{2}$)/g))
+      .map(splitYearMonth => new YearMonthDTO(splitYearMonth[0], splitYearMonth[1]));
+  }
+}

@@ -123,4 +123,26 @@ describe('Calendar Controller', () => {
         .expect(HttpStatus.BAD_REQUEST, done);
     });
   });
+
+  describe('GET /calendar/:yearMonthList/work-log/entries', () => {
+    it('should return entries for specified months', done => {
+      return request(app.getHttpServer())
+        .get('/endpoints/v1/calendar/201812,201901,201902/work-log/entries')
+        .expect(HttpStatus.OK)
+        .then(response => {
+          const entries = response.body.items;
+          expect(entries).toHaveLength(3);
+          expect(entries[0].day).toEqual('2018/12/05');
+          expect(entries[1].day).toEqual('2019/01/06');
+          expect(entries[2].day).toEqual('2019/01/11');
+          done();
+        });
+    });
+
+    it('should return BAD REQUEST for invalid months list', done => {
+      return request(app.getHttpServer())
+        .get('/endpoints/v1/calendar/20181212,2019-01/work-log/entries')
+        .expect(HttpStatus.BAD_REQUEST, done);
+    });
+  });
 });

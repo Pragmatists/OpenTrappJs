@@ -7,6 +7,7 @@ import * as moment from 'moment';
 import { map } from 'rxjs/operators';
 import { v4 as uuid } from 'uuid';
 import { WorkLogSearchCriteria } from './work-log-search-criteria';
+import { YearMonthDTO } from '../time-registration/calendar/calendar.model';
 
 @Injectable()
 export class WorkLogService {
@@ -18,38 +19,28 @@ export class WorkLogService {
       .date(date)
       .user(user)
       .build();
-    return from(this.workLogModel.find(query).exec()).pipe(
-      map(workLogs => workLogs.map(w => WorkLogService.workLogEntityToDTO(w)))
-    );
+    return this.findByQuery(query);
   }
 
   findByProject(projectName: string): Observable<WorkLogDTO[]> {
     const query = WorkLogSearchCriteria.builer
       .projectName(projectName)
       .build();
-    return from(this.workLogModel.find(query).exec()).pipe(
-      map(workLogs => workLogs.map(w => WorkLogService.workLogEntityToDTO(w)))
-    );
+    return this.findByQuery(query);
   }
 
-  findByMonth(year: string, month: string): Observable<WorkLogDTO[]> {
+  findByMonth(yearMonth: YearMonthDTO): Observable<WorkLogDTO[]> {
     const query = WorkLogSearchCriteria.builer
-      .yearAndMonth(year, month)
+      .month(yearMonth)
       .build();
-    return from(this.workLogModel.find(query).exec()).pipe(
-      map(workLogs => workLogs.map(w => WorkLogService.workLogEntityToDTO(w)))
-    );
+    return this.findByQuery(query);
   }
 
-  private static workLogEntityToDTO(entity: WorkLog): WorkLogDTO {
-    return {
-      id: entity._id._id,
-      day: entity.day.date,
-      employeeID: entity.employeeID._id,
-      projectNames: entity.projectNames.map(project => project.name),
-      workload: entity.workload.minutes,
-      note: entity.note ? entity.note.text : undefined
-    };
+  findByMonthList(monthList: YearMonthDTO[]): Observable<WorkLogDTO[]> {
+    const query = WorkLogSearchCriteria.builer
+      .monthList(monthList)
+      .build();
+    return this.findByQuery(query);
   }
 
   register(username: string, registerWorkLogDTO: RegisterWorkLogDTO): Observable<{id: string}> {
@@ -74,6 +65,23 @@ export class WorkLogService {
     } as WorkLog;
     return from(this.workLogModel.create(workLog)).pipe(
       map(document => ({id: document._id._id}))
+    );
+  }
+
+  private static workLogEntityToDTO(entity: WorkLog): WorkLogDTO {
+    return {
+      id: entity._id._id,
+      day: entity.day.date,
+      employeeID: entity.employeeID._id,
+      projectNames: entity.projectNames.map(project => project.name),
+      workload: entity.workload.minutes,
+      note: entity.note ? entity.note.text : undefined
+    };
+  }
+
+  private findByQuery(query) {
+    return from(this.workLogModel.find(query).exec()).pipe(
+      map(workLogs => workLogs.map(w => WorkLogService.workLogEntityToDTO(w)))
     );
   }
 }

@@ -33,7 +33,7 @@ export async function testModuleWithInMemoryDb(moduleMetadata: ModuleMetadata) {
     ...moduleMetadata,
     imports: [
       ...moduleMetadata.imports,
-      MongooseModule.forRoot(uri)
+      MongooseModule.forRoot(uri, {useNewUrlParser: true})
     ]
   }).compile();
   return {
