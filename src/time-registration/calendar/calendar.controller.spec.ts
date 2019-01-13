@@ -51,19 +51,20 @@ describe('Calendar Controller', () => {
     return request(app.getHttpServer())
       .get('/endpoints/v1/calendar/2014')
       .expect(HttpStatus.OK)
-      .then(response => {
-        expect(response.body.id).toEqual('2014');
-        expect(response.body.link).toEqual('/endpoints/v1/calendar/2014');
-        expect(response.body.next).toEqual({link: '/endpoints/v1/calendar/2015'});
-        expect(response.body.prev).toEqual({link: '/endpoints/v1/calendar/2013'});
-        expect(response.body.months).toHaveLength(12);
-        expect(response.body.months[0]).toEqual({
+      .then(response => response.body)
+      .then(responseBody => {
+        expect(responseBody.id).toEqual('2014');
+        expect(responseBody.link).toEqual('/endpoints/v1/calendar/2014');
+        expect(responseBody.next).toEqual({link: '/endpoints/v1/calendar/2015'});
+        expect(responseBody.prev).toEqual({link: '/endpoints/v1/calendar/2013'});
+        expect(responseBody.months).toHaveLength(12);
+        expect(responseBody.months[0]).toEqual({
           link: '/endpoints/v1/calendar/2014/01',
           id: '2014/01',
           next: {link: '/endpoints/v1/calendar/2014/02'},
           prev: {link: '/endpoints/v1/calendar/2013/12'}
         });
-        expect(response.body.months[11]).toEqual({
+        expect(responseBody.months[11]).toEqual({
           link: '/endpoints/v1/calendar/2014/12',
           id: '2014/12',
           next: {link: '/endpoints/v1/calendar/2015/01'},
@@ -77,18 +78,19 @@ describe('Calendar Controller', () => {
     return request(app.getHttpServer())
       .get('/endpoints/v1/calendar/2014/01')
       .expect(HttpStatus.OK)
-      .then(response => {
-        expect(response.body.id).toEqual('2014/01');
-        expect(response.body.link).toEqual('/endpoints/v1/calendar/2014/01');
-        expect(response.body.next).toEqual({link: '/endpoints/v1/calendar/2014/02'});
-        expect(response.body.prev).toEqual({link: '/endpoints/v1/calendar/2013/12'});
-        expect(response.body.days).toHaveLength(31);
-        expect(response.body.days[0]).toEqual({
+      .then(response => response.body)
+      .then(responseBody => {
+        expect(responseBody.id).toEqual('2014/01');
+        expect(responseBody.link).toEqual('/endpoints/v1/calendar/2014/01');
+        expect(responseBody.next).toEqual({link: '/endpoints/v1/calendar/2014/02'});
+        expect(responseBody.prev).toEqual({link: '/endpoints/v1/calendar/2013/12'});
+        expect(responseBody.days).toHaveLength(31);
+        expect(responseBody.days[0]).toEqual({
           link: '/endpoints/v1/calendar/2014/01/01',
           id: '2014/01/01',
           holiday: false
         });
-        expect(response.body.days[4]).toEqual({
+        expect(responseBody.days[4]).toEqual({
           link: '/endpoints/v1/calendar/2014/01/05',
           id: '2014/01/05',
           holiday: true
@@ -102,8 +104,8 @@ describe('Calendar Controller', () => {
       return request(app.getHttpServer())
         .get('/endpoints/v1/calendar/2019/01/work-log/entries')
         .expect(HttpStatus.OK)
-        .then(response => {
-          const entries = response.body.items;
+        .then(response => response.body.items)
+        .then(entries => {
           expect(entries).toHaveLength(2);
           expect(entries[0].day).toEqual('2019/01/06');
           expect(entries[1].day).toEqual('2019/01/11');
@@ -129,8 +131,8 @@ describe('Calendar Controller', () => {
       return request(app.getHttpServer())
         .get('/endpoints/v1/calendar/201812,201901,201902/work-log/entries')
         .expect(HttpStatus.OK)
-        .then(response => {
-          const entries = response.body.items;
+        .then(response => response.body.items)
+        .then(entries => {
           expect(entries).toHaveLength(3);
           expect(entries[0].day).toEqual('2018/12/05');
           expect(entries[1].day).toEqual('2019/01/06');

@@ -1,21 +1,20 @@
 import * as request from 'supertest';
-import { ProjectsController } from './projects.controller';
-import { someWorkLog, testModuleWithInMemoryDb } from '../../utils/test-utils';
+import { EmployeeController } from './employee.controller';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { WorkLog } from '../../work-log/work-log.model';
 import MongoMemoryServer from 'mongodb-memory-server';
+import { someWorkLog, testModuleWithInMemoryDb } from '../../utils/test-utils';
 import { WorkLogModule } from '../../work-log/work-log.module';
-import { includes } from 'lodash';
 
 const workLogEntries = [
-  someWorkLog('2019/01/05', 'john.doe', 480, ['holidays'], 'National holidays'),
-  someWorkLog('2019/01/05', 'james.bond', 480, ['projects', 'syniverse-dsp']),
+  someWorkLog('2018/11/05', 'john.doe', 480, ['holidays'], 'National holidays'),
+  someWorkLog('2018/12/05', 'james.bond', 480, ['projects', 'syniverse-dsp']),
   someWorkLog('2019/01/06', 'james.bond', 480, ['projects', 'syniverse-dsp']),
   someWorkLog('2019/01/11', 'tom.hanks', 480, ['projects', 'nvm'])
 ];
 
-describe('Projects Controller', () => {
+describe('Employee Controller', () => {
   let app: INestApplication;
   let workLogModel: Model<WorkLog>;
   let mongoServer: MongoMemoryServer;
@@ -23,7 +22,7 @@ describe('Projects Controller', () => {
   beforeAll(async () => {
     const moduleWithDb = await testModuleWithInMemoryDb({
       imports: [WorkLogModule],
-      controllers: [ProjectsController]
+      controllers: [EmployeeController]
     });
     const module = moduleWithDb.module;
     mongoServer = moduleWithDb.mongoServer;
@@ -46,35 +45,18 @@ describe('Projects Controller', () => {
     await workLogModel.deleteMany({});
   });
 
-  describe('GET /projects', () => {
-    it('should return list of available projects', done => {
+  describe('GET /employee/:employeeID/work-log/entries', () => {
+    it('should return entries for given employee', done => {
+      const employee = 'james.bond';
       return request(app.getHttpServer())
-        .get('/endpoints/v1/projects')
-        .expect(HttpStatus.OK)
-        .expect(['holidays', 'projects', 'syniverse-dsp', 'nvm'], done);
-    });
-  });
-
-  describe('GET /projects/:projectName/work-log/entries', () => {
-    it('should return entries for given project name', done => {
-      const projectName = 'syniverse-dsp';
-
-      return request(app.getHttpServer())
-        .get(`/endpoints/v1/projects/${projectName}/work-log/entries`)
+        .get(`/endpoints/v1/employee/${employee}/work-log/entries`)
         .expect(HttpStatus.OK)
         .then(response => response.body.items)
         .then(entries => {
           expect(entries).toHaveLength(2);
-          expect(entries.every(entry => includes(entry.projectNames, projectName))).toBeTruthy();
+          expect(entries.map(e => e.employee).every(name => name === employee)).toBeTruthy();
           done();
         });
     });
-
-    it('should return empty list for unknown project name', done => {
-      return request(app.getHttpServer())
-        .get(`/endpoints/v1/projects/aaa/work-log/entries`)
-        .expect(HttpStatus.OK, {items: []}, done);
-    });
   });
-
 });

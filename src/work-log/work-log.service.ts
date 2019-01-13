@@ -43,6 +43,13 @@ export class WorkLogService {
     return this.findByQuery(query);
   }
 
+  findByEmployeeID(employeeID: string): Observable<WorkLogDTO[]> {
+    const query = WorkLogSearchCriteria.builer
+      .user(employeeID)
+      .build();
+    return this.findByQuery(query);
+  }
+
   register(username: string, registerWorkLogDTO: RegisterWorkLogDTO): Observable<{id: string}> {
     const workLog = {
       _id: {
