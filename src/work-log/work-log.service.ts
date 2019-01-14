@@ -8,7 +8,7 @@ import { filter, map, mapTo, throwIfEmpty } from 'rxjs/operators';
 import { v4 as uuid } from 'uuid';
 import { WorkLogSearchCriteria } from './work-log-search-criteria';
 import { YearMonthDTO } from '../time-registration/calendar/calendar.model';
-import { isNil } from 'lodash';
+import { isNil, has } from 'lodash';
 
 @Injectable()
 export class WorkLogService {
@@ -77,7 +77,20 @@ export class WorkLogService {
   }
 
   update(id: string, updateDTO: UpdateWorkLogDTO) {
-    const workLog = {};
+    let workLog: any = {
+      projectNames: updateDTO.projectNames.map(name => ({name})),
+      workload: {
+        minutes: updateDTO.workloadMinutes
+      },
+    };
+    if (has(updateDTO, 'note')) {
+      workLog = {
+        ...workLog,
+        note: {
+          text: updateDTO.note
+        }
+      };
+    }
     return from(this.workLogModel.findByIdAndUpdate({_id: id}, workLog).exec()).pipe(
       filter(updatedWorkLog => !isNil(updatedWorkLog)),
       mapTo({}),

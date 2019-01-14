@@ -62,6 +62,24 @@ describe('WorkLog Controller', () => {
         });
     });
 
+    it('should update existing entry with note', done => {
+      const idToUpdate = 'id-to-update';
+      const requestBody = {workload: '60m', projectNames: ['nvm'], note: 'Updated note'};
+
+      request(app.getHttpServer())
+        .post(`/endpoints/v1/work-log/entries/${idToUpdate}`)
+        .expect(HttpStatus.OK, {status: 'success'})
+        .send(requestBody)
+        .then(async () => {
+          const updatedWorkLog = await workLogModel.findById({_id: idToUpdate}).exec();
+          expect(updatedWorkLog.day.date).toEqual('2018/12/05');
+          expect(updatedWorkLog.workload.minutes).toEqual(60);
+          expect(updatedWorkLog.projectNames.map(p => p.name)).toEqual(['nvm']);
+          expect(updatedWorkLog.note.text).toEqual('Updated note');
+          done();
+        });
+    });
+
     it('should return NOT FOUND if entry with id does not exist', done => {
       const idToUpdate = 'not-existing-id';
       const requestBody = {workload: '60m', projectNames: ['nvm']};
