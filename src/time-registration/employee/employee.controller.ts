@@ -14,7 +14,7 @@ export class EmployeeController {
   }
 
   @Get(':employeeID/work-log/entries')
-  public entriesForEmployee(@Param('employeeID') employeeID: string): Observable<ReportingResponseDTO>  {
+  entriesForEmployee(@Param('employeeID') employeeID: string): Observable<ReportingResponseDTO>  {
     return this.workLogService.findByEmployeeID(employeeID).pipe(
       map(workLogs => workLogs.map(workLog => ReportingWorkLogDTO.fromWorkLog(workLog))),
       map(workLogs => ({items: workLogs}))
@@ -24,7 +24,7 @@ export class EmployeeController {
   @Post(':employeeID/work-log/entries')
   @HttpCode(201)
   @UsePipes(new ValidationPipe({transform: true}))
-  public submitEntry(@Param('employeeID') employeeID: string,
+  submitEntry(@Param('employeeID') employeeID: string,
                      @Body() workLog: RegisterWorkLogDTO): Observable<{id: string}> {
     return this.workLogService.register(employeeID, workLog);
   }

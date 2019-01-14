@@ -18,19 +18,19 @@ export class CalendarController {
   }
 
   @Get(':year/:month')
-  public getMonth(@Param('year', ParseIntPipe) year: number,
+  getMonth(@Param('year', ParseIntPipe) year: number,
                   @Param('month', ParseIntPipe) month: number) {
     return this.calendarService.getMonth(year, month, CALENDAR_ROOT_URL);
   }
 
   @Get(':year')
-  public getYear(@Param('year', ParseIntPipe) year: number) {
+  getYear(@Param('year', ParseIntPipe) year: number) {
     return this.calendarService.getYear(year, CALENDAR_ROOT_URL);
   }
 
   @Get(':year/:month/work-log/entries')
   @UsePipes(new ValidationPipe({transform: true}))
-  public entriesForMonth(@Param() params: FindByYearAndMonthParams): Observable<ReportingResponseDTO> {
+  entriesForMonth(@Param() params: FindByYearAndMonthParams): Observable<ReportingResponseDTO> {
     return this.workLogService.findByMonth(new YearMonthDTO(params.year, params.month)).pipe(
       map(workLogs => workLogs.map(workLog => ReportingWorkLogDTO.fromWorkLog(workLog))),
       map(workLogs => ({items: workLogs}))
@@ -39,7 +39,7 @@ export class CalendarController {
 
   @Get(':yearMonthList/work-log/entries')
   @UsePipes(new ValidationPipe({transform: true}))
-  public entriesForMonthList(@Param() params: FindByYearMonthListParams): Observable<ReportingResponseDTO> {
+  entriesForMonthList(@Param() params: FindByYearMonthListParams): Observable<ReportingResponseDTO> {
     return this.workLogService.findByMonthList(params.toList()).pipe(
       map(workLogs => workLogs.map(workLog => ReportingWorkLogDTO.fromWorkLog(workLog))),
       map(workLogs => ({items: workLogs}))

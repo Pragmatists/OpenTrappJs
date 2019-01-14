@@ -19,21 +19,21 @@ export class AdminController {
   @Get('/work-log/entries')
   @ApiImplicitQuery({name: 'date', required: false, description: 'Day in format "YYYY-MM-DD"'})
   @ApiImplicitQuery({name: 'user', required: false, description: 'Username same as email but without domain'})
-  public findWorkload(@Query('date', ParseDatePipe) date: Date,
-                      @Query('user') user: string): Observable<WorkLogDTO[]> {
+  findWorkload(@Query('date', ParseDatePipe) date: Date,
+               @Query('user') user: string): Observable<WorkLogDTO[]> {
     return this.workLogService.find(date, user);
   }
 
   @Post('/work-log/:username/entries')
   @HttpCode(201)
   @UsePipes(new ValidationPipe({transform: true}))
-  public registerWorkLoad(@Param('username') username: string,
+  registerWorkLoad(@Param('username') username: string,
                           @Body() registerWorkloadDTO: RegisterWorkLogDTO): Observable<{id: string}> {
     return this.workLogService.register(username, registerWorkloadDTO);
   }
 
   @Get('/tags')
-  public tags(): Observable<string[]> {
+  tags(): Observable<string[]> {
     return this.tagsService.findAll();
   }
 }

@@ -15,12 +15,12 @@ export class ProjectsController {
   }
 
   @Get()
-  public getProjectNames(): Observable<string[]> {
+  getProjectNames(): Observable<string[]> {
     return this.tagsService.findAll();
   }
 
   @Get(':projectName/work-log/entries')
-  public entriesForProject(@Param('projectName') projectName: string): Observable<ReportingResponseDTO> {
+  entriesForProject(@Param('projectName') projectName: string): Observable<ReportingResponseDTO> {
     return this.workLogService.findByProject(projectName).pipe(
       map(workLogs => workLogs.map(workLog => ReportingWorkLogDTO.fromWorkLog(workLog))),
       map(workLogs => ({items: workLogs}))

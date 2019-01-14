@@ -9,7 +9,7 @@ export class TagsService {
   constructor(@InjectModel('WorkLog') private readonly workLogModel: Model<WorkLog>) {
   }
 
-  public findAll(): Observable<string[]> {
+  findAll(): Observable<string[]> {
     return from(this.workLogModel.distinct('projectNames.name').exec());
   }
 }

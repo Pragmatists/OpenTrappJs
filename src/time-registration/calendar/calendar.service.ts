@@ -6,7 +6,7 @@ import { range } from 'lodash';
 @Injectable()
 export class CalendarService {
 
-  public getMonth(year: number, month: number, rootUrl: string): MonthDTO {
+  getMonth(year: number, month: number, rootUrl: string): MonthDTO {
     const firstDay = moment(new Date(year, month - 1, 1));
     const daysInMonth = firstDay.daysInMonth();
     const days = range(daysInMonth)
@@ -16,7 +16,7 @@ export class CalendarService {
     return new MonthDTO(year, month, days, rootUrl);
   }
 
-  public getYear(year: number, rootUrl: string): YearDTO {
+  getYear(year: number, rootUrl: string): YearDTO {
     const months = range(12)
       .map(idx => idx + 1)
       .map(month => new MonthDTO(year, month, undefined, rootUrl));
