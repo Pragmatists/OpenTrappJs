@@ -5,10 +5,12 @@ import { ReportingResponseDTO, ReportingWorkLogDTO } from '../time-registration.
 import { WorkLogService } from '../../work-log/work-log.service';
 import { map } from 'rxjs/operators';
 import { FindByYearAndMonthParams, FindByYearMonthListParams, YearMonthDTO } from './calendar.model';
+import { ApiUseTags } from '@nestjs/swagger';
 
 const CALENDAR_ROOT_URL = '/endpoints/v1/calendar';
 
 @Controller(CALENDAR_ROOT_URL)
+@ApiUseTags('calendar')
 export class CalendarController {
 
   constructor(private readonly calendarService: CalendarService,

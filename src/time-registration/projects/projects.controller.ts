@@ -4,8 +4,10 @@ import { TagsService } from '../../work-log/tags.service';
 import { WorkLogService } from '../../work-log/work-log.service';
 import { map } from 'rxjs/operators';
 import { ReportingResponseDTO, ReportingWorkLogDTO } from '../time-registration.model';
+import { ApiUseTags } from '@nestjs/swagger';
 
 @Controller('endpoints/v1/projects')
+@ApiUseTags('project')
 export class ProjectsController {
 
   constructor(private readonly tagsService: TagsService,

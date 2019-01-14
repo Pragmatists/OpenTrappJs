@@ -4,8 +4,10 @@ import { ReportingResponseDTO, ReportingWorkLogDTO } from '../time-registration.
 import { WorkLogService } from '../../work-log/work-log.service';
 import { map } from 'rxjs/operators';
 import { RegisterWorkLogDTO } from '../../work-log/work-log.model';
+import { ApiUseTags } from '@nestjs/swagger';
 
 @Controller('/endpoints/v1/employee')
+@ApiUseTags('employee')
 export class EmployeeController {
 
   constructor(private readonly workLogService: WorkLogService) {

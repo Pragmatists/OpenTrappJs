@@ -16,6 +16,9 @@ async function bootstrap() {
     .setDescription('OpenTrapp API description')
     .setVersion('1.0')
     .addTag('admin')
+    .addTag('calendar')
+    .addTag('employee')
+    .addTag('project')
     .addBearerAuth('Authorization', 'header', 'apiKey')
     .setSchemes('https', 'http')
     .build();

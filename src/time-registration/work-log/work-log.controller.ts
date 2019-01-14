@@ -2,8 +2,10 @@ import { Body, Controller, Delete, HttpCode, HttpStatus, Param, Post, UsePipes, 
 import { WorkLogService } from '../../work-log/work-log.service';
 import { UpdateWorkLogDTO } from '../../work-log/work-log.model';
 import { mapTo } from 'rxjs/operators';
+import { ApiUseTags } from '@nestjs/swagger';
 
 @Controller('/endpoints/v1/work-log')
+@ApiUseTags('work-log')
 export class WorkLogController {
 
   constructor(private readonly workLogService: WorkLogService) {
