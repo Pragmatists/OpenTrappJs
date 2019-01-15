@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import { YearMonthDTO } from '../time-registration/calendar/calendar.model';
+import { TimeUnit } from './time-unit';
 
 export class WorkLogSearchCriteria {
   private criteria: {[key: string]: any} = {};
@@ -18,6 +18,13 @@ export class WorkLogSearchCriteria {
     return this;
   }
 
+  projectNameList(projectNames: string[]): WorkLogSearchCriteria {
+    if (projectNames && projectNames.length > 0) {
+      this.criteria = {...this.criteria, 'projectNames.name': {$in: projectNames}};
+    }
+    return this;
+  }
+
   date(date: Date): WorkLogSearchCriteria {
     if (date) {
       this.criteria = {...this.criteria, 'day.date': moment(date).format('YYYY/MM/DD')};
@@ -32,16 +39,23 @@ export class WorkLogSearchCriteria {
     return this;
   }
 
-  month(yearMonth: YearMonthDTO): WorkLogSearchCriteria {
-    if (yearMonth && yearMonth.month && yearMonth.year) {
-      this.criteria = {...this.criteria, 'day.date': {$regex: yearMonth.searchRegex}};
+  userList(userList: string[]): WorkLogSearchCriteria {
+    if (userList && userList.length > 0) {
+      this.criteria = {...this.criteria, 'employeeID._id': {$in: userList}};
     }
     return this;
   }
 
-  monthList(monthList: YearMonthDTO[]): WorkLogSearchCriteria {
-    if (monthList && monthList.length > 0) {
-      const dateCriteria = monthList.map(m => `(${m.searchRegex})`).join('|');
+  timeUnit(timeUnit: TimeUnit): WorkLogSearchCriteria {
+    if (timeUnit) {
+      this.criteria = {...this.criteria, 'day.date': {$regex: timeUnit.searchRegex}};
+    }
+    return this;
+  }
+
+  timeUnits(timeUnits: TimeUnit[]): WorkLogSearchCriteria {
+    if (timeUnits && timeUnits.length > 0) {
+      const dateCriteria = timeUnits.map(m => `(${m.searchRegex})`).join('|');
       this.criteria = {...this.criteria, 'day.date': {$regex: dateCriteria}};
     }
     return this;

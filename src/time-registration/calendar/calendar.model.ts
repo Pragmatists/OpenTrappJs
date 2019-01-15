@@ -1,4 +1,5 @@
 import { Matches } from 'class-validator';
+import { YearMonth } from '../../work-log/time-unit';
 
 export class YearDTO {
   readonly id: string;
@@ -68,24 +69,14 @@ export class FindByYearAndMonthParams {
   month: string;
 }
 
-export class YearMonthDTO {
-  constructor(readonly year: string,
-              readonly month: string) {
-  }
-
-  get searchRegex(): string {
-    return `${this.year}/${this.month}/(\\d{2})`;
-  }
-}
-
 export class FindByYearMonthListParams {
   @Matches(/^(?:[\d]{6})(?:\,[\d]{6})*$/)
   yearMonthList: string;
 
-  toList(): YearMonthDTO[] {
+  toList(): YearMonth[] {
     return this.yearMonthList
       .split(',')
       .map(yearMonthString => yearMonthString.match(/(^\d{4})|(\d{2}$)/g))
-      .map(splitYearMonth => new YearMonthDTO(splitYearMonth[0], splitYearMonth[1]));
+      .map(splitYearMonth => new YearMonth(splitYearMonth[0], splitYearMonth[1]));
   }
 }

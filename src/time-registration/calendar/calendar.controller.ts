@@ -4,8 +4,9 @@ import { Observable } from 'rxjs';
 import { ReportingResponseDTO, ReportingWorkLogDTO } from '../time-registration.model';
 import { WorkLogService } from '../../work-log/work-log.service';
 import { map } from 'rxjs/operators';
-import { FindByYearAndMonthParams, FindByYearMonthListParams, YearMonthDTO } from './calendar.model';
+import { FindByYearAndMonthParams, FindByYearMonthListParams} from './calendar.model';
 import { ApiUseTags } from '@nestjs/swagger';
+import { YearMonth } from '../../work-log/time-unit';
 
 const CALENDAR_ROOT_URL = '/endpoints/v1/calendar';
 
@@ -31,7 +32,7 @@ export class CalendarController {
   @Get(':year/:month/work-log/entries')
   @UsePipes(new ValidationPipe({transform: true}))
   entriesForMonth(@Param() params: FindByYearAndMonthParams): Observable<ReportingResponseDTO> {
-    return this.workLogService.findByMonth(new YearMonthDTO(params.year, params.month)).pipe(
+    return this.workLogService.findByMonth(new YearMonth(params.year, params.month)).pipe(
       map(workLogs => workLogs.map(workLog => ReportingWorkLogDTO.fromWorkLog(workLog))),
       map(workLogs => ({items: workLogs}))
     );

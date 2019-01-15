@@ -7,7 +7,7 @@ import * as moment from 'moment';
 import { filter, map, mapTo, throwIfEmpty } from 'rxjs/operators';
 import { v4 as uuid } from 'uuid';
 import { WorkLogSearchCriteria } from './work-log-search-criteria';
-import { YearMonthDTO } from '../time-registration/calendar/calendar.model';
+import { YearMonth } from './time-unit';
 import { isNil, has } from 'lodash';
 
 @Injectable()
@@ -30,16 +30,16 @@ export class WorkLogService {
     return this.findByQuery(query);
   }
 
-  findByMonth(yearMonth: YearMonthDTO): Observable<WorkLogDTO[]> {
+  findByMonth(yearMonth: YearMonth): Observable<WorkLogDTO[]> {
     const query = WorkLogSearchCriteria.builer
-      .month(yearMonth)
+      .timeUnit(yearMonth)
       .build();
     return this.findByQuery(query);
   }
 
-  findByMonthList(monthList: YearMonthDTO[]): Observable<WorkLogDTO[]> {
+  findByMonthList(monthList: YearMonth[]): Observable<WorkLogDTO[]> {
     const query = WorkLogSearchCriteria.builer
-      .monthList(monthList)
+      .timeUnits(monthList)
       .build();
     return this.findByQuery(query);
   }
