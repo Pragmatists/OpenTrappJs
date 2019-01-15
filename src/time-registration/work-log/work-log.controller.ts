@@ -47,6 +47,7 @@ export class WorkLogController {
   }
 
   @Post('bulk-update')
+  @HttpCode(HttpStatus.OK)
   bulkUpdate(@Body() updateDTO: BulkUpdateDTO): Observable<AffectedEntriesDTO> {
     return this.workLogBulkService.bulkUpdate(updateDTO).pipe(
       map(entriesAffected => ({entriesAffected}))
