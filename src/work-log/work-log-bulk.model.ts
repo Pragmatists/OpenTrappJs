@@ -1,8 +1,10 @@
 import { WorkLogSearchCriteria } from './work-log-search-criteria';
 import { TimeUnit, YearMonth, YearMonthDay } from './time-unit';
+import { Matches } from 'class-validator';
 
 export class BulkUpdateDTO {
   query: string;
+  @Matches(/^(\+#[^\s]*|\-#[^\s]*)(\+#[^\s]*|\-#[^\s]*|\s)*$/)
   expression: string;
 }
 

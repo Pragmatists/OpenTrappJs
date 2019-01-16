@@ -16,6 +16,18 @@ export class WorkLogBulkUpdater {
     this.tagsToRemove = uniq(WorkLogBulkUpdater.findByPattern(expression, this.removePattern));
   }
 
+  get removeQuery() {
+    return {
+      $pull: {projectNames: {name: {$in: this.tagsToRemove}}}
+    };
+  }
+
+  get addQuery() {
+    return {
+      $addToSet: {projectNames: {$each: this.tagsToAdd.map(name => ({name}))}}
+    };
+  }
+
   private static findByPattern(expression: string, pattern: RegExp): string[] {
     const match = pattern.exec(expression);
     if (!match) {
