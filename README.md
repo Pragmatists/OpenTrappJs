@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/Pragmatists/OpenTrappJs.svg?branch=master)](https://travis-ci.org/Pragmatists/OpenTrappJs)
+[![Coverage Status](https://coveralls.io/repos/github/Pragmatists/OpenTrappJs/badge.svg?branch=master)](https://coveralls.io/github/Pragmatists/OpenTrappJs?branch=master)
 
 # OpenTrapp
 

@@ -1,8 +1,10 @@
 language: node_js
 node_js:
-- 10
+  - 10
+after_success:
+  - npm run report-coverage
 before_deploy:
-- npm run build
+  - npm run build
 #deploy:
 #  on: master
 #  provider: heroku

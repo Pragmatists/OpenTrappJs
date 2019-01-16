@@ -12,10 +12,10 @@
     "prestart:prod": "rimraf dist && tsc",
     "start:prod": "node dist/main.js",
     "lint": "tslint -p tsconfig.json -c tslint.json",
-    "test": "jest",
+    "test": "jest --coverage",
     "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "report-coverage": "cat ./coverage/lcov.info | coveralls"
   },
   "dependencies": {
     "@nestjs/common": "^5.4.0",
@@ -43,6 +43,7 @@
     "@types/mongoose": "^5.3.6",
     "@types/node": "^10.7.1",
     "@types/supertest": "^2.0.5",
+    "coveralls": "^3.0.2",
     "jest": "^23.5.0",
     "mongodb-memory-server": "^2.9.1",
     "nodemon": "^1.18.3",
