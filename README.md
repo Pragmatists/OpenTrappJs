@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Pragmatists/OpenTrappJs.svg?branch=master)](https://travis-ci.org/Pragmatists/OpenTrappJs)
+
 # OpenTrapp
 
 ## Description
