@@ -30,6 +30,7 @@
     "moment": "^2.23.0",
     "mongoose": "^5.4.4",
     "passport": "^0.4.0",
+    "passport-google-oauth2": "^1.0.0",
     "passport-http-bearer": "^1.0.1",
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.6.2",
