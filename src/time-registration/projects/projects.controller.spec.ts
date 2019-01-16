@@ -51,7 +51,7 @@ describe('Projects Controller', () => {
       return request(app.getHttpServer())
         .get('/endpoints/v1/projects')
         .expect(HttpStatus.OK)
-        .expect(['holidays', 'projects', 'syniverse-dsp', 'nvm'], done);
+        .expect(['holidays', 'nvm', 'projects', 'syniverse-dsp'], done);
     });
   });
 
