@@ -2,15 +2,13 @@ import * as request from 'supertest';
 import {Test} from '@nestjs/testing';
 import {AuthController} from './auth.controller';
 import {INestApplication} from '@nestjs/common';
-import {AuthService} from './auth.service';
 
 describe('Auth Controller', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
-      controllers: [AuthController],
-      providers: [AuthService]
+      controllers: [AuthController]
     }).compile();
     app = module.createNestApplication();
     await app.init();

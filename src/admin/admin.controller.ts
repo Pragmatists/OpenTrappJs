@@ -28,7 +28,7 @@ export class AdminController {
   @HttpCode(201)
   @UsePipes(new ValidationPipe({transform: true}))
   registerWorkLoad(@Param('username') username: string,
-                          @Body() registerWorkloadDTO: RegisterWorkLogDTO): Observable<{id: string}> {
+                   @Body() registerWorkloadDTO: RegisterWorkLogDTO): Observable<{id: string}> {
     return this.workLogService.register(username, registerWorkloadDTO);
   }
 

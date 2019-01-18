@@ -16,6 +16,7 @@ async function bootstrap() {
     .setDescription('OpenTrapp API description')
     .setVersion('1.0')
     .addTag('admin')
+    .addTag('authentication')
     .addTag('calendar')
     .addTag('employee')
     .addTag('project')

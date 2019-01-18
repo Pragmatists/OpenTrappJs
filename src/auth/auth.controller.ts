@@ -1,13 +1,11 @@
-import {Controller, Get, Req, Res, UseGuards} from '@nestjs/common';
-import {AuthStatus, RequestWithUser} from './auth.model';
-import {AuthService} from './auth.service';
-import {AuthGuard} from '@nestjs/passport';
+import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import { AuthStatus, RequestWithUser } from './auth.model';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiUseTags } from '@nestjs/swagger';
 
 @Controller('/endpoints/v1/authentication')
+@ApiUseTags('authentication')
 export class AuthController {
-
-  constructor(private readonly authService: AuthService) {
-  }
 
   @Get('status')
   public status(@Req() request: RequestWithUser): AuthStatus {

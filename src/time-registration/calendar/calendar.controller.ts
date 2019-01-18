@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { ReportingResponseDTO, ReportingWorkLogDTO } from '../time-registration.model';
 import { WorkLogService } from '../../work-log/work-log.service';
 import { map } from 'rxjs/operators';
-import { FindByYearAndMonthParams, FindByYearMonthListParams} from './calendar.model';
+import { FindByYearAndMonthParams, FindByYearMonthListParams, YearDTO } from './calendar.model';
 import { ApiUseTags } from '@nestjs/swagger';
 import { YearMonth } from '../../work-log/time-unit';
 
@@ -20,12 +20,12 @@ export class CalendarController {
 
   @Get(':year/:month')
   getMonth(@Param('year', ParseIntPipe) year: number,
-                  @Param('month', ParseIntPipe) month: number) {
+           @Param('month', ParseIntPipe) month: number) {
     return this.calendarService.getMonth(year, month, CALENDAR_ROOT_URL);
   }
 
   @Get(':year')
-  getYear(@Param('year', ParseIntPipe) year: number) {
+  getYear(@Param('year', ParseIntPipe) year: number): YearDTO {
     return this.calendarService.getYear(year, CALENDAR_ROOT_URL);
   }
 

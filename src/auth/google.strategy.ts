@@ -9,6 +9,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
 
   constructor(configService: ConfigService) {
     const googleConfig = configService.googleOAuthConfig;
+    console.log('constructor', googleConfig);
     super({
       clientID    : googleConfig.clientID,
       clientSecret: googleConfig.clientSecret,
