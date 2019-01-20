@@ -3,7 +3,7 @@ import { AuthStatus, RequestWithUser } from './auth.model';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiUseTags } from '@nestjs/swagger';
 
-@Controller('/endpoints/v1/authentication')
+@Controller('/api/v1/authentication')
 @ApiUseTags('authentication')
 export class AuthController {
 
@@ -28,7 +28,7 @@ export class AuthController {
     // handles the Google OAuth2 callback
     const jwt: string = req.user.accessToken;
     if (jwt) {
-      res.redirect('/endpoints/v1/authentication/status');
+      res.redirect('/api/v1/authentication/status');
     } else {
       res.redirect('http://localhost:4200/login/failure');
     }

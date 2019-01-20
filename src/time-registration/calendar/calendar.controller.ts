@@ -8,7 +8,7 @@ import { FindByYearAndMonthParams, FindByYearMonthListParams, YearDTO } from './
 import { ApiUseTags } from '@nestjs/swagger';
 import { YearMonth } from '../../work-log/time-unit';
 
-const CALENDAR_ROOT_URL = '/endpoints/v1/calendar';
+const CALENDAR_ROOT_URL = '/api/v1/calendar';
 
 @Controller(CALENDAR_ROOT_URL)
 @ApiUseTags('calendar')

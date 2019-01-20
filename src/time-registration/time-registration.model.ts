@@ -8,7 +8,7 @@ export class ReportingWorkLogDTO {
               readonly projectNames: string[],
               readonly employee: string,
               readonly day: string) {
-    this.link = `/endpoints/v1/work-log/entries/${id}`;
+    this.link = `/api/v1/work-log/entries/${id}`;
   }
 
   static fromWorkLog(workLog: WorkLogDTO) {

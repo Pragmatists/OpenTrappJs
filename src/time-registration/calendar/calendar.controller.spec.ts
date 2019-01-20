@@ -49,26 +49,26 @@ describe('Calendar Controller', () => {
 
   it('should return particular year', done => {
     return request(app.getHttpServer())
-      .get('/endpoints/v1/calendar/2014')
+      .get('/api/v1/calendar/2014')
       .expect(HttpStatus.OK)
       .then(response => response.body)
       .then(responseBody => {
         expect(responseBody.id).toEqual('2014');
-        expect(responseBody.link).toEqual('/endpoints/v1/calendar/2014');
-        expect(responseBody.next).toEqual({link: '/endpoints/v1/calendar/2015'});
-        expect(responseBody.prev).toEqual({link: '/endpoints/v1/calendar/2013'});
+        expect(responseBody.link).toEqual('/api/v1/calendar/2014');
+        expect(responseBody.next).toEqual({link: '/api/v1/calendar/2015'});
+        expect(responseBody.prev).toEqual({link: '/api/v1/calendar/2013'});
         expect(responseBody.months).toHaveLength(12);
         expect(responseBody.months[0]).toEqual({
-          link: '/endpoints/v1/calendar/2014/01',
+          link: '/api/v1/calendar/2014/01',
           id: '2014/01',
-          next: {link: '/endpoints/v1/calendar/2014/02'},
-          prev: {link: '/endpoints/v1/calendar/2013/12'}
+          next: {link: '/api/v1/calendar/2014/02'},
+          prev: {link: '/api/v1/calendar/2013/12'}
         });
         expect(responseBody.months[11]).toEqual({
-          link: '/endpoints/v1/calendar/2014/12',
+          link: '/api/v1/calendar/2014/12',
           id: '2014/12',
-          next: {link: '/endpoints/v1/calendar/2015/01'},
-          prev: {link: '/endpoints/v1/calendar/2014/11'}
+          next: {link: '/api/v1/calendar/2015/01'},
+          prev: {link: '/api/v1/calendar/2014/11'}
         });
         done();
       });
@@ -76,22 +76,22 @@ describe('Calendar Controller', () => {
 
   it('should return particular month', done => {
     return request(app.getHttpServer())
-      .get('/endpoints/v1/calendar/2014/01')
+      .get('/api/v1/calendar/2014/01')
       .expect(HttpStatus.OK)
       .then(response => response.body)
       .then(responseBody => {
         expect(responseBody.id).toEqual('2014/01');
-        expect(responseBody.link).toEqual('/endpoints/v1/calendar/2014/01');
-        expect(responseBody.next).toEqual({link: '/endpoints/v1/calendar/2014/02'});
-        expect(responseBody.prev).toEqual({link: '/endpoints/v1/calendar/2013/12'});
+        expect(responseBody.link).toEqual('/api/v1/calendar/2014/01');
+        expect(responseBody.next).toEqual({link: '/api/v1/calendar/2014/02'});
+        expect(responseBody.prev).toEqual({link: '/api/v1/calendar/2013/12'});
         expect(responseBody.days).toHaveLength(31);
         expect(responseBody.days[0]).toEqual({
-          link: '/endpoints/v1/calendar/2014/01/01',
+          link: '/api/v1/calendar/2014/01/01',
           id: '2014/01/01',
           holiday: false
         });
         expect(responseBody.days[4]).toEqual({
-          link: '/endpoints/v1/calendar/2014/01/05',
+          link: '/api/v1/calendar/2014/01/05',
           id: '2014/01/05',
           holiday: true
         });
@@ -102,7 +102,7 @@ describe('Calendar Controller', () => {
   describe('GET /calendar/:year/:month:/work-log/entries', () => {
     it('should return entries for given year and month', done => {
       return request(app.getHttpServer())
-        .get('/endpoints/v1/calendar/2019/01/work-log/entries')
+        .get('/api/v1/calendar/2019/01/work-log/entries')
         .expect(HttpStatus.OK)
         .then(response => response.body.items)
         .then(entries => {
@@ -115,13 +115,13 @@ describe('Calendar Controller', () => {
 
     it('should return BAD REQUEST for invalid year', done => {
       return request(app.getHttpServer())
-        .get('/endpoints/v1/calendar/19a4/01/work-log/entries')
+        .get('/api/v1/calendar/19a4/01/work-log/entries')
         .expect(HttpStatus.BAD_REQUEST, done);
     });
 
     it('should return BAD REQUEST for invalid month', done => {
       return request(app.getHttpServer())
-        .get('/endpoints/v1/calendar/2018/22/work-log/entries')
+        .get('/api/v1/calendar/2018/22/work-log/entries')
         .expect(HttpStatus.BAD_REQUEST, done);
     });
   });
@@ -129,7 +129,7 @@ describe('Calendar Controller', () => {
   describe('GET /calendar/:yearMonthList/work-log/entries', () => {
     it('should return entries for specified months', done => {
       return request(app.getHttpServer())
-        .get('/endpoints/v1/calendar/201812,201901,201902/work-log/entries')
+        .get('/api/v1/calendar/201812,201901,201902/work-log/entries')
         .expect(HttpStatus.OK)
         .then(response => response.body.items)
         .then(entries => {
@@ -143,7 +143,7 @@ describe('Calendar Controller', () => {
 
     it('should return BAD REQUEST for invalid months list', done => {
       return request(app.getHttpServer())
-        .get('/endpoints/v1/calendar/20181212,2019-01/work-log/entries')
+        .get('/api/v1/calendar/20181212,2019-01/work-log/entries')
         .expect(HttpStatus.BAD_REQUEST, done);
     });
   });

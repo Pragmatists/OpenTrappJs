@@ -46,14 +46,14 @@ describe('AdminController', () => {
   });
 
   it('GET /tags should return list of available tags', done => {
-    return authorizedGetRequest('/admin/tags')
+    return authorizedGetRequest('/api/v1/admin/tags')
       .expect(HttpStatus.OK)
       .expect(['holidays', 'projects', 'syniverse-dsp'], done);
   });
 
   describe('GET /work-log/entries', () => {
     it('should return complete list of entries if neither user nor date is specified', done => {
-      return authorizedGetRequest('/admin/work-log/entries')
+      return authorizedGetRequest('/api/v1/admin/work-log/entries')
         .expect(HttpStatus.OK)
         .then(response => {
           const workLogs: WorkLogDTO[] = response.body;
@@ -73,7 +73,7 @@ describe('AdminController', () => {
     });
 
     it('should return entries for user', done => {
-      return authorizedGetRequest('/admin/work-log/entries?user=john.doe')
+      return authorizedGetRequest('/api/v1/admin/work-log/entries?user=john.doe')
         .expect(HttpStatus.OK)
         .then(response => {
           const workLogs = response.body;
@@ -84,7 +84,7 @@ describe('AdminController', () => {
     });
 
     it('should return entries for date', done => {
-      return authorizedGetRequest('/admin/work-log/entries?date=2019-01-05')
+      return authorizedGetRequest('/api/v1/admin/work-log/entries?date=2019-01-05')
         .expect(HttpStatus.OK)
         .then(response => {
           const workLogs = response.body;
@@ -101,7 +101,7 @@ describe('AdminController', () => {
       const username = 'tom.hanks';
       const requestBody = {day: '2019-01-07', workload: '2h', projectNames: ['projects', 'nvm']};
 
-      return authorizedPostRequest(`/admin/work-log/${username}/entries`, requestBody)
+      return authorizedPostRequest(`/api/v1/admin/work-log/${username}/entries`, requestBody)
         .expect(HttpStatus.CREATED)
         .then(async () => {
           const matchingWorkLogs = await workLogModel.find({'employeeID._id': username}).exec();
@@ -117,7 +117,7 @@ describe('AdminController', () => {
       const username = 'tom.hanks';
       const requestBody = {day: '11-01-07a', workload: '2h', projectNames: ['projects', 'nvm']};
 
-      return authorizedPostRequest(`/admin/work-log/${username}/entries`, requestBody)
+      return authorizedPostRequest(`/api/v1/admin/work-log/${username}/entries`, requestBody)
         .expect(HttpStatus.BAD_REQUEST, done);
     });
 
@@ -125,7 +125,7 @@ describe('AdminController', () => {
       const username = 'tom.hanks';
       const requestBody = {day: '2019-01-07', workload: '2h', projectNames: []};
 
-      return authorizedPostRequest(`/admin/work-log/${username}/entries`, requestBody)
+      return authorizedPostRequest(`/api/v1/admin/work-log/${username}/entries`, requestBody)
         .expect(HttpStatus.BAD_REQUEST, done);
     });
 
@@ -133,7 +133,7 @@ describe('AdminController', () => {
       const username = 'tom.hanks';
       const requestBody = {day: '2019-01-07', workload: '-10m', projectNames: ['nvm']};
 
-      return authorizedPostRequest(`/admin/work-log/${username}/entries`, requestBody)
+      return authorizedPostRequest(`/api/v1/admin/work-log/${username}/entries`, requestBody)
         .expect(HttpStatus.BAD_REQUEST, done);
     });
   });

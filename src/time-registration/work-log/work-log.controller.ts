@@ -11,7 +11,7 @@ interface AffectedEntriesDTO {
   entriesAffected: number;
 }
 
-@Controller('/endpoints/v1/work-log')
+@Controller('/api/v1/work-log')
 @ApiUseTags('work-log')
 export class WorkLogController {
 

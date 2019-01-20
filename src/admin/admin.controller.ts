@@ -7,7 +7,7 @@ import { TagsService } from '../work-log/tags.service';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiImplicitQuery, ApiUseTags } from '@nestjs/swagger';
 
-@Controller('admin')
+@Controller('api/v1/admin')
 @UseGuards(AuthGuard())
 @ApiUseTags('admin')
 @ApiBearerAuth()

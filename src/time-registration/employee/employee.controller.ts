@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 import { RegisterWorkLogDTO } from '../../work-log/work-log.model';
 import { ApiUseTags } from '@nestjs/swagger';
 
-@Controller('/endpoints/v1/employee')
+@Controller('/api/v1/employee')
 @ApiUseTags('employee')
 export class EmployeeController {
 

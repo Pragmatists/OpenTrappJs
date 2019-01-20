@@ -49,7 +49,7 @@ describe('Projects Controller', () => {
   describe('GET /projects', () => {
     it('should return list of available projects', done => {
       return request(app.getHttpServer())
-        .get('/endpoints/v1/projects')
+        .get('/api/v1/projects')
         .expect(HttpStatus.OK)
         .expect(['holidays', 'nvm', 'projects', 'syniverse-dsp'], done);
     });
@@ -60,7 +60,7 @@ describe('Projects Controller', () => {
       const projectName = 'syniverse-dsp';
 
       return request(app.getHttpServer())
-        .get(`/endpoints/v1/projects/${projectName}/work-log/entries`)
+        .get(`/api/v1/projects/${projectName}/work-log/entries`)
         .expect(HttpStatus.OK)
         .then(response => response.body.items)
         .then(entries => {
@@ -72,7 +72,7 @@ describe('Projects Controller', () => {
 
     it('should return empty list for unknown project name', done => {
       return request(app.getHttpServer())
-        .get(`/endpoints/v1/projects/aaa/work-log/entries`)
+        .get(`/api/v1/projects/aaa/work-log/entries`)
         .expect(HttpStatus.OK, {items: []}, done);
     });
   });

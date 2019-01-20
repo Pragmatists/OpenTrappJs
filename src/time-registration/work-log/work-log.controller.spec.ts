@@ -50,7 +50,7 @@ describe('WorkLog Controller', () => {
       const requestBody = {workload: '60m', projectNames: ['nvm']};
 
       request(app.getHttpServer())
-        .post(`/endpoints/v1/work-log/entries/${idToUpdate}`)
+        .post(`/api/v1/work-log/entries/${idToUpdate}`)
         .expect(HttpStatus.OK, {status: 'success'})
         .send(requestBody)
         .then(async () => {
@@ -68,7 +68,7 @@ describe('WorkLog Controller', () => {
       const requestBody = {workload: '60m', projectNames: ['nvm'], note: 'Updated note'};
 
       request(app.getHttpServer())
-        .post(`/endpoints/v1/work-log/entries/${idToUpdate}`)
+        .post(`/api/v1/work-log/entries/${idToUpdate}`)
         .expect(HttpStatus.OK, {status: 'success'})
         .send(requestBody)
         .then(async () => {
@@ -86,7 +86,7 @@ describe('WorkLog Controller', () => {
       const requestBody = {workload: '60m', projectNames: ['nvm']};
 
       request(app.getHttpServer())
-        .post(`/endpoints/v1/work-log/entries/${idToUpdate}`)
+        .post(`/api/v1/work-log/entries/${idToUpdate}`)
         .send(requestBody)
         .expect(HttpStatus.NOT_FOUND, done);
     });
@@ -96,7 +96,7 @@ describe('WorkLog Controller', () => {
       const requestBody = {day: '2019-01-07', workload: '120m', projectNames: []};
 
       return request(app.getHttpServer())
-        .post(`/endpoints/v1/work-log/entries/${idToUpdate}`)
+        .post(`/api/v1/work-log/entries/${idToUpdate}`)
         .send(requestBody)
         .expect(HttpStatus.BAD_REQUEST, done);
     });
@@ -106,7 +106,7 @@ describe('WorkLog Controller', () => {
       const requestBody = {day: '2019-01-07', workload: '-10', projectNames: ['nvm']};
 
       return request(app.getHttpServer())
-        .post(`/endpoints/v1/work-log/entries/${idToUpdate}`)
+        .post(`/api/v1/work-log/entries/${idToUpdate}`)
         .send(requestBody)
         .expect(HttpStatus.BAD_REQUEST, done);
     });
@@ -117,7 +117,7 @@ describe('WorkLog Controller', () => {
       const idToRemove = 'id-to-remove';
 
       request(app.getHttpServer())
-        .delete(`/endpoints/v1/work-log/entries/${idToRemove}`)
+        .delete(`/api/v1/work-log/entries/${idToRemove}`)
         .expect(HttpStatus.NO_CONTENT)
         .then(async () => {
           const removedWorkLog = await workLogModel.findById({_id: idToRemove}).exec();
@@ -130,7 +130,7 @@ describe('WorkLog Controller', () => {
       const idToRemove = 'not-existing-id';
 
       request(app.getHttpServer())
-        .delete(`/endpoints/v1/work-log/entries/${idToRemove}`)
+        .delete(`/api/v1/work-log/entries/${idToRemove}`)
         .expect(HttpStatus.NOT_FOUND, done);
     });
   });
@@ -138,49 +138,49 @@ describe('WorkLog Controller', () => {
   describe('GET /work-log/:query', () => {
     it('should return total number of entries for empty query', done => {
       request(app.getHttpServer())
-        .get('/endpoints/v1/work-log/')
+        .get('/api/v1/work-log/')
         .expect(HttpStatus.OK, {entriesAffected: workLogEntries.length}, done);
     });
 
     it('should return number of entries for given project', done => {
       request(app.getHttpServer())
-        .get(`/endpoints/v1/work-log/!project=talkie`)
+        .get(`/api/v1/work-log/!project=talkie`)
         .expect(HttpStatus.OK, {entriesAffected: 1}, done);
     });
 
     it('should return number of entries for multiple projects', done => {
       request(app.getHttpServer())
-        .get('/endpoints/v1/work-log/!project=talkie+!project=syniverse-dsp')
+        .get('/api/v1/work-log/!project=talkie+!project=syniverse-dsp')
         .expect(HttpStatus.OK, {entriesAffected: 2}, done);
     });
 
     it('should return number of entries for given employee', done => {
       request(app.getHttpServer())
-        .get(`/endpoints/v1/work-log/!employee=james.bond`)
+        .get(`/api/v1/work-log/!employee=james.bond`)
         .expect(HttpStatus.OK, {entriesAffected: 2}, done);
     });
 
     it('should return number of entries for multiple employees', done => {
       request(app.getHttpServer())
-        .get(`/endpoints/v1/work-log/!employee=james.bond+!employee=john.doe`)
+        .get(`/api/v1/work-log/!employee=james.bond+!employee=john.doe`)
         .expect(HttpStatus.OK, {entriesAffected: 3}, done);
     });
 
     it('should return number of entries for given month', done => {
       request(app.getHttpServer())
-        .get(`/endpoints/v1/work-log/!date=2019:01`)
+        .get(`/api/v1/work-log/!date=2019:01`)
         .expect(HttpStatus.OK, {entriesAffected: 1}, done);
     });
 
     it('should return number of entries for given day', done => {
       request(app.getHttpServer())
-        .get(`/endpoints/v1/work-log/!date=2018:12:05`)
+        .get(`/api/v1/work-log/!date=2018:12:05`)
         .expect(HttpStatus.OK, {entriesAffected: 1}, done);
     });
 
     it('should return number of entries for given employee and projects and month', done => {
       request(app.getHttpServer())
-        .get(`/endpoints/v1/work-log/!employee=james.bond+!project=talkie+!project=syniverse-dsp+!date=2018:12`)
+        .get(`/api/v1/work-log/!employee=james.bond+!project=talkie+!project=syniverse-dsp+!date=2018:12`)
         .expect(HttpStatus.OK, {entriesAffected: 1}, done);
     });
   });
@@ -193,7 +193,7 @@ describe('WorkLog Controller', () => {
       };
 
       request(app.getHttpServer())
-        .post('/endpoints/v1/work-log/bulk-update')
+        .post('/api/v1/work-log/bulk-update')
         .send(requestBody)
         .expect(HttpStatus.OK, {entriesAffected: 3})
         .then(async () => {
@@ -211,7 +211,7 @@ describe('WorkLog Controller', () => {
       };
 
       request(app.getHttpServer())
-        .post('/endpoints/v1/work-log/bulk-update')
+        .post('/api/v1/work-log/bulk-update')
         .send(requestBody)
         .expect(HttpStatus.BAD_REQUEST, done);
     });

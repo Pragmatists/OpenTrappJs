@@ -49,7 +49,7 @@ describe('Employee Controller', () => {
     it('should return entries for given employee', done => {
       const employee = 'james.bond';
       return request(app.getHttpServer())
-        .get(`/endpoints/v1/employee/${employee}/work-log/entries`)
+        .get(`/api/v1/employee/${employee}/work-log/entries`)
         .expect(HttpStatus.OK)
         .then(response => response.body.items)
         .then(entries => {
@@ -66,7 +66,7 @@ describe('Employee Controller', () => {
       const requestBody = {day: '2019-01-12', workload: '2h', projectNames: ['projects', 'nvm']};
 
       return request(app.getHttpServer())
-        .post(`/endpoints/v1/employee/${employee}/work-log/entries`)
+        .post(`/api/v1/employee/${employee}/work-log/entries`)
         .send(requestBody)
         .expect(HttpStatus.CREATED)
         .then(async () => {
@@ -83,7 +83,7 @@ describe('Employee Controller', () => {
       const requestBody = {day: '11-01-07a', workload: '2h', projectNames: ['projects', 'nvm']};
 
       return request(app.getHttpServer())
-        .post(`/endpoints/v1/employee/${employee}/work-log/entries`)
+        .post(`/api/v1/employee/${employee}/work-log/entries`)
         .send(requestBody)
         .expect(HttpStatus.BAD_REQUEST, done);
     });
@@ -93,7 +93,7 @@ describe('Employee Controller', () => {
       const requestBody = {day: '2019-01-07', workload: '120m', projectNames: []};
 
       return request(app.getHttpServer())
-        .post(`/endpoints/v1/employee/${employee}/work-log/entries`)
+        .post(`/api/v1/employee/${employee}/work-log/entries`)
         .send(requestBody)
         .expect(HttpStatus.BAD_REQUEST, done);
     });
@@ -103,7 +103,7 @@ describe('Employee Controller', () => {
       const requestBody = {day: '2019-01-07', workload: '-10m', projectNames: ['nvm']};
 
       return request(app.getHttpServer())
-        .post(`/endpoints/v1/employee/${employee}/work-log/entries`)
+        .post(`/api/v1/employee/${employee}/work-log/entries`)
         .send(requestBody)
         .expect(HttpStatus.BAD_REQUEST, done);
     });

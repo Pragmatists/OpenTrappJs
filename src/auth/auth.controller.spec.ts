@@ -21,13 +21,13 @@ describe('Auth Controller', () => {
   describe('GET /status', () => {
     it('should return ANONYMOUS data for unauthorized user', done => {
       request(app.getHttpServer())
-        .get('/endpoints/v1/authentication/status')
+        .get('/api/v1/authentication/status')
         .expect(200, {
             username: 'Anonymous',
             displayName: 'Anonymous',
             authenticated: false,
-            loginUrl: '/endpoints/v1/authentication/login',
-            logoutUrl: '/endpoints/v1/authentication/logout'
+            loginUrl: '/api/v1/authentication/login',
+            logoutUrl: '/api/v1/authentication/logout'
           },
           done
         );
@@ -37,13 +37,13 @@ describe('Auth Controller', () => {
       loggedInAs('homer.simpson@springfield.com', 'Homer Simpson');
 
       request(app.getHttpServer())
-        .get('/endpoints/v1/authentication/status')
+        .get('/api/v1/authentication/status')
         .expect(200, {
             username: 'homer.simpson',
             displayName: 'Homer Simpson',
             authenticated: true,
-            loginUrl: '/endpoints/v1/authentication/login',
-            logoutUrl: '/endpoints/v1/authentication/logout'
+            loginUrl: '/api/v1/authentication/login',
+            logoutUrl: '/api/v1/authentication/logout'
           },
           done
         );

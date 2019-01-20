@@ -1,6 +1,6 @@
 export class AuthStatus {
-  readonly loginUrl = '/endpoints/v1/authentication/login';
-  readonly logoutUrl = '/endpoints/v1/authentication/logout';
+  readonly loginUrl = '/api/v1/authentication/login';
+  readonly logoutUrl = '/api/v1/authentication/logout';
 
   constructor(readonly username: string,
               readonly displayName: string,
