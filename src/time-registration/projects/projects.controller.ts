@@ -1,13 +1,15 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { TagsService } from '../../work-log/tags.service';
 import { WorkLogService } from '../../work-log/work-log.service';
 import { map } from 'rxjs/operators';
 import { ReportingResponseDTO, ReportingWorkLogDTO } from '../time-registration.model';
 import { ApiUseTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('api/v1/projects')
 @ApiUseTags('project')
+@UseGuards(AuthGuard('jwt'))
 export class ProjectsController {
 
   constructor(private readonly tagsService: TagsService,

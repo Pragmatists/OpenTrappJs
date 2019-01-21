@@ -5,9 +5,10 @@ import { CalendarController } from './calendar/calendar.controller';
 import { CalendarService } from './calendar/calendar.service';
 import { EmployeeController } from './employee/employee.controller';
 import { WorkLogController } from './work-log/work-log.controller';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [WorkLogModule],
+  imports: [AuthModule, WorkLogModule],
   controllers: [ProjectsController, CalendarController, EmployeeController, WorkLogController],
   providers: [CalendarService]
 })

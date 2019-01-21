@@ -1,12 +1,17 @@
-import * as request from 'supertest';
 import { ProjectsController } from './projects.controller';
-import { someWorkLog, testModuleWithInMemoryDb } from '../../utils/test-utils';
+import {
+  getRequestWithInvalidToken,
+  getRequestWithValidToken,
+  someWorkLog,
+  testModuleWithInMemoryDb
+} from '../../utils/test-utils';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { WorkLog } from '../../work-log/work-log.model';
 import MongoMemoryServer from 'mongodb-memory-server';
 import { WorkLogModule } from '../../work-log/work-log.module';
 import { includes } from 'lodash';
+import { MockAuthModule } from '../../auth/mock-auth.module';
 
 const workLogEntries = [
   someWorkLog('2019/01/05', 'john.doe', 480, ['holidays']),
@@ -22,7 +27,7 @@ describe('Projects Controller', () => {
 
   beforeAll(async () => {
     const moduleWithDb = await testModuleWithInMemoryDb({
-      imports: [WorkLogModule],
+      imports: [MockAuthModule, WorkLogModule],
       controllers: [ProjectsController]
     });
     const module = moduleWithDb.module;
@@ -48,10 +53,14 @@ describe('Projects Controller', () => {
 
   describe('GET /projects', () => {
     it('should return list of available projects', done => {
-      return request(app.getHttpServer())
-        .get('/api/v1/projects')
+      return getRequestWithValidToken(app, '/api/v1/projects')
         .expect(HttpStatus.OK)
         .expect(['holidays', 'nvm', 'projects', 'syniverse-dsp'], done);
+    });
+
+    it('should return UNAUTHORIZED for invalid token', done => {
+      return getRequestWithInvalidToken(app, '/api/v1/projects')
+        .expect(HttpStatus.UNAUTHORIZED, done);
     });
   });
 
@@ -59,8 +68,7 @@ describe('Projects Controller', () => {
     it('should return entries for given project name', done => {
       const projectName = 'syniverse-dsp';
 
-      return request(app.getHttpServer())
-        .get(`/api/v1/projects/${projectName}/work-log/entries`)
+      return getRequestWithValidToken(app, `/api/v1/projects/${projectName}/work-log/entries`)
         .expect(HttpStatus.OK)
         .then(response => response.body.items)
         .then(entries => {
@@ -71,9 +79,15 @@ describe('Projects Controller', () => {
     });
 
     it('should return empty list for unknown project name', done => {
-      return request(app.getHttpServer())
-        .get(`/api/v1/projects/aaa/work-log/entries`)
+      return getRequestWithValidToken(app, `/api/v1/projects/aaa/work-log/entries`)
         .expect(HttpStatus.OK, {items: []}, done);
+    });
+
+    it('should return UNAUTHORIZED for invalid token', done => {
+      const projectName = 'syniverse-dsp';
+
+      return getRequestWithInvalidToken(app, `/api/v1/projects/${projectName}/work-log/entries`)
+        .expect(HttpStatus.UNAUTHORIZED, done);
     });
   });
 
