@@ -219,7 +219,7 @@ describe('WorkLog Controller', () => {
         expression: '+#completed -#in-progress'
       };
 
-      return postRequestWithValidToken(app, '/api/v1/work-log/bulk-update', requestBody)
+      return postRequestWithValidToken(app, '/api/v1/work-log/bulk-update', requestBody, 'james.bond@pragmatists.pl')
         .expect(HttpStatus.OK, {entriesAffected: 3})
         .then(async () => {
           const updatedEntries = await workLogModel.find({'projectNames.name': 'projects'}).exec();
@@ -250,6 +250,16 @@ describe('WorkLog Controller', () => {
 
       return postRequestWithInvalidToken(app, '/api/v1/work-log/bulk-update', requestBody)
         .expect(HttpStatus.UNAUTHORIZED, done);
+    });
+
+    it(`should return FORBIDDEN for modification of other employee's entries`, done => {
+      const requestBody = {
+        query: '#projects',
+        expression: '+#completed -#in-progress'
+      };
+
+      return postRequestWithValidToken(app, '/api/v1/work-log/bulk-update', requestBody, 'john.doe@pragmatists.pl')
+        .expect(HttpStatus.FORBIDDEN, done);
     });
   });
 });

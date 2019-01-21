@@ -6,7 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  Post,
+  Post, Req,
   UseGuards,
   UsePipes,
   ValidationPipe
@@ -20,6 +20,7 @@ import { WorkLogBulkService } from '../../work-log/work-log-bulk.service';
 import { BulkUpdateDTO } from '../../work-log/work-log-bulk.model';
 import { AuthGuard } from '@nestjs/passport';
 import { CanUpdateDeleteEntryGuard } from './can-update-delete-entry.guard';
+import { RequestWithUser } from '../../auth/auth.model';
 
 interface AffectedEntriesDTO {
   entriesAffected: number;
@@ -66,8 +67,10 @@ export class WorkLogController {
   @Post('bulk-update')
   @HttpCode(HttpStatus.OK)
   @UsePipes(new ValidationPipe({transform: true}))
-  bulkUpdate(@Body() updateDTO: BulkUpdateDTO): Observable<AffectedEntriesDTO> {
-    return this.workLogBulkService.bulkUpdate(updateDTO).pipe(
+  bulkUpdate(@Req() request: RequestWithUser,
+             @Body() updateDTO: BulkUpdateDTO): Observable<AffectedEntriesDTO> {
+    const name = request.user.name;
+    return this.workLogBulkService.bulkUpdate(updateDTO, name).pipe(
       map(entriesAffected => ({entriesAffected}))
     );
   }
