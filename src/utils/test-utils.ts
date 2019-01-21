@@ -1,8 +1,11 @@
 import { v4 as uuid } from 'uuid';
-import { ModuleMetadata } from '@nestjs/common/interfaces';
+import * as request from 'supertest';
+import { INestApplication, ModuleMetadata } from '@nestjs/common/interfaces';
 import { Test } from '@nestjs/testing';
 import { MongooseModule } from '@nestjs/mongoose';
 import MongoMemoryServer from 'mongodb-memory-server';
+import { JWTPayload } from '../auth/auth.model';
+import { sign } from 'jsonwebtoken';
 
 export function someWorkLog(date: string,
                             employee: string,
@@ -45,4 +48,26 @@ export async function testModuleWithInMemoryDb(moduleMetadata: ModuleMetadata) {
     module,
     mongoServer
   };
+}
+
+export function validJWTToken(payload: JWTPayload, expiresIn = 3600) {
+  return sign(payload, 'test-secret', {expiresIn});
+}
+
+export function loggedInAs(email: string, displayName: string) {
+  return validJWTToken({
+    id: email,
+    name: displayName,
+    accountType: 'user',
+    roles: ['USER'],
+    provider: 'google',
+    thirdPartyId: '123'
+  });
+}
+
+export function getRequestWithValidToken(app: INestApplication, url: string) {
+  const token = loggedInAs('john.doe@pragmatists.pl', 'John Doe');
+  return request(app.getHttpServer())
+    .get(url)
+    .set('Authorization', `Bearer ${token}`);
 }

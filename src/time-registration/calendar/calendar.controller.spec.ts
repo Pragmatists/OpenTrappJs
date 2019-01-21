@@ -2,11 +2,12 @@ import * as request from 'supertest';
 import { CalendarController } from './calendar.controller';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { CalendarService } from './calendar.service';
-import { someWorkLog, testModuleWithInMemoryDb } from '../../utils/test-utils';
+import { getRequestWithValidToken, someWorkLog, testModuleWithInMemoryDb } from '../../utils/test-utils';
 import { Model } from 'mongoose';
 import { WorkLog } from '../../work-log/work-log.model';
 import MongoMemoryServer from 'mongodb-memory-server';
 import { WorkLogModule } from '../../work-log/work-log.module';
+import { MockAuthModule } from '../../auth/mock-auth.module';
 
 const workLogEntries = [
   someWorkLog('2018/11/05', 'john.doe', 480, ['holidays']),
@@ -22,7 +23,7 @@ describe('Calendar Controller', () => {
 
   beforeAll(async () => {
     const moduleWithDb = await testModuleWithInMemoryDb({
-      imports: [WorkLogModule],
+      imports: [MockAuthModule, WorkLogModule],
       controllers: [CalendarController],
       providers: [CalendarService]
     });
@@ -47,62 +48,73 @@ describe('Calendar Controller', () => {
     await workLogModel.deleteMany({});
   });
 
-  it('should return particular year', done => {
-    return request(app.getHttpServer())
-      .get('/api/v1/calendar/2014')
-      .expect(HttpStatus.OK)
-      .then(response => response.body)
-      .then(responseBody => {
-        expect(responseBody.id).toEqual('2014');
-        expect(responseBody.link).toEqual('/api/v1/calendar/2014');
-        expect(responseBody.next).toEqual({link: '/api/v1/calendar/2015'});
-        expect(responseBody.prev).toEqual({link: '/api/v1/calendar/2013'});
-        expect(responseBody.months).toHaveLength(12);
-        expect(responseBody.months[0]).toEqual({
-          link: '/api/v1/calendar/2014/01',
-          id: '2014/01',
-          next: {link: '/api/v1/calendar/2014/02'},
-          prev: {link: '/api/v1/calendar/2013/12'}
+  describe('GET /calendar/:year', () => {
+    it('should return particular year', done => {
+      return getRequestWithValidToken(app, '/api/v1/calendar/2014')
+        .expect(HttpStatus.OK)
+        .then(response => response.body)
+        .then(responseBody => {
+          expect(responseBody.id).toEqual('2014');
+          expect(responseBody.link).toEqual('/api/v1/calendar/2014');
+          expect(responseBody.next).toEqual({link: '/api/v1/calendar/2015'});
+          expect(responseBody.prev).toEqual({link: '/api/v1/calendar/2013'});
+          expect(responseBody.months).toHaveLength(12);
+          expect(responseBody.months[0]).toEqual({
+            link: '/api/v1/calendar/2014/01',
+            id: '2014/01',
+            next: {link: '/api/v1/calendar/2014/02'},
+            prev: {link: '/api/v1/calendar/2013/12'}
+          });
+          expect(responseBody.months[11]).toEqual({
+            link: '/api/v1/calendar/2014/12',
+            id: '2014/12',
+            next: {link: '/api/v1/calendar/2015/01'},
+            prev: {link: '/api/v1/calendar/2014/11'}
+          });
+          done();
         });
-        expect(responseBody.months[11]).toEqual({
-          link: '/api/v1/calendar/2014/12',
-          id: '2014/12',
-          next: {link: '/api/v1/calendar/2015/01'},
-          prev: {link: '/api/v1/calendar/2014/11'}
-        });
-        done();
-      });
+    });
+
+    it('should return UNAUTHORIZED for invalid token', done => {
+      return getRequestWithToken('/api/v1/calendar/2014', 'invalid-token')
+        .expect(HttpStatus.UNAUTHORIZED, done);
+    });
   });
 
-  it('should return particular month', done => {
-    return request(app.getHttpServer())
-      .get('/api/v1/calendar/2014/01')
-      .expect(HttpStatus.OK)
-      .then(response => response.body)
-      .then(responseBody => {
-        expect(responseBody.id).toEqual('2014/01');
-        expect(responseBody.link).toEqual('/api/v1/calendar/2014/01');
-        expect(responseBody.next).toEqual({link: '/api/v1/calendar/2014/02'});
-        expect(responseBody.prev).toEqual({link: '/api/v1/calendar/2013/12'});
-        expect(responseBody.days).toHaveLength(31);
-        expect(responseBody.days[0]).toEqual({
-          link: '/api/v1/calendar/2014/01/01',
-          id: '2014/01/01',
-          holiday: false
+  describe('GET /calendar/:year/:month', () => {
+    it('should return particular month', done => {
+      return getRequestWithValidToken(app, '/api/v1/calendar/2014/01')
+        .expect(HttpStatus.OK)
+        .then(response => response.body)
+        .then(responseBody => {
+          expect(responseBody.id).toEqual('2014/01');
+          expect(responseBody.link).toEqual('/api/v1/calendar/2014/01');
+          expect(responseBody.next).toEqual({link: '/api/v1/calendar/2014/02'});
+          expect(responseBody.prev).toEqual({link: '/api/v1/calendar/2013/12'});
+          expect(responseBody.days).toHaveLength(31);
+          expect(responseBody.days[0]).toEqual({
+            link: '/api/v1/calendar/2014/01/01',
+            id: '2014/01/01',
+            holiday: false
+          });
+          expect(responseBody.days[4]).toEqual({
+            link: '/api/v1/calendar/2014/01/05',
+            id: '2014/01/05',
+            holiday: true
+          });
+          done();
         });
-        expect(responseBody.days[4]).toEqual({
-          link: '/api/v1/calendar/2014/01/05',
-          id: '2014/01/05',
-          holiday: true
-        });
-        done();
-      });
+    });
+
+    it('should return UNAUTHORIZED for invalid token', done => {
+      return getRequestWithToken('/api/v1/calendar/2014/01', 'invalid-token')
+        .expect(HttpStatus.UNAUTHORIZED, done);
+    });
   });
 
   describe('GET /calendar/:year/:month:/work-log/entries', () => {
     it('should return entries for given year and month', done => {
-      return request(app.getHttpServer())
-        .get('/api/v1/calendar/2019/01/work-log/entries')
+      return getRequestWithValidToken(app, '/api/v1/calendar/2019/01/work-log/entries')
         .expect(HttpStatus.OK)
         .then(response => response.body.items)
         .then(entries => {
@@ -114,22 +126,24 @@ describe('Calendar Controller', () => {
     });
 
     it('should return BAD REQUEST for invalid year', done => {
-      return request(app.getHttpServer())
-        .get('/api/v1/calendar/19a4/01/work-log/entries')
+      return getRequestWithValidToken(app, '/api/v1/calendar/19a4/01/work-log/entries')
         .expect(HttpStatus.BAD_REQUEST, done);
     });
 
     it('should return BAD REQUEST for invalid month', done => {
-      return request(app.getHttpServer())
-        .get('/api/v1/calendar/2018/22/work-log/entries')
+      return getRequestWithValidToken(app, '/api/v1/calendar/2018/22/work-log/entries')
         .expect(HttpStatus.BAD_REQUEST, done);
+    });
+
+    it('should return UNAUTHORIZED for invalid token', done => {
+      getRequestWithToken('/api/v1/calendar/2018/22/work-log/entries', 'invalid-token')
+        .expect(HttpStatus.UNAUTHORIZED, done);
     });
   });
 
   describe('GET /calendar/:yearMonthList/work-log/entries', () => {
     it('should return entries for specified months', done => {
-      return request(app.getHttpServer())
-        .get('/api/v1/calendar/201812,201901,201902/work-log/entries')
+      return getRequestWithValidToken(app, '/api/v1/calendar/201812,201901,201902/work-log/entries')
         .expect(HttpStatus.OK)
         .then(response => response.body.items)
         .then(entries => {
@@ -142,9 +156,19 @@ describe('Calendar Controller', () => {
     });
 
     it('should return BAD REQUEST for invalid months list', done => {
-      return request(app.getHttpServer())
-        .get('/api/v1/calendar/20181212,2019-01/work-log/entries')
+      return getRequestWithValidToken(app, '/api/v1/calendar/20181212,2019-01/work-log/entries')
         .expect(HttpStatus.BAD_REQUEST, done);
     });
+
+    it('should return UNAUTHORIZED for invalid token', done => {
+      return getRequestWithToken('/api/v1/calendar/201812,201901,201902/work-log/entries', 'invalid-token')
+        .expect(HttpStatus.UNAUTHORIZED, done);
+    });
   });
+
+  function getRequestWithToken(url: string, token: string) {
+    return request(app.getHttpServer())
+      .get(url)
+      .set('Authorization', `Bearer ${token}`);
+  }
 });

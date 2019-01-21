@@ -1,12 +1,13 @@
 export class AuthStatus {
   readonly loginUrl = '/api/v1/authentication/login';
-  readonly logoutUrl = '/api/v1/authentication/logout';
+  readonly name: string;
 
-  constructor(readonly name: string,
-              readonly id: string,
+  constructor(readonly displayName: string,
+              readonly email: string,
               readonly roles: string[],
               readonly accountType: string,
               readonly expiration: Date) {
+    this.name = email.replace(/(@pragmatists\.pl|@pragmatists\.com)$/g, '');
   }
 }
 

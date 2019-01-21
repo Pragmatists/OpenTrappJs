@@ -15,6 +15,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
 
+  // TODO check if callback can be replaced with response
   async validate(payload: DecodedJWTPayload, done: (error, success) => void) {
     try {
       // You could add a function to the authService to verify the claims of the token:

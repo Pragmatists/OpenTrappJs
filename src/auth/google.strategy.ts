@@ -26,7 +26,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       const payload: JWTPayload = {
         id: profile.emails[0].value,
         name: profile.displayName,
-        roles: ['user'],
+        roles: ['USER'],
         accountType: 'user',
         provider: 'google',
         thirdPartyId: profile.id
@@ -38,7 +38,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       // first argument here is ann error, second one is authenticated user
       done(null, user);
     } catch (err) {
-      console.error(err);
       done(err, false);
     }
   }
