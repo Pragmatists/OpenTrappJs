@@ -19,6 +19,7 @@ import { Observable } from 'rxjs';
 import { WorkLogBulkService } from '../../work-log/work-log-bulk.service';
 import { BulkUpdateDTO } from '../../work-log/work-log-bulk.model';
 import { AuthGuard } from '@nestjs/passport';
+import { CanUpdateDeleteEntryGuard } from './can-update-delete-entry.guard';
 
 interface AffectedEntriesDTO {
   entriesAffected: number;
@@ -36,6 +37,7 @@ export class WorkLogController {
   @Post('entries/:id')
   @HttpCode(HttpStatus.OK)
   @UsePipes(new ValidationPipe({transform: true}))
+  @UseGuards(CanUpdateDeleteEntryGuard)
   updateEntry(@Param('id') id: string, @Body() updateDTO: UpdateWorkLogDTO) {
     return this.workLogService.update(id, updateDTO).pipe(
       mapTo({status: 'success'})
@@ -44,6 +46,7 @@ export class WorkLogController {
 
   @Delete('entries/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(CanUpdateDeleteEntryGuard)
   deleteEntry(@Param('id') id: string) {
     return this.workLogService.delete(id);
   }

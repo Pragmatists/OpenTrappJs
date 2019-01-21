@@ -15,6 +15,14 @@ export class WorkLogService {
   constructor(@InjectModel('WorkLog') private readonly workLogModel: Model<WorkLog>) {
   }
 
+  findById(id: string): Observable<WorkLogDTO> {
+    return from(this.workLogModel.findById({_id: id}).exec()).pipe(
+      filter(workLog => !isNil(workLog)),
+      throwIfEmpty(() => new NotFoundException(`Entry with id ${id} does not exists`)),
+      map(workLog => WorkLogService.workLogEntityToDTO(workLog))
+    );
+  }
+
   find(date: Date, user: string): Observable<WorkLogDTO[]> {
     const query = WorkLogSearchCriteria.builer
       .date(date)
@@ -51,7 +59,7 @@ export class WorkLogService {
     return this.findByQuery(query);
   }
 
-  register(username: string, registerWorkLogDTO: RegisterWorkLogDTO): Observable<{id: string}> {
+  register(username: string, registerWorkLogDTO: RegisterWorkLogDTO): Observable<{ id: string }> {
     const workLog = {
       _id: {
         _id: `WL.${uuid()}`

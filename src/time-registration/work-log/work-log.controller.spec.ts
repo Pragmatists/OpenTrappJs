@@ -1,4 +1,3 @@
-import * as request from 'supertest';
 import { WorkLogController } from './work-log.controller';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Model } from 'mongoose';
@@ -7,13 +6,16 @@ import MongoMemoryServer from 'mongodb-memory-server';
 import {
   deleteRequestWithInvalidToken,
   deleteRequestWithValidToken,
-  getRequestWithInvalidToken, getRequestWithValidToken, postRequestWithInvalidToken,
+  getRequestWithInvalidToken,
+  getRequestWithValidToken,
+  postRequestWithInvalidToken,
   postRequestWithValidToken,
   someWorkLog,
   testModuleWithInMemoryDb
 } from '../../utils/test-utils';
 import { WorkLogModule } from '../../work-log/work-log.module';
 import { MockAuthModule } from '../../auth/mock-auth.module';
+import { CanUpdateDeleteEntryGuard } from './can-update-delete-entry.guard';
 
 const workLogEntries = [
   someWorkLog('2018/11/05', 'john.doe', 480, ['holidays'], undefined, 'id-to-remove'),
@@ -29,7 +31,8 @@ describe('WorkLog Controller', () => {
   beforeAll(async () => {
     const moduleWithDb = await testModuleWithInMemoryDb({
       imports: [MockAuthModule, WorkLogModule],
-      controllers: [WorkLogController]
+      controllers: [WorkLogController],
+      providers: [CanUpdateDeleteEntryGuard]
     });
     const module = moduleWithDb.module;
     mongoServer = moduleWithDb.mongoServer;
@@ -57,8 +60,9 @@ describe('WorkLog Controller', () => {
       const idToUpdate = 'id-to-update';
       const requestBody = {workload: '60m', projectNames: ['nvm']};
 
-      return postRequestWithValidToken(app, `/api/v1/work-log/entries/${idToUpdate}`, requestBody)
+      return postRequestWithValidToken(app, `/api/v1/work-log/entries/${idToUpdate}`, requestBody, 'james.bond@pragmatists.pl')
         .send(requestBody)
+        .expect(HttpStatus.OK, {status: 'success'})
         .then(async () => {
           const updatedWorkLog = await workLogModel.findById({_id: idToUpdate}).exec();
           expect(updatedWorkLog.day.date).toEqual('2018/12/05');
@@ -73,7 +77,7 @@ describe('WorkLog Controller', () => {
       const idToUpdate = 'id-to-update';
       const requestBody = {workload: '60m', projectNames: ['nvm'], note: 'Updated note'};
 
-      return postRequestWithValidToken(app, `/api/v1/work-log/entries/${idToUpdate}`, requestBody)
+      return postRequestWithValidToken(app, `/api/v1/work-log/entries/${idToUpdate}`, requestBody, 'james.bond@pragmatists.pl')
         .expect(HttpStatus.OK, {status: 'success'})
         .then(async () => {
           const updatedWorkLog = await workLogModel.findById({_id: idToUpdate}).exec();
@@ -94,18 +98,18 @@ describe('WorkLog Controller', () => {
     });
 
     it('should return BAD REQUEST for empty projects list', done => {
-      const idToUpdate = 'not-existing-id';
+      const idToUpdate = 'id-to-update';
       const requestBody = {day: '2019-01-07', workload: '120m', projectNames: []};
 
-      return postRequestWithValidToken(app, `/api/v1/work-log/entries/${idToUpdate}`, requestBody)
+      return postRequestWithValidToken(app, `/api/v1/work-log/entries/${idToUpdate}`, requestBody, 'james.bond@pragmatists.pl')
         .expect(HttpStatus.BAD_REQUEST, done);
     });
 
     it('should return BAD REQUEST for workload less than 0', done => {
-      const idToUpdate = 'not-existing-id';
+      const idToUpdate = 'id-to-update';
       const requestBody = {day: '2019-01-07', workload: '-10', projectNames: ['nvm']};
 
-      return postRequestWithValidToken(app, `/api/v1/work-log/entries/${idToUpdate}`, requestBody)
+      return postRequestWithValidToken(app, `/api/v1/work-log/entries/${idToUpdate}`, requestBody, 'james.bond@pragmatists.pl')
         .expect(HttpStatus.BAD_REQUEST, done);
     });
 
@@ -116,13 +120,21 @@ describe('WorkLog Controller', () => {
       return postRequestWithInvalidToken(app, `/api/v1/work-log/entries/${idToUpdate}`, requestBody)
         .expect(HttpStatus.UNAUTHORIZED, done);
     });
+
+    it('should return FORBIDDEN if entry employee different from name in token', done => {
+      const idToUpdate = 'id-to-update';
+      const requestBody = {workload: '60m', projectNames: ['nvm']};
+
+      return postRequestWithValidToken(app, `/api/v1/work-log/entries/${idToUpdate}`, requestBody, 'john.doe@pragmatists.com')
+        .expect(HttpStatus.FORBIDDEN, done);
+    });
   });
 
   describe('DELETE /work-log/entries/:id', () => {
     it('should delete entry with given id', done => {
       const idToRemove = 'id-to-remove';
 
-      return deleteRequestWithValidToken(app, `/api/v1/work-log/entries/${idToRemove}`)
+      return deleteRequestWithValidToken(app, `/api/v1/work-log/entries/${idToRemove}`, 'john.doe@pragmatists.com')
         .expect(HttpStatus.NO_CONTENT)
         .then(async () => {
           const removedWorkLog = await workLogModel.findById({_id: idToRemove}).exec();
@@ -143,6 +155,13 @@ describe('WorkLog Controller', () => {
 
       return deleteRequestWithInvalidToken(app, `/api/v1/work-log/entries/${idToRemove}`)
         .expect(HttpStatus.UNAUTHORIZED, done);
+    });
+
+    it('should return FORBIDDEN if entry employee different from name in token', done => {
+      const idToRemove = 'id-to-remove';
+
+      return deleteRequestWithValidToken(app, `/api/v1/work-log/entries/${idToRemove}`, 'andy.barber@pragmatists.pl')
+        .expect(HttpStatus.FORBIDDEN, done);
     });
   });
 

@@ -7,11 +7,12 @@ import { EmployeeController } from './employee/employee.controller';
 import { WorkLogController } from './work-log/work-log.controller';
 import { AuthModule } from '../auth/auth.module';
 import { CanCreateEntryGuard } from './employee/can-create-entry.guard';
+import { CanUpdateDeleteEntryGuard } from './work-log/can-update-delete-entry.guard';
 
 @Module({
   imports: [AuthModule, WorkLogModule],
   controllers: [ProjectsController, CalendarController, EmployeeController, WorkLogController],
-  providers: [CalendarService, CanCreateEntryGuard]
+  providers: [CalendarService, CanCreateEntryGuard, CanUpdateDeleteEntryGuard]
 })
 export class TimeRegistrationModule {
 }

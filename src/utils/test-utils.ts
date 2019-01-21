@@ -97,8 +97,11 @@ export function postRequestWithInvalidToken(app: INestApplication, url: string, 
     .set('Authorization', `Bearer invalid-token`);
 }
 
-export function deleteRequestWithValidToken(app: INestApplication, url: string) {
-  const token = loggedInAs('john.doe@pragmatists.pl', 'John Doe');
+export function deleteRequestWithValidToken(app: INestApplication,
+                                            url: string,
+                                            tokenEmail = 'john.doe@pragmatists.pl',
+                                            tokenDisplayName = 'John Doe') {
+  const token = loggedInAs(tokenEmail, tokenDisplayName);
   return request(app.getHttpServer())
     .delete(url)
     .set('Authorization', `Bearer ${token}`);
