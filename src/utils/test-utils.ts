@@ -51,18 +51,18 @@ export async function testModuleWithInMemoryDb(moduleMetadata: ModuleMetadata) {
 }
 
 export function validJWTToken(payload: JWTPayload, expiresIn = 3600) {
-  return sign(payload, 'test-secret', {expiresIn});
+  return sign(payload.asPayload(), 'test-secret', {expiresIn});
 }
 
 export function loggedInAs(email: string, displayName: string) {
-  return validJWTToken({
-    name: email,
+  return validJWTToken(new JWTPayload(
     displayName,
-    accountType: 'user',
-    roles: ['USER'],
-    provider: 'google',
-    thirdPartyId: '123'
-  });
+    email,
+    ['USER'],
+    'user',
+    'google',
+    '123'
+  ));
 }
 
 export function getRequestWithValidToken(app: INestApplication, url: string) {
@@ -78,8 +78,12 @@ export function getRequestWithInvalidToken(app: INestApplication, url: string) {
     .set('Authorization', 'Bearer invalid-token');
 }
 
-export function postRequestWithValidToken(app: INestApplication, url: string, body) {
-  const token = loggedInAs('john.doe@pragmatists.pl', 'John Doe');
+export function postRequestWithValidToken(app: INestApplication,
+                                          url: string,
+                                          body,
+                                          tokenEmail = 'john.doe@pragmatists.pl',
+                                          tokenDisplayName = 'John Doe') {
+  const token = loggedInAs(tokenEmail, tokenDisplayName);
   return request(app.getHttpServer())
     .post(url)
     .send(body)

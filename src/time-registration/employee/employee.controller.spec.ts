@@ -5,12 +5,15 @@ import { WorkLog } from '../../work-log/work-log.model';
 import MongoMemoryServer from 'mongodb-memory-server';
 import {
   getRequestWithInvalidToken,
-  getRequestWithValidToken, postRequestWithInvalidToken, postRequestWithValidToken,
+  getRequestWithValidToken,
+  postRequestWithInvalidToken,
+  postRequestWithValidToken,
   someWorkLog,
   testModuleWithInMemoryDb
 } from '../../utils/test-utils';
 import { WorkLogModule } from '../../work-log/work-log.module';
 import { MockAuthModule } from '../../auth/mock-auth.module';
+import { CanCreateEntryGuard } from './can-create-entry.guard';
 
 const workLogEntries = [
   someWorkLog('2018/11/05', 'john.doe', 480, ['holidays']),
@@ -27,7 +30,8 @@ describe('Employee Controller', () => {
   beforeAll(async () => {
     const moduleWithDb = await testModuleWithInMemoryDb({
       imports: [MockAuthModule, WorkLogModule],
-      controllers: [EmployeeController]
+      controllers: [EmployeeController],
+      providers: [CanCreateEntryGuard]
     });
     const module = moduleWithDb.module;
     mongoServer = moduleWithDb.mongoServer;
@@ -72,10 +76,10 @@ describe('Employee Controller', () => {
 
   describe('POST /employee/:employeeID/work-log/entries', () => {
     it('should register new work log', done => {
-      const employee = 'andy.white';
+      const employee = 'andy.barber';
       const requestBody = {day: '2019-01-12', workload: '2h', projectNames: ['projects', 'nvm']};
 
-      return postRequestWithValidToken(app, `/api/v1/employee/${employee}/work-log/entries`, requestBody)
+      return postRequestWithValidToken(app, `/api/v1/employee/${employee}/work-log/entries`, requestBody, 'andy.barber@pragmatists.pl')
         .expect(HttpStatus.CREATED)
         .then(async () => {
           const entry = await workLogModel.findOne({'employeeID._id': employee}).exec();
@@ -87,7 +91,7 @@ describe('Employee Controller', () => {
     });
 
     it('should return BAD REQUEST for invalid date', done => {
-      const employee = 'andy.white';
+      const employee = 'john.doe';
       const requestBody = {day: '11-01-07a', workload: '2h', projectNames: ['projects', 'nvm']};
 
       return postRequestWithValidToken(app, `/api/v1/employee/${employee}/work-log/entries`, requestBody)
@@ -96,7 +100,7 @@ describe('Employee Controller', () => {
     });
 
     it('should return BAD REQUEST for empty projects list', done => {
-      const employee = 'andy.white';
+      const employee = 'john.doe';
       const requestBody = {day: '2019-01-07', workload: '120m', projectNames: []};
 
       return postRequestWithValidToken(app, `/api/v1/employee/${employee}/work-log/entries`, requestBody)
@@ -105,7 +109,7 @@ describe('Employee Controller', () => {
     });
 
     it('should return BAD REQUEST for workload less than 0', done => {
-      const employee = 'andy.white';
+      const employee = 'john.doe';
       const requestBody = {day: '2019-01-07', workload: '-10m', projectNames: ['nvm']};
 
       return postRequestWithValidToken(app, `/api/v1/employee/${employee}/work-log/entries`, requestBody)
@@ -114,10 +118,19 @@ describe('Employee Controller', () => {
     });
 
     it('should return UNAUTHORIZED for invalid token', done => {
-      const employee = 'andy.white';
+      const employee = 'john.doe';
       const requestBody = {day: '2019-01-12', workload: '2h', projectNames: ['projects', 'nvm']};
       return postRequestWithInvalidToken(app, `/api/v1/employee/${employee}/work-log/entries`, requestBody)
         .expect(HttpStatus.UNAUTHORIZED, done);
+    });
+
+    it('should return FORBIDDEN if employee different from name in token', done => {
+      const employee = 'andy.barber';
+      const requestBody = {day: '2019-01-12', workload: '2h', projectNames: ['projects', 'nvm']};
+
+      return postRequestWithValidToken(app, `/api/v1/employee/${employee}/work-log/entries`, requestBody, 'john.doe@pragmatists.pl')
+        .send(requestBody)
+        .expect(HttpStatus.FORBIDDEN, done);
     });
   });
 });

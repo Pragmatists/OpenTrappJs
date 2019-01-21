@@ -23,14 +23,14 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
 
   async validate(request: any, accessToken: string, refreshToken: string, profile: GoogleProfile, done: (error, user) => void) {
     try {
-      const payload: JWTPayload = {
-        name: profile.emails[0].value,
-        displayName: profile.displayName,
-        roles: ['USER'],
-        accountType: 'user',
-        provider: 'google',
-        thirdPartyId: profile.id
-      };
+      const payload = new JWTPayload(
+        profile.displayName,
+        profile.emails[0].value,
+        ['USER'],
+        'user',
+        'google',
+        profile.id
+      );
       const jwt = this.generateToken(payload);
 
       const user = {...payload, jwt};
@@ -43,7 +43,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   }
 
   private generateToken(payload: JWTPayload): string {
-    return sign(payload, this.config.secret, {expiresIn: this.config.expiresIn});
+    return sign(payload.asPayload(), this.config.secret, {expiresIn: this.config.expiresIn});
   }
 
 }

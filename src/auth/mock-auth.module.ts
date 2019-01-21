@@ -4,7 +4,7 @@ import { Strategy as BearerStrategy } from 'passport-http-bearer';
 import { Strategy as JWTStrategy, ExtractJwt } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
-import { DecodedJWTPayload } from './auth.model';
+import { UserDetails } from './auth.model';
 
 @Injectable()
 export class MockHttpStrategy extends PassportStrategy(BearerStrategy) {
@@ -27,7 +27,7 @@ export class MockJWTStrategy extends PassportStrategy(JWTStrategy, 'jwt') {
     });
   }
 
-  validate(payload: DecodedJWTPayload, done: (error, success) => void) {
+  validate(payload: UserDetails, done: (error, success) => void) {
     done(null, payload);
   }
 }

@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 import { RegisterWorkLogDTO } from '../../work-log/work-log.model';
 import { ApiUseTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { CanCreateEntryGuard } from './can-create-entry.guard';
 
 @Controller('/api/v1/employee')
 @ApiUseTags('employee')
@@ -26,6 +27,7 @@ export class EmployeeController {
   @Post(':employeeID/work-log/entries')
   @HttpCode(201)
   @UsePipes(new ValidationPipe({transform: true}))
+  @UseGuards(CanCreateEntryGuard)
   submitEntry(@Param('employeeID') employeeID: string,
               @Body() workLog: RegisterWorkLogDTO): Observable<{id: string}> {
     return this.workLogService.register(employeeID, workLog);

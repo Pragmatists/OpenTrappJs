@@ -204,8 +204,10 @@ describe('WorkLog Controller', () => {
         .expect(HttpStatus.OK, {entriesAffected: 3})
         .then(async () => {
           const updatedEntries = await workLogModel.find({'projectNames.name': 'projects'}).exec();
-          expect(updatedEntries[0].projectNames.map(p => p.name)).toEqual(['projects', 'syniverse-dsp', 'completed']);
-          expect(updatedEntries[1].projectNames.map(p => p.name)).toEqual(['projects', 'talkie', 'completed']);
+          expect(updatedEntries[0].projectNames.map(p => p.name).sort())
+            .toEqual(['completed', 'projects', 'syniverse-dsp']);
+          expect(updatedEntries[1].projectNames.map(p => p.name).sort())
+            .toEqual(['completed', 'projects', 'talkie']);
           done();
         });
     });
