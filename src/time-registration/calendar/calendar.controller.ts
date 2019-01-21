@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CalendarService } from './calendar.service';
 import { Observable } from 'rxjs';
 import { ReportingResponseDTO, ReportingWorkLogDTO } from '../time-registration.model';
@@ -7,11 +7,13 @@ import { map } from 'rxjs/operators';
 import { FindByYearAndMonthParams, FindByYearMonthListParams, YearDTO } from './calendar.model';
 import { ApiUseTags } from '@nestjs/swagger';
 import { YearMonth } from '../../work-log/time-unit';
+import { AuthGuard } from '@nestjs/passport';
 
 const CALENDAR_ROOT_URL = '/api/v1/calendar';
 
 @Controller(CALENDAR_ROOT_URL)
 @ApiUseTags('calendar')
+@UseGuards(AuthGuard('jwt'))
 export class CalendarController {
 
   constructor(private readonly calendarService: CalendarService,

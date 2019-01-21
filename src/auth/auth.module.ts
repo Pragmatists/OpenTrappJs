@@ -8,6 +8,7 @@ import { SharedModule } from '../shared/shared.module';
 import { AuthorizedUserService } from './authorized-user.service';
 import { PassportModule } from '@nestjs/passport';
 import { MongooseModule } from '@nestjs/mongoose';
+import { JwtStrategy } from './jwt.strategy';
 
 @Module({
   controllers: [AuthController],
@@ -16,7 +17,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     PassportModule.register({defaultStrategy: 'bearer'}),
     MongooseModule.forFeature([{name: 'AuthorizedUser', schema: AuthorizedUserSchema, collection: 'authorizedUser'}])
   ],
-  providers: [AuthService, HttpStrategy, SharedModule, AuthorizedUserService, GoogleStrategy],
+  providers: [AuthService, HttpStrategy, SharedModule, AuthorizedUserService, GoogleStrategy, JwtStrategy],
   exports: [PassportModule]
 })
 export class AuthModule {}

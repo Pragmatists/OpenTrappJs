@@ -8,12 +8,10 @@ import { ApiUseTags } from '@nestjs/swagger';
 export class AuthController {
 
   @Get('status')
+  @UseGuards(AuthGuard('jwt'))
   public status(@Req() request: RequestWithUser): AuthStatus {
     const user = request.user;
-    if (!user) {
-      return AuthStatus.ANONYMOUS;
-    }
-    return new AuthStatus(user.email, user.displayName, true, user.email, user.accessToken, user.refreshToken);
+    return new AuthStatus(user.name, user.id, user.roles, user.accountType, new Date(user.exp * 1000));
   }
 
   @Get('login')
@@ -26,9 +24,9 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   googleLoginCallback(@Req() req, @Res() res) {
     // handles the Google OAuth2 callback
-    const jwt: string = req.user.accessToken;
+    const {jwt} = req.user;
     if (jwt) {
-      res.redirect('/api/v1/authentication/status');
+      res.redirect(`http://localhost:4200/login/success?token=${jwt}`);
     } else {
       res.redirect('http://localhost:4200/login/failure');
     }
