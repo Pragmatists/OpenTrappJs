@@ -24,8 +24,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   async validate(request: any, accessToken: string, refreshToken: string, profile: GoogleProfile, done: (error, user) => void) {
     try {
       const payload: JWTPayload = {
-        id: profile.emails[0].value,
-        name: profile.displayName,
+        name: profile.emails[0].value,
+        displayName: profile.displayName,
         roles: ['USER'],
         accountType: 'user',
         provider: 'google',

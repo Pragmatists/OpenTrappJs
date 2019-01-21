@@ -12,8 +12,8 @@ export class AuthStatus {
 }
 
 export interface JWTPayload {
+  displayName: string;
   name: string;
-  id: string;
   roles: string[];
   accountType: 'user' | 'service';
   thirdPartyId?: string;

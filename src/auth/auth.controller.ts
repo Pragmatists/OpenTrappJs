@@ -11,10 +11,10 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   public status(@Req() request: RequestWithUser): AuthStatus {
     const user = request.user;
-    return new AuthStatus(user.name, user.id, user.roles, user.accountType, new Date(user.exp * 1000));
+    return new AuthStatus(user.displayName, user.name, user.roles, user.accountType, new Date(user.exp * 1000));
   }
 
-  @Get('login')
+  @Get('login/google')
   @UseGuards(AuthGuard('google'))
   login() {
     // initiates the Google OAuth2 login flow

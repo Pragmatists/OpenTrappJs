@@ -56,8 +56,8 @@ export function validJWTToken(payload: JWTPayload, expiresIn = 3600) {
 
 export function loggedInAs(email: string, displayName: string) {
   return validJWTToken({
-    id: email,
-    name: displayName,
+    name: email,
+    displayName,
     accountType: 'user',
     roles: ['USER'],
     provider: 'google',
