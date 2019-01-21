@@ -1,13 +1,15 @@
-import { Body, Controller, Get, HttpCode, Param, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { ReportingResponseDTO, ReportingWorkLogDTO } from '../time-registration.model';
 import { WorkLogService } from '../../work-log/work-log.service';
 import { map } from 'rxjs/operators';
 import { RegisterWorkLogDTO } from '../../work-log/work-log.model';
 import { ApiUseTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('/api/v1/employee')
 @ApiUseTags('employee')
+@UseGuards(AuthGuard('jwt'))
 export class EmployeeController {
 
   constructor(private readonly workLogService: WorkLogService) {
@@ -25,7 +27,7 @@ export class EmployeeController {
   @HttpCode(201)
   @UsePipes(new ValidationPipe({transform: true}))
   submitEntry(@Param('employeeID') employeeID: string,
-                     @Body() workLog: RegisterWorkLogDTO): Observable<{id: string}> {
+              @Body() workLog: RegisterWorkLogDTO): Observable<{id: string}> {
     return this.workLogService.register(employeeID, workLog);
   }
 }

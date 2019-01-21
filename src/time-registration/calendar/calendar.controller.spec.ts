@@ -1,8 +1,12 @@
-import * as request from 'supertest';
 import { CalendarController } from './calendar.controller';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { CalendarService } from './calendar.service';
-import { getRequestWithValidToken, someWorkLog, testModuleWithInMemoryDb } from '../../utils/test-utils';
+import {
+  getRequestWithInvalidToken,
+  getRequestWithValidToken,
+  someWorkLog,
+  testModuleWithInMemoryDb
+} from '../../utils/test-utils';
 import { Model } from 'mongoose';
 import { WorkLog } from '../../work-log/work-log.model';
 import MongoMemoryServer from 'mongodb-memory-server';
@@ -76,7 +80,7 @@ describe('Calendar Controller', () => {
     });
 
     it('should return UNAUTHORIZED for invalid token', done => {
-      return getRequestWithToken('/api/v1/calendar/2014', 'invalid-token')
+      return getRequestWithInvalidToken(app, '/api/v1/calendar/2014')
         .expect(HttpStatus.UNAUTHORIZED, done);
     });
   });
@@ -107,7 +111,7 @@ describe('Calendar Controller', () => {
     });
 
     it('should return UNAUTHORIZED for invalid token', done => {
-      return getRequestWithToken('/api/v1/calendar/2014/01', 'invalid-token')
+      return getRequestWithInvalidToken(app, '/api/v1/calendar/2014/01')
         .expect(HttpStatus.UNAUTHORIZED, done);
     });
   });
@@ -136,7 +140,7 @@ describe('Calendar Controller', () => {
     });
 
     it('should return UNAUTHORIZED for invalid token', done => {
-      getRequestWithToken('/api/v1/calendar/2018/22/work-log/entries', 'invalid-token')
+      getRequestWithInvalidToken(app, '/api/v1/calendar/2018/22/work-log/entries')
         .expect(HttpStatus.UNAUTHORIZED, done);
     });
   });
@@ -161,14 +165,9 @@ describe('Calendar Controller', () => {
     });
 
     it('should return UNAUTHORIZED for invalid token', done => {
-      return getRequestWithToken('/api/v1/calendar/201812,201901,201902/work-log/entries', 'invalid-token')
+      return getRequestWithInvalidToken(app, '/api/v1/calendar/201812,201901,201902/work-log/entries')
         .expect(HttpStatus.UNAUTHORIZED, done);
     });
   });
 
-  function getRequestWithToken(url: string, token: string) {
-    return request(app.getHttpServer())
-      .get(url)
-      .set('Authorization', `Bearer ${token}`);
-  }
 });

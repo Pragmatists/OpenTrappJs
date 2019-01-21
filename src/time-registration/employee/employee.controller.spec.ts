@@ -1,11 +1,16 @@
-import * as request from 'supertest';
 import { EmployeeController } from './employee.controller';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { WorkLog } from '../../work-log/work-log.model';
 import MongoMemoryServer from 'mongodb-memory-server';
-import { someWorkLog, testModuleWithInMemoryDb } from '../../utils/test-utils';
+import {
+  getRequestWithInvalidToken,
+  getRequestWithValidToken, postRequestWithInvalidToken, postRequestWithValidToken,
+  someWorkLog,
+  testModuleWithInMemoryDb
+} from '../../utils/test-utils';
 import { WorkLogModule } from '../../work-log/work-log.module';
+import { MockAuthModule } from '../../auth/mock-auth.module';
 
 const workLogEntries = [
   someWorkLog('2018/11/05', 'john.doe', 480, ['holidays']),
@@ -21,7 +26,7 @@ describe('Employee Controller', () => {
 
   beforeAll(async () => {
     const moduleWithDb = await testModuleWithInMemoryDb({
-      imports: [WorkLogModule],
+      imports: [MockAuthModule, WorkLogModule],
       controllers: [EmployeeController]
     });
     const module = moduleWithDb.module;
@@ -48,8 +53,7 @@ describe('Employee Controller', () => {
   describe('GET /employee/:employeeID/work-log/entries', () => {
     it('should return entries for given employee', done => {
       const employee = 'james.bond';
-      return request(app.getHttpServer())
-        .get(`/api/v1/employee/${employee}/work-log/entries`)
+      return getRequestWithValidToken(app, `/api/v1/employee/${employee}/work-log/entries`)
         .expect(HttpStatus.OK)
         .then(response => response.body.items)
         .then(entries => {
@@ -58,6 +62,12 @@ describe('Employee Controller', () => {
           done();
         });
     });
+
+    it('should return UNAUTHORIZED for invalid token', done => {
+      const employee = 'james.bond';
+      return getRequestWithInvalidToken(app, `/api/v1/employee/${employee}/work-log/entries`)
+        .expect(HttpStatus.UNAUTHORIZED, done);
+    });
   });
 
   describe('POST /employee/:employeeID/work-log/entries', () => {
@@ -65,9 +75,7 @@ describe('Employee Controller', () => {
       const employee = 'andy.white';
       const requestBody = {day: '2019-01-12', workload: '2h', projectNames: ['projects', 'nvm']};
 
-      return request(app.getHttpServer())
-        .post(`/api/v1/employee/${employee}/work-log/entries`)
-        .send(requestBody)
+      return postRequestWithValidToken(app, `/api/v1/employee/${employee}/work-log/entries`, requestBody)
         .expect(HttpStatus.CREATED)
         .then(async () => {
           const entry = await workLogModel.findOne({'employeeID._id': employee}).exec();
@@ -82,8 +90,7 @@ describe('Employee Controller', () => {
       const employee = 'andy.white';
       const requestBody = {day: '11-01-07a', workload: '2h', projectNames: ['projects', 'nvm']};
 
-      return request(app.getHttpServer())
-        .post(`/api/v1/employee/${employee}/work-log/entries`)
+      return postRequestWithValidToken(app, `/api/v1/employee/${employee}/work-log/entries`, requestBody)
         .send(requestBody)
         .expect(HttpStatus.BAD_REQUEST, done);
     });
@@ -92,8 +99,7 @@ describe('Employee Controller', () => {
       const employee = 'andy.white';
       const requestBody = {day: '2019-01-07', workload: '120m', projectNames: []};
 
-      return request(app.getHttpServer())
-        .post(`/api/v1/employee/${employee}/work-log/entries`)
+      return postRequestWithValidToken(app, `/api/v1/employee/${employee}/work-log/entries`, requestBody)
         .send(requestBody)
         .expect(HttpStatus.BAD_REQUEST, done);
     });
@@ -102,10 +108,16 @@ describe('Employee Controller', () => {
       const employee = 'andy.white';
       const requestBody = {day: '2019-01-07', workload: '-10m', projectNames: ['nvm']};
 
-      return request(app.getHttpServer())
-        .post(`/api/v1/employee/${employee}/work-log/entries`)
+      return postRequestWithValidToken(app, `/api/v1/employee/${employee}/work-log/entries`, requestBody)
         .send(requestBody)
         .expect(HttpStatus.BAD_REQUEST, done);
+    });
+
+    it('should return UNAUTHORIZED for invalid token', done => {
+      const employee = 'andy.white';
+      const requestBody = {day: '2019-01-12', workload: '2h', projectNames: ['projects', 'nvm']};
+      return postRequestWithInvalidToken(app, `/api/v1/employee/${employee}/work-log/entries`, requestBody)
+        .expect(HttpStatus.UNAUTHORIZED, done);
     });
   });
 });

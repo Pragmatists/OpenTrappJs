@@ -71,3 +71,24 @@ export function getRequestWithValidToken(app: INestApplication, url: string) {
     .get(url)
     .set('Authorization', `Bearer ${token}`);
 }
+
+export function getRequestWithInvalidToken(app: INestApplication, url: string) {
+  return request(app.getHttpServer())
+    .get(url)
+    .set('Authorization', 'Bearer invalid-token');
+}
+
+export function postRequestWithValidToken(app: INestApplication, url: string, body) {
+  const token = loggedInAs('john.doe@pragmatists.pl', 'John Doe');
+  return request(app.getHttpServer())
+    .post(url)
+    .send(body)
+    .set('Authorization', `Bearer ${token}`);
+}
+
+export function postRequestWithInvalidToken(app: INestApplication, url: string, body) {
+  return request(app.getHttpServer())
+    .post(url)
+    .send(body)
+    .set('Authorization', `Bearer invalid-token`);
+}
