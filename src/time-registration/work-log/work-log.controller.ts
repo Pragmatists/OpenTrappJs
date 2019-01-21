@@ -1,4 +1,16 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  UseGuards,
+  UsePipes,
+  ValidationPipe
+} from '@nestjs/common';
 import { WorkLogService } from '../../work-log/work-log.service';
 import { UpdateWorkLogDTO } from '../../work-log/work-log.model';
 import { map, mapTo } from 'rxjs/operators';
@@ -6,6 +18,7 @@ import { ApiUseTags } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { WorkLogBulkService } from '../../work-log/work-log-bulk.service';
 import { BulkUpdateDTO } from '../../work-log/work-log-bulk.model';
+import { AuthGuard } from '@nestjs/passport';
 
 interface AffectedEntriesDTO {
   entriesAffected: number;
@@ -13,6 +26,7 @@ interface AffectedEntriesDTO {
 
 @Controller('/api/v1/work-log')
 @ApiUseTags('work-log')
+@UseGuards(AuthGuard('jwt'))
 export class WorkLogController {
 
   constructor(private readonly workLogService: WorkLogService,
