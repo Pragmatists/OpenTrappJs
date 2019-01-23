@@ -1,3 +1,5 @@
+import { pragmaEmailToUsername } from '../utils/email-utils';
+
 export class AuthStatus {
   readonly loginUrl = '/api/v1/authentication/login';
 
@@ -19,7 +21,7 @@ export class JWTPayload {
               readonly accountType: 'user' | 'service',
               readonly provider: string,
               readonly thirdPartyId?: string) {
-    this.name = email.replace(/(@pragmatists\.pl|@pragmatists\.com)$/g, '');
+    this.name = pragmaEmailToUsername(email);
   }
 
   asPayload() {
