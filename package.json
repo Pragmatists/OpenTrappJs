@@ -6,7 +6,6 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "postinstall": "yarn build",
     "start": "node dist/main",
     "webpack": "webpack --config webpack.config.js",
     "prestart:prod": "rimraf dist && tsc",
