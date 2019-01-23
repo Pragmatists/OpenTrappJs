@@ -19,3 +19,17 @@ export class CreateAuthorizedUserDTO {
   @IsArray()
   roles: string[];
 }
+
+export interface ServiceAccount extends Document {
+  name: string;
+  clientID: string;
+  secret: string;
+  owner: string;
+}
+
+export interface ServiceAccountDTO {
+  name: string;
+  clientID: string;
+  secret: string;
+  owner: string;
+}

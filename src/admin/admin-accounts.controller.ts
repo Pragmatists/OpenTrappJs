@@ -2,10 +2,11 @@ import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards, UsePipes,
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { AuthorizedUserService } from '../accounts/authorized-user.service';
-import { AuthorizedUserDTO, CreateAuthorizedUserDTO } from '../accounts/accounts.model';
+import { AuthorizedUserDTO, CreateAuthorizedUserDTO, ServiceAccountDTO } from '../accounts/accounts.model';
 import { RolesGuard } from '../shared/roles.guard';
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from '../shared/roles.decorator';
+import { ServiceAccountService } from '../accounts/service-account.service';
 
 @Controller('api/v1/admin')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -13,7 +14,14 @@ import { Roles } from '../shared/roles.decorator';
 @ApiBearerAuth()
 export class AdminAccountsController {
 
-  constructor(private readonly authorizedUserService: AuthorizedUserService) {
+  constructor(private readonly authorizedUserService: AuthorizedUserService,
+              private readonly serviceAccountService: ServiceAccountService) {
+  }
+
+  @Get('service-accounts')
+  @Roles('ADMIN')
+  serviceAccounts(): Observable<ServiceAccountDTO[]> {
+    return this.serviceAccountService.findAll();
   }
 
   @Get('authorized-users')

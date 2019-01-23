@@ -10,7 +10,7 @@ import {
 } from '../utils/test-utils';
 import { MockAuthModule } from '../auth/mock-auth.module';
 import { Model } from 'mongoose';
-import { AuthorizedUser, AuthorizedUserDTO } from '../accounts/accounts.model';
+import { AuthorizedUser, AuthorizedUserDTO, ServiceAccount, ServiceAccountDTO } from '../accounts/accounts.model';
 import { AccountsModule } from '../accounts/accounts.module';
 
 const authorizedUsers = [
@@ -18,10 +18,16 @@ const authorizedUsers = [
   {email: 'tom.black@pragmatists.com', name: 'tom.black', roles: ['ADMIN']}
 ];
 
+const serviceAccounts = [
+  {clientID: 'sa-id-1', secret: 'sa-secret-1', name: 'Service account 1', owner: 'andy.barber'},
+  {clientID: 'sa-id-2', secret: 'sa-secret-1', name: 'Service account 2', owner: 'tom.black'}
+];
+
 describe('AdminAccounts Controller', () => {
   let app: INestApplication;
   let mongoServer: MongoMemoryServer;
   let authorizedUserModel: Model<AuthorizedUser>;
+  let serviceAccountModel: Model<ServiceAccount>;
 
   beforeAll(async () => {
     const moduleWithDb = await testModuleWithInMemoryDb({
@@ -32,6 +38,7 @@ describe('AdminAccounts Controller', () => {
     mongoServer = moduleWithDb.mongoServer;
 
     authorizedUserModel = module.get('AuthorizedUserModel');
+    serviceAccountModel = module.get('ServiceAccountModel');
     app = module.createNestApplication();
     await app.init();
   });
@@ -43,16 +50,35 @@ describe('AdminAccounts Controller', () => {
 
   beforeEach(async () => {
     await authorizedUserModel.create(authorizedUsers);
+    await serviceAccountModel.create(serviceAccounts);
   });
 
   afterEach(async () => {
     await authorizedUserModel.deleteMany({}).exec();
+    await serviceAccountModel.deleteMany({}).exec();
   });
 
   describe('GET /service-accounts', () => {
     it('should list all service accounts', done => {
-      getRequestWithValidToken(app, '/api/v1/admin/service-accounts')
-        .expect(404, done); // TODO
+      return getRequestWithValidToken(app, '/api/v1/admin/service-accounts', ['ADMIN'])
+        .expect(HttpStatus.OK)
+        .then(response => {
+          const services: ServiceAccountDTO[] = response.body;
+          expect(services).toHaveLength(2);
+          expect(services[0]).toMatchObject(serviceAccounts[0]);
+          expect(services[1]).toMatchObject(serviceAccounts[1]);
+          done();
+        });
+    });
+
+    it('should return UNAUTHORIZED for invalid token', done => {
+      return getRequestWithInvalidToken(app, '/api/v1/admin/service-accounts')
+        .expect(HttpStatus.UNAUTHORIZED, done);
+    });
+
+    it('should return FORBIDDEN for token without ADMIN role', done => {
+      return getRequestWithValidToken(app, '/api/v1/admin/service-accounts')
+        .expect(HttpStatus.FORBIDDEN, done);
     });
   });
 
