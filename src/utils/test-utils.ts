@@ -54,19 +54,19 @@ export function validJWTToken(payload: JWTPayload, expiresIn = 3600) {
   return sign(payload.asPayload(), 'test-secret', {expiresIn});
 }
 
-export function loggedInAs(email: string, displayName: string) {
+export function loggedInAs(email: string, displayName: string, roles = ['USER']) {
   return validJWTToken(new JWTPayload(
     displayName,
     email,
-    ['USER'],
+    roles,
     'user',
     'google',
     '123'
   ));
 }
 
-export function getRequestWithValidToken(app: INestApplication, url: string) {
-  const token = loggedInAs('john.doe@pragmatists.pl', 'John Doe');
+export function getRequestWithValidToken(app: INestApplication, url: string, roles = ['USER']) {
+  const token = loggedInAs('john.doe@pragmatists.pl', 'John Doe', roles);
   return request(app.getHttpServer())
     .get(url)
     .set('Authorization', `Bearer ${token}`);
@@ -84,6 +84,17 @@ export function postRequestWithValidToken(app: INestApplication,
                                           tokenEmail = 'john.doe@pragmatists.pl',
                                           tokenDisplayName = 'John Doe') {
   const token = loggedInAs(tokenEmail, tokenDisplayName);
+  return request(app.getHttpServer())
+    .post(url)
+    .send(body)
+    .set('Authorization', `Bearer ${token}`);
+}
+
+export function postRequestWithRoles(app: INestApplication,
+                                     url: string,
+                                     body,
+                                     roles: string[]) {
+  const token = loggedInAs('john.doe@pragmatists.pl', 'John Doe', roles);
   return request(app.getHttpServer())
     .post(url)
     .send(body)

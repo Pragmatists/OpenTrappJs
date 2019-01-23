@@ -1,11 +1,15 @@
-import * as request from 'supertest';
-import { AdminController } from './admin.controller';
+import { AdminWorkLogController } from './admin-work-log.controller';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { MockAuthModule } from '../auth/mock-auth.module';
 import { WorkLogModule } from '../work-log/work-log.module';
 import { Model } from 'mongoose';
 import { WorkLog, WorkLogDTO } from '../work-log/work-log.model';
-import { someWorkLog, testModuleWithInMemoryDb } from '../utils/test-utils';
+import {
+  getRequestWithValidToken,
+  postRequestWithRoles,
+  someWorkLog,
+  testModuleWithInMemoryDb
+} from '../utils/test-utils';
 import MongoMemoryServer from 'mongodb-memory-server';
 
 const workLogEntries = [
@@ -14,7 +18,7 @@ const workLogEntries = [
   someWorkLog('2019/01/06', 'james.bond', 480, ['projects', 'syniverse-dsp'])
 ];
 
-describe('AdminController', () => {
+describe('AdminWorkLogController', () => {
   let app: INestApplication;
   let workLogModel: Model<WorkLog>;
   let mongoServer: MongoMemoryServer;
@@ -22,7 +26,7 @@ describe('AdminController', () => {
   beforeAll(async () => {
     const moduleWithDb = await testModuleWithInMemoryDb({
       imports: [MockAuthModule, WorkLogModule],
-      controllers: [AdminController]
+      controllers: [AdminWorkLogController]
     });
     const module = moduleWithDb.module;
     mongoServer = moduleWithDb.mongoServer;
@@ -46,14 +50,14 @@ describe('AdminController', () => {
   });
 
   it('GET /tags should return list of available tags', done => {
-    return authorizedGetRequest('/api/v1/admin/tags')
+    return getRequestWithValidToken(app, '/api/v1/admin/tags', ['ADMIN'])
       .expect(HttpStatus.OK)
       .expect(['holidays', 'projects', 'syniverse-dsp'], done);
   });
 
   describe('GET /work-log/entries', () => {
     it('should return complete list of entries if neither user nor date is specified', done => {
-      return authorizedGetRequest('/api/v1/admin/work-log/entries')
+      return getRequestWithValidToken(app, '/api/v1/admin/work-log/entries', ['ADMIN'])
         .expect(HttpStatus.OK)
         .then(response => {
           const workLogs: WorkLogDTO[] = response.body;
@@ -73,7 +77,7 @@ describe('AdminController', () => {
     });
 
     it('should return entries for user', done => {
-      return authorizedGetRequest('/api/v1/admin/work-log/entries?user=john.doe')
+      return getRequestWithValidToken(app, '/api/v1/admin/work-log/entries?user=john.doe', ['ADMIN'])
         .expect(HttpStatus.OK)
         .then(response => {
           const workLogs = response.body;
@@ -84,7 +88,7 @@ describe('AdminController', () => {
     });
 
     it('should return entries for date', done => {
-      return authorizedGetRequest('/api/v1/admin/work-log/entries?date=2019-01-05')
+      return getRequestWithValidToken(app, '/api/v1/admin/work-log/entries?date=2019-01-05', ['ADMIN'])
         .expect(HttpStatus.OK)
         .then(response => {
           const workLogs = response.body;
@@ -101,7 +105,7 @@ describe('AdminController', () => {
       const username = 'tom.hanks';
       const requestBody = {day: '2019-01-07', workload: '2h', projectNames: ['projects', 'nvm']};
 
-      return authorizedPostRequest(`/api/v1/admin/work-log/${username}/entries`, requestBody)
+      return postRequestWithRoles(app, `/api/v1/admin/work-log/${username}/entries`, requestBody, ['ADMIN'])
         .expect(HttpStatus.CREATED)
         .then(async () => {
           const matchingWorkLogs = await workLogModel.find({'employeeID._id': username}).exec();
@@ -117,7 +121,7 @@ describe('AdminController', () => {
       const username = 'tom.hanks';
       const requestBody = {day: '11-01-07a', workload: '2h', projectNames: ['projects', 'nvm']};
 
-      return authorizedPostRequest(`/api/v1/admin/work-log/${username}/entries`, requestBody)
+      return postRequestWithRoles(app, `/api/v1/admin/work-log/${username}/entries`, requestBody, ['ADMIN'])
         .expect(HttpStatus.BAD_REQUEST, done);
     });
 
@@ -125,7 +129,7 @@ describe('AdminController', () => {
       const username = 'tom.hanks';
       const requestBody = {day: '2019-01-07', workload: '2h', projectNames: []};
 
-      return authorizedPostRequest(`/api/v1/admin/work-log/${username}/entries`, requestBody)
+      return postRequestWithRoles(app, `/api/v1/admin/work-log/${username}/entries`, requestBody, ['ADMIN'])
         .expect(HttpStatus.BAD_REQUEST, done);
     });
 
@@ -133,23 +137,10 @@ describe('AdminController', () => {
       const username = 'tom.hanks';
       const requestBody = {day: '2019-01-07', workload: '-10m', projectNames: ['nvm']};
 
-      return authorizedPostRequest(`/api/v1/admin/work-log/${username}/entries`, requestBody)
+      return postRequestWithRoles(app, `/api/v1/admin/work-log/${username}/entries`, requestBody, ['ADMIN'])
         .expect(HttpStatus.BAD_REQUEST, done);
     });
   });
-
-  function authorizedGetRequest(url: string) {
-    return request(app.getHttpServer())
-      .get(url)
-      .set('Authorization', 'Bearer test-token');
-  }
-
-  function authorizedPostRequest(url: string, body: string | object) {
-    return request(app.getHttpServer())
-      .post(url)
-      .send(body)
-      .set('Authorization', 'Bearer test-token');
-  }
 
   const reverseSortByEmployee = (a, b) => (-1 * a.employeeID.localeCompare(b.employeeID));
 });

@@ -1,21 +1,9 @@
-import { Module, UnauthorizedException } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
-import { Strategy as BearerStrategy } from 'passport-http-bearer';
 import { Strategy as JWTStrategy, ExtractJwt } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { UserDetails } from './auth.model';
-
-@Injectable()
-export class MockHttpStrategy extends PassportStrategy(BearerStrategy) {
-
-  validate(token: string) {
-    if (token === 'test-token') {
-      return {email: 'user@example.com', roles: ['ROLE_ADMIN']};
-    }
-    throw new UnauthorizedException();
-  }
-}
 
 @Injectable()
 export class MockJWTStrategy extends PassportStrategy(JWTStrategy, 'jwt') {
@@ -36,7 +24,7 @@ export class MockJWTStrategy extends PassportStrategy(JWTStrategy, 'jwt') {
   imports: [
     PassportModule.register({defaultStrategy: 'bearer'})
   ],
-  providers: [MockHttpStrategy, MockJWTStrategy],
+  providers: [MockJWTStrategy],
   exports: [PassportModule]
 })
 export class MockAuthModule {

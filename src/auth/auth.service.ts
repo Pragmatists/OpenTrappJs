@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JWT } from 'google-auth-library';
 import { ConfigService } from '../shared/config.service';
-import { AuthorizedUserService } from './authorized-user.service';
+import { AuthorizedUserService } from '../accounts/authorized-user.service';
 
 export interface AuthorizedUser {
   email: string;

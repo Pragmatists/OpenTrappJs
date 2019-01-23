@@ -6,12 +6,14 @@ import { RegisterWorkLogDTO, WorkLogDTO } from '../work-log/work-log.model';
 import { TagsService } from '../work-log/tags.service';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiImplicitQuery, ApiUseTags } from '@nestjs/swagger';
+import { RolesGuard } from '../shared/roles.guard';
+import { Roles } from '../shared/roles.decorator';
 
 @Controller('api/v1/admin')
-@UseGuards(AuthGuard())
-@ApiUseTags('admin')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
+@ApiUseTags('admin-work-log')
 @ApiBearerAuth()
-export class AdminController {
+export class AdminWorkLogController {
   constructor(private readonly workLogService: WorkLogService,
               private readonly tagsService: TagsService) {
   }
@@ -19,6 +21,7 @@ export class AdminController {
   @Get('/work-log/entries')
   @ApiImplicitQuery({name: 'date', required: false, description: 'Day in format "YYYY-MM-DD"'})
   @ApiImplicitQuery({name: 'user', required: false, description: 'Username same as email but without domain'})
+  @Roles('ADMIN', 'EXTERNAL_SERVICE')
   findWorkload(@Query('date', ParseDatePipe) date: Date,
                @Query('user') user: string): Observable<WorkLogDTO[]> {
     return this.workLogService.find(date, user);
@@ -27,12 +30,14 @@ export class AdminController {
   @Post('/work-log/:username/entries')
   @HttpCode(201)
   @UsePipes(new ValidationPipe({transform: true}))
+  @Roles('ADMIN', 'EXTERNAL_SERVICE')
   registerWorkLoad(@Param('username') username: string,
                    @Body() registerWorkloadDTO: RegisterWorkLogDTO): Observable<{id: string}> {
     return this.workLogService.register(username, registerWorkloadDTO);
   }
 
   @Get('/tags')
+  @Roles('ADMIN', 'EXTERNAL_SERVICE')
   tags(): Observable<string[]> {
     return this.tagsService.findAll();
   }
