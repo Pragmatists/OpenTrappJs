@@ -52,7 +52,7 @@ describe('WorkLog Controller', () => {
   });
 
   afterEach(async () => {
-    await workLogModel.deleteMany({});
+    await workLogModel.deleteMany({}).exec();
   });
 
   describe('POST /work-log/entries/:id', () => {

@@ -46,7 +46,7 @@ describe('AdminWorkLogController', () => {
   });
 
   afterEach(async () => {
-    await workLogModel.deleteMany({});
+    await workLogModel.deleteMany({}).exec();
   });
 
   it('GET /tags should return list of available tags', done => {

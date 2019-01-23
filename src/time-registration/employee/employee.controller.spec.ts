@@ -51,7 +51,7 @@ describe('Employee Controller', () => {
   });
 
   afterEach(async () => {
-    await workLogModel.deleteMany({});
+    await workLogModel.deleteMany({}).exec();
   });
 
   describe('GET /employee/:employeeID/work-log/entries', () => {

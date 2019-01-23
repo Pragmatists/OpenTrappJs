@@ -48,7 +48,7 @@ describe('Projects Controller', () => {
   });
 
   afterEach(async () => {
-    await workLogModel.deleteMany({});
+    await workLogModel.deleteMany({}).exec();
   });
 
   describe('GET /projects', () => {

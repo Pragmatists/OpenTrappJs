@@ -49,7 +49,7 @@ describe('Calendar Controller', () => {
   });
 
   afterEach(async () => {
-    await workLogModel.deleteMany({});
+    await workLogModel.deleteMany({}).exec();
   });
 
   describe('GET /calendar/:year', () => {
