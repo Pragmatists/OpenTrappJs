@@ -30,7 +30,6 @@ export interface ServiceAccount extends Document {
 export interface ServiceAccountDTO {
   name: string;
   clientID: string;
-  secret: string;
   owner: string;
 }
 

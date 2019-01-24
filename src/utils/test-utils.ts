@@ -123,3 +123,13 @@ export function deleteRequestWithInvalidToken(app: INestApplication, url: string
     .delete(url)
     .set('Authorization', 'Bearer invalid-token');
 }
+
+export function deleteRequestWithRoles(app: INestApplication,
+                                       url: string,
+                                       roles: string[],
+                                       tokenEmail = 'john.doe@pragmatists.pl') {
+  const token = loggedInAs(tokenEmail, 'John Doe', roles);
+  return request(app.getHttpServer())
+    .delete(url)
+    .set('Authorization', `Bearer ${token}`);
+}

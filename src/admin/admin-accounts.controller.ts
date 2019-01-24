@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { AuthorizedUserService } from '../accounts/authorized-user.service';
@@ -14,6 +14,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Roles } from '../shared/roles.decorator';
 import { ServiceAccountService } from '../accounts/service-account.service';
 import { RequestWithUser } from '../auth/auth.model';
+import { CanDeleteServiceAccountGuard } from './can-delete-service-account.guard';
 
 @Controller('api/v1/admin')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -37,6 +38,13 @@ export class AdminAccountsController {
                        @Req() request: RequestWithUser): Observable<CreateServiceAccountResponse> {
     const username = request.user.name;
     return this.serviceAccountService.create(dto, username);
+  }
+
+  @Delete('service-accounts/:id')
+  @Roles('ADMIN')
+  @UseGuards(CanDeleteServiceAccountGuard)
+  deleteServiceAccount(@Param('id') id: string) {
+    return this.serviceAccountService.delete(id);
   }
 
   @Get('authorized-users')

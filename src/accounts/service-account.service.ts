@@ -19,9 +19,14 @@ export class ServiceAccountService {
       map(services => services.map(service => ({
         name: service.name,
         clientID: service.clientID,
-        secret: service.secret,
         owner: service.owner
       })))
+    );
+  }
+
+  findByClientID(id: string): Observable<ServiceAccountDTO> {
+    return from(this.serviceAccountModel.findOne({clientID: id}).exec()).pipe(
+      map(serviceAccount => ({owner: serviceAccount.owner, clientID: serviceAccount.clientID, name: serviceAccount.name}))
     );
   }
 
@@ -31,6 +36,12 @@ export class ServiceAccountService {
     return this.bcryptService.encrypt(clientSecret).pipe(
       flatMap(secret => this.createServiceAccount(username, dto, clientID, secret)),
       mapTo({clientID, secret: clientSecret})
+    );
+  }
+
+  delete(id: string): Observable<{}> {
+    return from(this.serviceAccountModel.deleteOne({clientID: id}).exec()).pipe(
+      mapTo({})
     );
   }
 

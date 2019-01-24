@@ -2,6 +2,8 @@ import { AdminAccountsController } from './admin-accounts.controller';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import MongoMemoryServer from 'mongodb-memory-server';
 import {
+  deleteRequestWithInvalidToken,
+  deleteRequestWithRoles,
   getRequestWithInvalidToken,
   getRequestWithValidToken,
   postRequestWithInvalidToken,
@@ -10,10 +12,11 @@ import {
 } from '../utils/test-utils';
 import { MockAuthModule } from '../auth/mock-auth.module';
 import { Model } from 'mongoose';
-import { AuthorizedUser, AuthorizedUserDTO, ServiceAccount, ServiceAccountDTO } from '../accounts/accounts.model';
+import { AuthorizedUser, AuthorizedUserDTO, ServiceAccount } from '../accounts/accounts.model';
 import { AccountsModule } from '../accounts/accounts.module';
 import { SharedModule } from '../shared/shared.module';
 import { compare } from 'bcrypt';
+import { CanDeleteServiceAccountGuard } from './can-delete-service-account.guard';
 
 const authorizedUsers = [
   {email: 'andy.barber@pragmatists.pl', name: 'andy.barber', roles: ['USER', 'ADMIN']},
@@ -34,7 +37,8 @@ describe('AdminAccounts Controller', () => {
   beforeAll(async () => {
     const moduleWithDb = await testModuleWithInMemoryDb({
       imports: [MockAuthModule, AccountsModule, SharedModule],
-      controllers: [AdminAccountsController]
+      controllers: [AdminAccountsController],
+      providers: [CanDeleteServiceAccountGuard]
     });
     const module = moduleWithDb.module;
     mongoServer = moduleWithDb.mongoServer;
@@ -65,10 +69,10 @@ describe('AdminAccounts Controller', () => {
       return getRequestWithValidToken(app, '/api/v1/admin/service-accounts', ['ADMIN'])
         .expect(HttpStatus.OK)
         .then(response => {
-          const services: ServiceAccountDTO[] = response.body;
+          const services = response.body;
           expect(services).toHaveLength(2);
-          expect(services[0]).toMatchObject(serviceAccounts[0]);
-          expect(services[1]).toMatchObject(serviceAccounts[1]);
+          expect(services[0]).toEqual({clientID: 'sa-id-1', name: 'Service account 1', owner: 'andy.barber'});
+          expect(services[1]).toEqual({clientID: 'sa-id-2', name: 'Service account 2', owner: 'tom.black'});
           done();
         });
     });
@@ -104,7 +108,7 @@ describe('AdminAccounts Controller', () => {
         });
     });
 
-    it('shoud return CONFLICT for duplicated name', done => {
+    it('should return CONFLICT for duplicated name', done => {
       const requestBody = {name: 'Service account 2'};
 
       return postRequestWithRoles(app, '/api/v1/admin/service-accounts', requestBody, ['ADMIN'])
@@ -122,6 +126,42 @@ describe('AdminAccounts Controller', () => {
       const requestBody = {name: 'Service account 3'};
 
       return postRequestWithRoles(app, '/api/v1/admin/service-accounts', requestBody, ['USER'])
+        .expect(HttpStatus.FORBIDDEN, done);
+    });
+  });
+
+  describe('DELETE /service-accounts/:id', () => {
+    it('should remove service account with given ID', done => {
+      const idToDelete = serviceAccounts[0].clientID;
+
+      return deleteRequestWithRoles(app, `/api/v1/admin/service-accounts/${idToDelete}`, ['ADMIN'], 'andy.barber@pragmatists.pl')
+        .expect(HttpStatus.OK)
+        .then(async () => {
+          const remainingAccounts = await serviceAccountModel.find({}).exec();
+          expect(remainingAccounts).toHaveLength(1);
+          expect(remainingAccounts[0].clientID).toEqual(serviceAccounts[1].clientID);
+          done();
+        });
+    });
+
+    it('should return FORBIDDEN if user is not the owner of the service account', done => {
+      const idToDelete = serviceAccounts[0].clientID;
+
+      return deleteRequestWithRoles(app, `/api/v1/admin/service-accounts/${idToDelete}`, ['ADMIN'], 'john.doe@pragmatists.pl')
+        .expect(HttpStatus.FORBIDDEN, done);
+    });
+
+    it('should return UNAUTHORIZED for invalid token', done => {
+      const idToDelete = serviceAccounts[0].clientID;
+
+      return deleteRequestWithInvalidToken(app, `/api/v1/admin/service-accounts/${idToDelete}`)
+        .expect(HttpStatus.UNAUTHORIZED, done);
+    });
+
+    it('should return FORBIDDEN for token without ADMIN role', done => {
+      const idToDelete = serviceAccounts[0].clientID;
+
+      return deleteRequestWithRoles(app, `/api/v1/admin/service-accounts/${idToDelete}`, ['USER'], 'andy.barber@pragmatists.pl')
         .expect(HttpStatus.FORBIDDEN, done);
     });
   });
