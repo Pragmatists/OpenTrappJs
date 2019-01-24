@@ -1,12 +1,19 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { AuthorizedUserService } from '../accounts/authorized-user.service';
-import { AuthorizedUserDTO, CreateAuthorizedUserDTO, ServiceAccountDTO } from '../accounts/accounts.model';
+import {
+  AuthorizedUserDTO,
+  CreateAuthorizedUserDTO,
+  CreateServiceAccountDTO,
+  CreateServiceAccountResponse,
+  ServiceAccountDTO
+} from '../accounts/accounts.model';
 import { RolesGuard } from '../shared/roles.guard';
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from '../shared/roles.decorator';
 import { ServiceAccountService } from '../accounts/service-account.service';
+import { RequestWithUser } from '../auth/auth.model';
 
 @Controller('api/v1/admin')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -22,6 +29,14 @@ export class AdminAccountsController {
   @Roles('ADMIN')
   serviceAccounts(): Observable<ServiceAccountDTO[]> {
     return this.serviceAccountService.findAll();
+  }
+
+  @Post('service-accounts')
+  @Roles('ADMIN')
+  createServiceAccount(@Body() dto: CreateServiceAccountDTO,
+                       @Req() request: RequestWithUser): Observable<CreateServiceAccountResponse> {
+    const username = request.user.name;
+    return this.serviceAccountService.create(dto, username);
   }
 
   @Get('authorized-users')

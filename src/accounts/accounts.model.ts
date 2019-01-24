@@ -1,5 +1,5 @@
 import { Document } from 'mongoose';
-import { IsArray, IsEmail } from 'class-validator';
+import { IsArray, IsEmail, IsNotEmpty } from 'class-validator';
 
 export interface AuthorizedUser extends Document {
   email: string;
@@ -32,4 +32,14 @@ export interface ServiceAccountDTO {
   clientID: string;
   secret: string;
   owner: string;
+}
+
+export class CreateServiceAccountDTO {
+  @IsNotEmpty()
+  name: string;
+}
+
+export interface CreateServiceAccountResponse {
+  clientID: string;
+  secret: string;
 }

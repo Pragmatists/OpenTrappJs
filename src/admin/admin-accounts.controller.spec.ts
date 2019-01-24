@@ -12,6 +12,8 @@ import { MockAuthModule } from '../auth/mock-auth.module';
 import { Model } from 'mongoose';
 import { AuthorizedUser, AuthorizedUserDTO, ServiceAccount, ServiceAccountDTO } from '../accounts/accounts.model';
 import { AccountsModule } from '../accounts/accounts.module';
+import { SharedModule } from '../shared/shared.module';
+import { compare } from 'bcrypt';
 
 const authorizedUsers = [
   {email: 'andy.barber@pragmatists.pl', name: 'andy.barber', roles: ['USER', 'ADMIN']},
@@ -31,7 +33,7 @@ describe('AdminAccounts Controller', () => {
 
   beforeAll(async () => {
     const moduleWithDb = await testModuleWithInMemoryDb({
-      imports: [MockAuthModule, AccountsModule],
+      imports: [MockAuthModule, AccountsModule, SharedModule],
       controllers: [AdminAccountsController]
     });
     const module = moduleWithDb.module;
@@ -78,6 +80,48 @@ describe('AdminAccounts Controller', () => {
 
     it('should return FORBIDDEN for token without ADMIN role', done => {
       return getRequestWithValidToken(app, '/api/v1/admin/service-accounts')
+        .expect(HttpStatus.FORBIDDEN, done);
+    });
+  });
+
+  describe('POST /service-accounts', () => {
+    it('should create new service account', done => {
+      const requestBody = {name: 'Service account 3'};
+
+      return postRequestWithRoles(app, '/api/v1/admin/service-accounts', requestBody, ['ADMIN'])
+        .expect(HttpStatus.CREATED)
+        .then(async response => {
+          expect(response.body.clientID).toBeDefined();
+          expect(response.body.secret).toBeDefined();
+          const createdAccount = await serviceAccountModel.findOne({name: requestBody.name}).exec();
+          expect(createdAccount.clientID).toBeDefined();
+          expect(createdAccount.secret).toBeDefined();
+          expect(createdAccount.owner).toEqual('john.doe');
+          expect(createdAccount.name).toEqual(requestBody.name);
+          const secretsEqual = await compare(response.body.secret, createdAccount.secret);
+          expect(secretsEqual).toBeTruthy();
+          done();
+        });
+    });
+
+    it('shoud return CONFLICT for duplicated name', done => {
+      const requestBody = {name: 'Service account 2'};
+
+      return postRequestWithRoles(app, '/api/v1/admin/service-accounts', requestBody, ['ADMIN'])
+        .expect(HttpStatus.CONFLICT, done);
+    });
+
+    it('should return UNAUTHORIZED for invalid token', done => {
+      const requestBody = {name: 'Service account 3'};
+
+      return postRequestWithInvalidToken(app, '/api/v1/admin/service-accounts', requestBody)
+        .expect(HttpStatus.UNAUTHORIZED, done);
+    });
+
+    it('should return FORBIDDEN for token without ADMIN role', done => {
+      const requestBody = {name: 'Service account 3'};
+
+      return postRequestWithRoles(app, '/api/v1/admin/service-accounts', requestBody, ['USER'])
         .expect(HttpStatus.FORBIDDEN, done);
     });
   });
