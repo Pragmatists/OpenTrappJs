@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+
 declare const module: any;
 
 async function bootstrap() {
@@ -14,7 +15,12 @@ async function bootstrap() {
     .setTitle('OpenTrappJs')
     .setDescription('OpenTrapp API description')
     .setVersion('1.0')
-    .addTag('admin')
+    .addTag('admin-work-log')
+    .addTag('admin-accounts')
+    .addTag('authentication')
+    .addTag('calendar')
+    .addTag('employee')
+    .addTag('project')
     .addBearerAuth('Authorization', 'header', 'apiKey')
     .setSchemes('https', 'http')
     .build();
@@ -27,4 +33,5 @@ async function bootstrap() {
     module.hot.dispose(() => app.close());
   }
 }
+
 bootstrap();

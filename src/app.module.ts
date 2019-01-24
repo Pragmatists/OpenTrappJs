@@ -2,8 +2,9 @@ import { Module } from '@nestjs/common';
 import { AdminModule } from './admin/admin.module';
 import { SharedModule } from './shared/shared.module';
 import { WorkLogModule } from './work-log/work-log.module';
-import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
+import { AuthModule } from './auth/auth.module';
+import { TimeRegistrationModule } from './time-registration/time-registration.module';
 
 @Module({
   imports: [
@@ -11,7 +12,8 @@ import { DatabaseModule } from './database/database.module';
     AdminModule,
     SharedModule,
     WorkLogModule,
-    AuthModule
+    AuthModule,
+    TimeRegistrationModule
   ]
 })
 export class AppModule {}

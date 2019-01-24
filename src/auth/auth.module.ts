@@ -1,19 +1,21 @@
-import { Module } from '@nestjs/common';
+import { HttpModule, Module } from '@nestjs/common';
+import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { GoogleStrategy } from './google.strategy';
 import { HttpStrategy } from './http.strategy';
-import { PassportModule } from '@nestjs/passport';
 import { SharedModule } from '../shared/shared.module';
-import { MongooseModule } from '@nestjs/mongoose';
-import { AuthorizedUserService } from './authorized-user.service';
-import { AuthorizedUserSchema } from './authorized-user.schema';
+import { PassportModule } from '@nestjs/passport';
+import { JwtStrategy } from './jwt.strategy';
+import { AccountsModule } from '../accounts/accounts.module';
 
 @Module({
+  controllers: [AuthController],
   imports: [
-    PassportModule.register({defaultStrategy: 'bearer'}),
-    MongooseModule.forFeature([{name: 'AuthorizedUser', schema: AuthorizedUserSchema, collection: 'authorizedUser'}])
+    HttpModule,
+    AccountsModule,
+    PassportModule.register({defaultStrategy: 'bearer'})
   ],
-  providers: [AuthService, HttpStrategy, SharedModule, AuthorizedUserService],
+  providers: [AuthService, HttpStrategy, SharedModule, GoogleStrategy, JwtStrategy],
   exports: [PassportModule]
 })
-export class AuthModule {
-}
+export class AuthModule {}
