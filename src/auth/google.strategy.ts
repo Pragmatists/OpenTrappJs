@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, StrategyOptionWithRequest } from 'passport-google-oauth20';
 import { ConfigService, JWTConfig } from '../shared/config.service';
@@ -22,20 +22,21 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   }
 
   async validate(request: any, accessToken: string, refreshToken: string, profile: GoogleProfile, done: (error, user) => void) {
+    const email = profile.emails[0].value;
+    if (!email.match(/.+@pragmatists\.(com|pl)$/g)) {
+      throw new UnauthorizedException('Provided email must be in pragmatists domain');
+    }
+    const payload = new JWTPayload(
+      profile.displayName,
+      email,
+      ['USER'],
+      'user',
+      'google',
+      profile.id
+    );
     try {
-      const payload = new JWTPayload(
-        profile.displayName,
-        profile.emails[0].value,
-        ['USER'],
-        'user',
-        'google',
-        profile.id
-      );
       const jwt = this.generateToken(payload);
-
       const user = {...payload, jwt};
-
-      // first argument here is ann error, second one is authenticated user
       done(null, user);
     } catch (err) {
       done(err, false);

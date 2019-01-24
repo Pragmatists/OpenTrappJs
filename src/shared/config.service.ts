@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { v4 as uuid } from 'uuid';
 
 interface OauthServiceConfig {
   email: string;
@@ -19,6 +20,7 @@ export interface JWTConfig {
 @Injectable()
 export class ConfigService {
   private static TOKEN_EXPIRATION_TIME = 3600; // 1 hour
+  private static JWT_SECRET = uuid();
 
   get dbUri(): string {
     return process.env.OPEN_TRAPP_DB_URI;
@@ -39,7 +41,7 @@ export class ConfigService {
 
   get jwtConfig(): JWTConfig {
     return {
-      secret: process.env.OPEN_TRAPP_JWT_SECRET,
+      secret: ConfigService.JWT_SECRET,
       expiresIn: ConfigService.TOKEN_EXPIRATION_TIME
     };
   }
