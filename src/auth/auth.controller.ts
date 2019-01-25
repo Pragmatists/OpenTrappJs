@@ -1,11 +1,16 @@
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
-import { AuthStatus, RequestWithUser } from './auth.model';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, Res, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { AuthStatus, RequestWithUser, ServiceAccountTokenRequestDTO, ServiceAccountTokenResponseDTO } from './auth.model';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiUseTags } from '@nestjs/swagger';
+import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
 
 @Controller('/api/v1/authentication')
 @ApiUseTags('authentication')
 export class AuthController {
+
+  constructor(private readonly authService: AuthService) {
+  }
 
   @Get('status')
   @UseGuards(AuthGuard('jwt'))
@@ -18,6 +23,13 @@ export class AuthController {
       user.accountType,
       new Date(user.exp * 1000)
     );
+  }
+
+  @Post('token')
+  @UsePipes(new ValidationPipe({transform: true}))
+  @HttpCode(HttpStatus.OK)
+  tokenForServiceAccount(@Body() tokenRequestBody: ServiceAccountTokenRequestDTO): Observable<ServiceAccountTokenResponseDTO> {
+    return this.authService.tokenForServiceAccount(tokenRequestBody);
   }
 
   @Get('login/google')

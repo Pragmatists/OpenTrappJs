@@ -1,4 +1,5 @@
 import { pragmaEmailToUsername } from '../utils/email-utils';
+import { IsNotEmpty } from 'class-validator';
 
 export class AuthStatus {
   readonly loginUrl = '/api/v1/authentication/login';
@@ -13,15 +14,26 @@ export class AuthStatus {
 }
 
 export class JWTPayload {
-  readonly name: string;
 
-  constructor(readonly displayName: string,
-              readonly email: string,
-              readonly roles: string[],
-              readonly accountType: 'user' | 'service',
-              readonly provider: string,
-              readonly thirdPartyId?: string) {
-    this.name = pragmaEmailToUsername(email);
+  private constructor(readonly displayName: string,
+                      readonly name: string,
+                      readonly roles: string[],
+                      readonly accountType: 'user' | 'service',
+                      readonly provider: string,
+                      readonly email?: string,
+                      readonly thirdPartyId?: string) {
+  }
+
+  static userJWTPayload(displayName: string,
+                        email: string,
+                        roles: string[],
+                        provider = 'google',
+                        thirdPartyId?: string) {
+    return new JWTPayload(displayName, pragmaEmailToUsername(email), roles, 'user', provider, email, thirdPartyId);
+  }
+
+  static serviceJWTPayload(name: string, clientID: string, roles: string[], provider = 'opentrapp') {
+    return new JWTPayload(name, clientID, roles, 'service', provider);
   }
 
   asPayload() {
@@ -60,11 +72,22 @@ export interface GoogleProfile {
     familyName: string;
     givenName: string;
   };
-  emails: { value: string; type: string }[];
+  emails: {value: string; type: string}[];
   provider: string;
   _json: {
     domain: string;
     objectType: string;
     language: string;
   };
+}
+
+export class ServiceAccountTokenRequestDTO {
+  @IsNotEmpty()
+  clientID: string;
+  @IsNotEmpty()
+  secret: string;
+}
+
+export interface ServiceAccountTokenResponseDTO {
+  token: string;
 }

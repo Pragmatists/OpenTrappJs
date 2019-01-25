@@ -22,7 +22,7 @@ export class MockJWTStrategy extends PassportStrategy(JWTStrategy, 'jwt') {
 
 @Module({
   imports: [
-    PassportModule.register({defaultStrategy: 'bearer'})
+    PassportModule.register({defaultStrategy: 'jwt'})
   ],
   providers: [MockJWTStrategy],
   exports: [PassportModule]

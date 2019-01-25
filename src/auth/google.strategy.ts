@@ -26,11 +26,10 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     if (!email.match(/.+@pragmatists\.(com|pl)$/g)) {
       throw new UnauthorizedException('Provided email must be in pragmatists domain');
     }
-    const payload = new JWTPayload(
+    const payload = JWTPayload.userJWTPayload(
       profile.displayName,
       email,
       ['USER'],
-      'user',
       'google',
       profile.id
     );

@@ -55,11 +55,10 @@ export function validJWTToken(payload: JWTPayload, expiresIn = 3600) {
 }
 
 export function loggedInAs(email: string, displayName: string, roles = ['USER']) {
-  return validJWTToken(new JWTPayload(
+  return validJWTToken(JWTPayload.userJWTPayload(
     displayName,
     email,
     roles,
-    'user',
     'google',
     '123'
   ));
