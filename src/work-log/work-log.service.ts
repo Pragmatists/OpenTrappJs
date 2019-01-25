@@ -8,7 +8,7 @@ import { filter, map, mapTo, throwIfEmpty } from 'rxjs/operators';
 import { v4 as uuid } from 'uuid';
 import { WorkLogSearchCriteria } from './work-log-search-criteria';
 import { YearMonth } from './time-unit';
-import { isNil, has } from 'lodash';
+import { isNil, has, sortBy } from 'lodash';
 
 @Injectable()
 export class WorkLogService {
@@ -49,7 +49,9 @@ export class WorkLogService {
     const query = WorkLogSearchCriteria.builer
       .timeUnits(monthList)
       .build();
-    return this.findByQuery(query);
+    return this.findByQuery(query).pipe(
+      map(workLogs => sortBy(workLogs, workLog => workLog.day))
+    );
   }
 
   findByEmployeeID(employeeID: string): Observable<WorkLogDTO[]> {
