@@ -5,6 +5,7 @@ import { AuthorizedUser, AuthorizedUserDTO, CreateAuthorizedUserDTO } from './ac
 import { from, Observable } from 'rxjs';
 import { map, mapTo } from 'rxjs/operators';
 import { pragmaEmailToUsername } from '../utils/email-utils';
+import { sortBy } from 'lodash';
 
 @Injectable()
 export class AuthorizedUserService {
@@ -13,7 +14,8 @@ export class AuthorizedUserService {
 
   findAll(): Observable<AuthorizedUserDTO[]> {
     return from(this.authorizedUserModel.find({}).exec()).pipe(
-      map(users => users.map(user => ({id: user.id, email: user.email, name: user.name, roles: user.roles})))
+      map(users => users.map(user => ({id: user.id, email: user.email, name: user.name, roles: user.roles}))),
+      map(users => sortBy(users, user => user.email))
     );
   }
 
