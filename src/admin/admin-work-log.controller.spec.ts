@@ -51,10 +51,22 @@ describe('AdminWorkLogController', () => {
     await workLogModel.deleteMany({}).exec();
   });
 
-  it('GET /tags should return list of available tags', done => {
-    return getRequestWithValidToken(app, '/api/v1/admin/tags', ['ADMIN'])
-      .expect(HttpStatus.OK)
-      .expect(['holidays', 'nvm', 'projects', 'syniverse-dsp'], done);
+  describe('GET /tags', () => {
+    it('should return list of available tags', done => {
+      return getRequestWithValidToken(app, '/api/v1/admin/tags', ['ADMIN'])
+        .expect(HttpStatus.OK)
+        .expect(['holidays', 'nvm', 'projects', 'syniverse-dsp'], done);
+    });
+
+    it('should allow service account to fetch data', done => {
+      return getRequestWithValidToken(app, '/api/v1/admin/tags', ['EXTERNAL_SERVICE'])
+        .expect(HttpStatus.OK, done);
+    });
+
+    it('should return FORBIDDEN if token has neither ADMIN nor EXTERNAL_SERVICE role', done => {
+      return getRequestWithValidToken(app, '/api/v1/admin/tags', ['USER'])
+        .expect(HttpStatus.FORBIDDEN, done);
+    });
   });
 
   describe('GET /work-log/entries', () => {
@@ -153,11 +165,21 @@ describe('AdminWorkLogController', () => {
         });
     });
 
-    it('should throw BAD REQUEST if both date and dateFrom or dateTo are specified', done => {
+    it('should return BAD REQUEST if both date and dateFrom or dateTo are specified', done => {
       return getRequestWithValidToken(
         app, '/api/v1/admin/work-log/entries?dateFrom=2019-01-06&dateTo=2019-01-07&date=2019-01-04', ['ADMIN']
       )
         .expect(HttpStatus.BAD_REQUEST, done);
+    });
+
+    it('should allow service account to fetch data', done => {
+      return getRequestWithValidToken(app, '/api/v1/admin/work-log/entries', ['EXTERNAL_SERVICE'])
+        .expect(HttpStatus.OK, done);
+    });
+
+    it('should return FORBIDDEN if token has neither ADMIN nor EXTERNAL_SERVICE role', done => {
+      return getRequestWithValidToken(app, '/api/v1/admin/work-log/entries', ['USER'])
+        .expect(HttpStatus.FORBIDDEN, done);
     });
   });
 
@@ -200,6 +222,22 @@ describe('AdminWorkLogController', () => {
 
       return postRequestWithRoles(app, `/api/v1/admin/work-log/${username}/entries`, requestBody, ['ADMIN'])
         .expect(HttpStatus.BAD_REQUEST, done);
+    });
+
+    it('should allow service account to fetch data', done => {
+      const username = 'tom.hanks';
+      const requestBody = {day: '2019-01-07', workload: '2h', projectNames: ['projects', 'nvm']};
+
+      return postRequestWithRoles(app, `/api/v1/admin/work-log/${username}/entries`, requestBody, ['EXTERNAL_SERVICE'])
+        .expect(HttpStatus.CREATED, done);
+    });
+
+    it('should return FORBIDDEN if token has neither ADMIN nor EXTERNAL_SERVICE role', done => {
+      const username = 'tom.hanks';
+      const requestBody = {day: '2019-01-07', workload: '2h', projectNames: ['projects', 'nvm']};
+
+      return postRequestWithRoles(app, `/api/v1/admin/work-log/${username}/entries`, requestBody, ['USER'])
+        .expect(HttpStatus.FORBIDDEN, done);
     });
   });
 
