@@ -1,11 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 
-interface OauthServiceConfig {
-  email: string;
-  privateKey: string;
-}
-
 interface GoogleOAuthConfig {
   clientID: string;
   clientSecret: string;
@@ -24,12 +19,6 @@ export class ConfigService {
 
   get dbUri(): string {
     return process.env.OPEN_TRAPP_DB_URI;
-  }
-
-  get serviceAccountConfig(): OauthServiceConfig {
-    const email = process.env.OPEN_TRAPP_OAUTH_EMAIL;
-    const privateKey = process.env.OPEN_TRAPP_OAUTH_PRIVATE_KEY;
-    return {email, privateKey};
   }
 
   get googleOAuthConfig(): GoogleOAuthConfig {
