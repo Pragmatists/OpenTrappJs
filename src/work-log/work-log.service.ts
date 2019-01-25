@@ -1,7 +1,7 @@
 import { Model } from 'mongoose';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { RegisterWorkLogDTO, UpdateWorkLogDTO, WorkLog, WorkLogDTO } from './work-log.model';
+import { FindWorkloadQueryParams, RegisterWorkLogDTO, UpdateWorkLogDTO, WorkLog, WorkLogDTO } from './work-log.model';
 import { from, Observable } from 'rxjs';
 import * as moment from 'moment';
 import { filter, map, mapTo, throwIfEmpty } from 'rxjs/operators';
@@ -23,10 +23,13 @@ export class WorkLogService {
     );
   }
 
-  find(date: Date, user: string): Observable<WorkLogDTO[]> {
+  find(queryParam: FindWorkloadQueryParams): Observable<WorkLogDTO[]> {
+    queryParam.validate();
     const query = WorkLogSearchCriteria.builer
-      .date(date)
-      .user(user)
+      .date(queryParam.date)
+      .dateRange(queryParam.dateFrom, queryParam.dateTo)
+      .user(queryParam.user)
+      .projectNameList(queryParam.tags)
       .build();
     return this.findByQuery(query);
   }
@@ -49,9 +52,7 @@ export class WorkLogService {
     const query = WorkLogSearchCriteria.builer
       .timeUnits(monthList)
       .build();
-    return this.findByQuery(query).pipe(
-      map(workLogs => sortBy(workLogs, workLog => workLog.day))
-    );
+    return this.findByQuery(query);
   }
 
   findByEmployeeID(employeeID: string): Observable<WorkLogDTO[]> {
@@ -129,7 +130,8 @@ export class WorkLogService {
 
   private findByQuery(query) {
     return from(this.workLogModel.find(query).exec()).pipe(
-      map(workLogs => workLogs.map(w => WorkLogService.workLogEntityToDTO(w)))
+      map(workLogs => workLogs.map(w => WorkLogService.workLogEntityToDTO(w))),
+      map(workLogs => sortBy(workLogs, workLog => workLog.day))
     );
   }
 }

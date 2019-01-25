@@ -6,7 +6,7 @@ import { from, Observable } from 'rxjs';
 import { catchError, filter, flatMap, map, mapTo } from 'rxjs/operators';
 import { v4 as uuid } from 'uuid';
 import { BcryptService } from '../shared/bcrypt.service';
-import { isNil } from 'lodash';
+import { isNil, sortBy } from 'lodash';
 
 @Injectable()
 export class ServiceAccountService {
@@ -17,11 +17,12 @@ export class ServiceAccountService {
 
   findAll(): Observable<ServiceAccountDTO[]> {
     return from(this.serviceAccountModel.find({}).exec()).pipe(
-      map(services => services.map(service => ({
+      map(serviceAccounts => serviceAccounts.map(service => ({
         name: service.name,
         clientID: service.clientID,
         owner: service.owner
-      })))
+      }))),
+      map(serviceAccounts => sortBy(serviceAccounts, sa => sa.name))
     );
   }
 

@@ -2,6 +2,8 @@ import { Document } from 'mongoose';
 import { ArrayNotEmpty, Matches } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { WorkloadParser } from './workload-parser';
+import { Transform, Type } from 'class-transformer';
+import { BadRequestException } from '@nestjs/common';
 
 export interface WorkLog extends Document {
   _id: {
@@ -62,4 +64,22 @@ export class RegisterWorkLogDTO extends UpdateWorkLogDTO {
   @ApiModelProperty({example: '2019-01-05'})
   @Matches(/^\d{4}[\/\-](0[1-9]|1[012])[\/\-](0[1-9]|[12][0-9]|3[01])$/)
   readonly day: string;
+}
+
+export class FindWorkloadQueryParams {
+  @Type(() => Date)
+  readonly date: Date;
+  @Type(() => Date)
+  readonly dateFrom: Date;
+  @Type(() => Date)
+  readonly dateTo: Date;
+  @Transform(value => value ? value.split(',') : [])
+  readonly tags: string[];
+  readonly user: string;
+
+  validate() {
+    if (this.date && (this.dateFrom || this.dateTo)) {
+      throw new BadRequestException(`date and dateFrom or dateTo can't be specified at the same time`);
+    }
+  }
 }

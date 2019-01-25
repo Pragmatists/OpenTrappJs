@@ -27,7 +27,18 @@ export class WorkLogSearchCriteria {
 
   date(date: Date): WorkLogSearchCriteria {
     if (date) {
-      this.criteria = {...this.criteria, 'day.date': moment(date).format('YYYY/MM/DD')};
+      this.criteria = {...this.criteria, 'day.date': this.formatDate(date)};
+    }
+    return this;
+  }
+
+  dateRange(dateFrom: Date, dateTo: Date) {
+    if (dateFrom && dateTo) {
+      this.criteria = {...this.criteria, 'day.date': {$gte: this.formatDate(dateFrom), $lte: this.formatDate(dateTo)}};
+    } else if (dateFrom) {
+      this.criteria = {...this.criteria, 'day.date': {$gte: this.formatDate(dateFrom)}};
+    } else if (dateTo) {
+      this.criteria = {...this.criteria, 'day.date': {$lte: this.formatDate(dateTo)}};
     }
     return this;
   }
@@ -63,5 +74,9 @@ export class WorkLogSearchCriteria {
 
   build(): {[key: string]: any} {
     return this.criteria;
+  }
+
+  private formatDate(date: Date): string {
+    return moment(date).format('YYYY/MM/DD');
   }
 }

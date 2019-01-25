@@ -1,8 +1,7 @@
 import { Body, Controller, Get, HttpCode, Param, Post, Query, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
-import { ParseDatePipe } from '../shared/parse-date.pipe';
 import { WorkLogService } from '../work-log/work-log.service';
 import { Observable } from 'rxjs';
-import { RegisterWorkLogDTO, WorkLogDTO } from '../work-log/work-log.model';
+import { FindWorkloadQueryParams, RegisterWorkLogDTO, WorkLogDTO } from '../work-log/work-log.model';
 import { TagsService } from '../work-log/tags.service';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiImplicitQuery, ApiUseTags } from '@nestjs/swagger';
@@ -20,11 +19,14 @@ export class AdminWorkLogController {
 
   @Get('/work-log/entries')
   @ApiImplicitQuery({name: 'date', required: false, description: 'Day in format "YYYY-MM-DD"'})
+  @ApiImplicitQuery({name: 'dateFrom', required: false, description: 'Day in format "YYYY-MM-DD"'})
+  @ApiImplicitQuery({name: 'dateTo', required: false, description: 'Day in format "YYYY-MM-DD"'})
   @ApiImplicitQuery({name: 'user', required: false, description: 'Username same as email but without domain'})
+  @ApiImplicitQuery({name: 'tags', required: false, description: 'List of tags coma to search for separated with, e.g "holidays,self-dev"'})
+  @UsePipes(new ValidationPipe({transform: true}))
   @Roles('ADMIN', 'EXTERNAL_SERVICE')
-  findWorkload(@Query('date', ParseDatePipe) date: Date,
-               @Query('user') user: string): Observable<WorkLogDTO[]> {
-    return this.workLogService.find(date, user);
+  findWorkload(@Query() query: FindWorkloadQueryParams): Observable<WorkLogDTO[]> {
+    return this.workLogService.find(query);
   }
 
   @Post('/work-log/:username/entries')

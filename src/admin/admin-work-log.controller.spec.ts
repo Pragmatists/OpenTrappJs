@@ -15,7 +15,9 @@ import MongoMemoryServer from 'mongodb-memory-server';
 const workLogEntries = [
   someWorkLog('2019/01/05', 'john.doe', 480, ['holidays'], 'National holidays'),
   someWorkLog('2019/01/05', 'james.bond', 480, ['projects', 'syniverse-dsp']),
-  someWorkLog('2019/01/06', 'james.bond', 480, ['projects', 'syniverse-dsp'])
+  someWorkLog('2019/01/06', 'james.bond', 480, ['projects', 'nvm']),
+  someWorkLog('2019/01/07', 'john.doe', 480, ['projects', 'nvm']),
+  someWorkLog('2019/01/08', 'john.doe', 480, ['projects', 'syniverse-dsp'])
 ];
 
 describe('AdminWorkLogController', () => {
@@ -52,7 +54,7 @@ describe('AdminWorkLogController', () => {
   it('GET /tags should return list of available tags', done => {
     return getRequestWithValidToken(app, '/api/v1/admin/tags', ['ADMIN'])
       .expect(HttpStatus.OK)
-      .expect(['holidays', 'projects', 'syniverse-dsp'], done);
+      .expect(['holidays', 'nvm', 'projects', 'syniverse-dsp'], done);
   });
 
   describe('GET /work-log/entries', () => {
@@ -64,7 +66,7 @@ describe('AdminWorkLogController', () => {
           return workLogs.sort(reverseSortByEmployee);
         })
         .then(workLogs => {
-          expect(workLogs).toHaveLength(3);
+          expect(workLogs).toHaveLength(5);
           expect(workLogs[0]).toEqual(jasmine.objectContaining({
             day: '2019/01/05',
             employeeID: 'john.doe',
@@ -81,8 +83,10 @@ describe('AdminWorkLogController', () => {
         .expect(HttpStatus.OK)
         .then(response => {
           const workLogs = response.body;
-          expect(workLogs).toHaveLength(1);
+          expect(workLogs).toHaveLength(3);
           expect(workLogs[0].employeeID).toEqual('john.doe');
+          expect(workLogs[1].employeeID).toEqual('john.doe');
+          expect(workLogs[2].employeeID).toEqual('john.doe');
           done();
         });
     });
@@ -97,6 +101,63 @@ describe('AdminWorkLogController', () => {
           expect(workLogs[1].day).toEqual('2019/01/05');
           done();
         });
+    });
+
+    it('should return entries for dates range', done => {
+      return getRequestWithValidToken(app, '/api/v1/admin/work-log/entries?dateFrom=2019-01-06&dateTo=2019-01-07', ['ADMIN'])
+        .expect(HttpStatus.OK)
+        .then(response => {
+          const workLogs = response.body;
+          expect(workLogs).toHaveLength(2);
+          expect(workLogs[0].day).toEqual('2019/01/06');
+          expect(workLogs[1].day).toEqual('2019/01/07');
+          done();
+        });
+    });
+
+    it('should return entries after date', done => {
+      return getRequestWithValidToken(app, '/api/v1/admin/work-log/entries?dateFrom=2019-01-07', ['ADMIN'])
+        .expect(HttpStatus.OK)
+        .then(response => {
+          const workLogs = response.body;
+          expect(workLogs).toHaveLength(2);
+          expect(workLogs[0].day).toEqual('2019/01/07');
+          expect(workLogs[1].day).toEqual('2019/01/08');
+          done();
+        });
+    });
+
+    it('should return entries before date', done => {
+      return getRequestWithValidToken(app, '/api/v1/admin/work-log/entries?dateTo=2019-01-05', ['ADMIN'])
+        .expect(HttpStatus.OK)
+        .then(response => {
+          const workLogs = response.body;
+          expect(workLogs).toHaveLength(2);
+          expect(workLogs[0].day).toEqual('2019/01/05');
+          expect(workLogs[1].day).toEqual('2019/01/05');
+          done();
+        });
+    });
+
+    it('should return entries for user and tags', done => {
+      return getRequestWithValidToken(app, '/api/v1/admin/work-log/entries?user=john.doe&tags=holidays,nvm', ['ADMIN'])
+        .expect(HttpStatus.OK)
+        .then(response => {
+          const workLogs = response.body;
+          expect(workLogs).toHaveLength(2);
+          expect(workLogs[0].employeeID).toEqual('john.doe');
+          expect(workLogs[0].projectNames).toContain('holidays');
+          expect(workLogs[1].employeeID).toEqual('john.doe');
+          expect(workLogs[1].projectNames).toContain('nvm');
+          done();
+        });
+    });
+
+    it('should throw BAD REQUEST if both date and dateFrom or dateTo are specified', done => {
+      return getRequestWithValidToken(
+        app, '/api/v1/admin/work-log/entries?dateFrom=2019-01-06&dateTo=2019-01-07&date=2019-01-04', ['ADMIN']
+      )
+        .expect(HttpStatus.BAD_REQUEST, done);
     });
   });
 
