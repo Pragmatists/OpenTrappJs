@@ -47,7 +47,6 @@
     "@types/lodash": "^4.14.119",
     "@types/mongoose": "^5.3.7",
     "@types/node": "^10.12.18",
-    "@types/passport-http-bearer": "^1.0.33",
     "@types/supertest": "^2.0.7",
     "@types/uuid": "^3.4.4",
     "@types/bcrypt": "^3.0.0",

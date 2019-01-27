@@ -42,11 +42,17 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   googleLoginCallback(@Req() req, @Res() res) {
     // handles the Google OAuth2 callback
+    const successUiUrl = req.headers['success-login-callback'];
+    const errorUiUrl = req.headers['error-login-callback'];
     const {jwt} = req.user;
-    if (jwt) {
-      res.redirect(`http://localhost:4200/login/success?token=${jwt}`);
+    if (jwt && successUiUrl) {
+      res.redirect(`${successUiUrl}?token=${jwt}`);
+    } else if (jwt) {
+      res.redirect(`/api/v1/authentication/success?token=${jwt}`);
+    } else if (errorUiUrl) {
+      res.redirect(errorUiUrl);
     } else {
-      res.redirect('http://localhost:4200/login/failure');
+      res.redirect('/api/v1/authentication/error');
     }
   }
 }

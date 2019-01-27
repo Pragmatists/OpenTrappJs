@@ -24,7 +24,7 @@ export class ConfigService {
   get googleOAuthConfig(): GoogleOAuthConfig {
     const clientID = process.env.OPEN_TRAPP_OAUTH_CLIENT_ID;
     const clientSecret = process.env.OPEN_TRAPP_OAUTH_CLIENT_SECRET;
-    const callbackURL = 'http://localhost:3000/api/v1/authentication/login-callback';
+    const callbackURL = `${process.env.OPEN_TRAPP_SERVER_URL}/api/v1/authentication/login-callback`;
     return {clientID, clientSecret, callbackURL};
   }
 
