@@ -4,12 +4,14 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiUseTags } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
+import { ConfigService } from '../shared/config.service';
 
 @Controller('/api/v1/authentication')
 @ApiUseTags('authentication')
 export class AuthController {
 
-  constructor(private readonly authService: AuthService) {
+  constructor(private readonly authService: AuthService,
+              private readonly configService: ConfigService) {
   }
 
   @Get('status')
@@ -42,17 +44,12 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   googleLoginCallback(@Req() req, @Res() res) {
     // handles the Google OAuth2 callback
-    const successUiUrl = req.headers['success-login-callback'];
-    const errorUiUrl = req.headers['error-login-callback'];
+    console.log('googleLoginCallback', req.headers);
     const {jwt} = req.user;
-    if (jwt && successUiUrl) {
-      res.redirect(`${successUiUrl}?token=${jwt}`);
-    } else if (jwt) {
-      res.redirect(`/api/v1/authentication/success?token=${jwt}`);
-    } else if (errorUiUrl) {
-      res.redirect(errorUiUrl);
+    if (jwt) {
+      res.redirect(`${this.configService.uiUrl}?token=${jwt}`);
     } else {
-      res.redirect('/api/v1/authentication/error');
+      res.redirect(this.configService.uiUrl);
     }
   }
 }

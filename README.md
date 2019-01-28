@@ -18,6 +18,7 @@ Before starting the application you have to set:
  * `OPEN_TRAPP_DB_URI` environment variable. The value should be MongoDB connection URI.
  * `OPEN_TRAPP_OAUTH_CLIENT_ID` OpenID Connect client ID (see [Google Docs](https://developers.google.com/identity/protocols/OpenIDConnect)).
  * `OPEN_TRAPP_OAUTH_CLIENT_SECRET` OpenID Connect client secret
+ * `OPEN_TRAPP_UI_URL` Where to do redirect after successful login
  * `OPEN_TRAPP_SERVER_URL` Where server is running e.g. http://localhost:3000
 
 ```bash
