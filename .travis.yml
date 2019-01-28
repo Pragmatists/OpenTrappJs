@@ -14,6 +14,7 @@ deploy:
   region: eu-central-1
   app: opentrapp
   env: opentrapp-prod
+  bucket_name: elasticbeanstalk-eu-central-1-049249879741
   on:
     repo: Pragmatists/OpenTrappJs
     branch: master
