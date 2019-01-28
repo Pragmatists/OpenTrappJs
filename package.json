@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "start": "node dist/main",
+    "start": "node dist/app",
     "webpack": "webpack --config webpack.config.js",
     "prestart:prod": "rimraf dist && tsc",
     "start:prod": "node dist/main.js",

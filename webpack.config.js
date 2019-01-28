@@ -27,6 +27,6 @@ module.exports = {
     plugins: [new webpack.HotModuleReplacementPlugin()],
     output: {
         path: path.join(__dirname, 'dist'),
-        filename: 'main.js',
+        filename: 'app.js',
     },
 };
