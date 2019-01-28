@@ -4,8 +4,7 @@ node_js:
 after_success:
 - npm run report-coverage
 before_deploy:
-- rm -rf node_modules
-- zip -r opentrapp.zip ./dist
+- npm run predeploy
 - export ELASTIC_BEANSTALK_LABEL=git-$(git rev-parse --verify HEAD --short)
 - export ELASTIC_BEANSTALK_DESCRIPTION=https://github.com/Pragmatists/OpenTrappJs/tree/$(git rev-parse HEAD)
 after_deploy:

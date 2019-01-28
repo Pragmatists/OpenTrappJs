@@ -14,7 +14,8 @@
     "test": "jest --coverage",
     "test:watch": "jest --watch",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "report-coverage": "cat ./coverage/lcov.info | coveralls"
+    "report-coverage": "cat ./coverage/lcov.info | coveralls",
+    "predeploy": "sh ./scripts/dist.sh"
   },
   "dependencies": {
     "@nestjs/common": "^5.5.0",
