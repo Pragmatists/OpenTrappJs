@@ -1,13 +1,19 @@
 language: node_js
 node_js:
-  - 10
+- 10
 after_success:
-  - npm run report-coverage
+- npm run report-coverage
 before_deploy:
-  - npm run build
-#deploy:
-#  on: master
-#  provider: heroku
-#  app: open-trapp-js
-#  api_key:
-#    secure: tQb8/k8ivDObGF4F2XooUKx6pp0gos4elVzk8/Icyyig/GMjrncHpYdxjKY+S2LsJ60bXaSWkD/JoG3X4K61vsmePNpX3DZGta3hlIcCW+S544/yXYsZybocxPLoon1CbIEpxTN+7YY1Hx2tfT1GO/5TBFCPAdTY0NHcmC6z4jDLcpr+j1I9sb1Rxk6UWLMqKOF0PO5pPlKI0uQDJ/pWWqFt/Qcxuj7fqNtbmrowb2ba2TvU+/pISwWWFGQHziUh4l+FYyCrD/Paahw64iHRlFDOfQW+3L9P6NWtZH+UZVoawEjVUkZBj3Ow4bAwY7UGMWO6qDjjVE+rfl4+hQTXiTwlGWTh3fQAnEF+a1Oj19vikTsfgLFl4wlT26OZixlEmeuPqjQzg1ys35WquFfY5nBFAl6UEbKdOzbyZjkVg8BOjTk+UaBUSb3kC04PNtawNQ5ZK5hayKOcyDqxW+6Niz8/tLGoL51UhYk5V7GqMo4vhzsz+REpE+bk/wTEU9KuDr2WW/DKWw9zC5v9gY6hpoR4+hg6xKDql0K2rzsFKvxEjqIQOEKbRxF69kLqLX7GmDoMrPoOnp9K+HsohuR2PwCIuMiENPYNJC/grAVsJLG2hPTojrRmmrEUhwP37vUsnam30KjLbE4f492/t9PeVz9+yp6LhCPRFsd2Asu9CXk=
+- npm run build
+deploy:
+  provider: elasticbeanstalk
+  access_key_id:
+    secure: jNa3GoX626/d/FB/PYuYEDbMq7WsuUJaCvwWPeE1NFjEK+2GXvK7VHbnlVM8+kS2Xgb6EzqOxQq0ZkRCKnO1Y0FZCH1xdTPfCjTuaBKph0iq2Vx1ZBFTDPoo2VSwLxOjrRAHNbWl9MInPoPjzBvwhq/N/yAJX/c/5G1efl79J0vf5Q2TtsZTmR7QTiEbksaOCJtQXG51i3lAN06eBQsKNbYtysPKo+96IsPMIVgvdoTXqnF3XnalgttdcpcUL/QoGf1gPJafjJU3M1DpsaLlhf3ZTRgohWN3WeNFvYX12JCLJ4hsBjSD6w/zgdB0xAAqcsbO7oQPXSzooleKrBmGu9BqWSarPRzVLJ1fVkK7UXxNCM1gSMZwr0TR1Oyzgd7ioV57OWNOZRzj5Bp1n+ywwbe13MZ6mHvhhh2m/mutOmsd+uciEKmyExWDF/SGplzB5l0np2UF2ytdiEQEX/hLGtVlgZF6GjtQipKIfEInCBMVnetcuZJXif46/DlmFW0/wzbtr94B2zjxxksgazhSlOdizHpx1TCiYPhE0QHH5rBrqYVVKl7eXmWINo79yZS0UqMLbyTRy6s7SdrpITkdbtXhSb8IXH6f/5jJyBHqsraQFmuqRQ8iabZzLtGfJCDbKv2a658WZoQ9pHhaFsuBv1fyPGRXy0bUGXmJvapi3PU=
+  secret_access_key:
+    secure: VCLj9WBR2T9PRf7ARicgJfbdfA8Rrqh2+9naxBPBYIwPYNpfhDd0AXp/5/uIz66qUnjTR6x3Q9r5i7YNd7SLQd+dgkdtFeoJWrvb42zJhQ2jXhg9MJj6gPU8y7xO2eL8XW6DPs8lkbWxw+wRapW7PNxlQKMUvXNnAvaSjxl0dKrclu/7Ve3O+t9U6U2IqHQjWLOLPCWJCXaltA9iooq6Rx/nbQfa3wVjDQW1Mang506Kb0a1ZBrePNmeshxr3mbU3Lvx2jY+zXNZAacSKuLcSjYbSVVqcQ3VfBs8mwa2uUVTRT2Kidm4wCWomx+pITV3lYLqZKCtIq0Ntfd76tnbowJRWXXd3OCA2tJKzbgfcDJkS/M6m5PTbAPvDPMo+1Epd0EgscRoUOS++FLaj3oe29U/GXUvaTSQFp+NXQ8agIJg52OM9Uz0kYXUhP2hbD/3iizD7EE+XPffbUoZZs5qLO/khwLUOWYRP61MNvYx7bQVOquqajg+YM5934pSemRVrv20d8R5sBZk6e5n/fv0awpRSxt3QftrtFZKCJyBW8/twBPyjEokXSO+zvpkmPJgNlLEdGWVQjbObRJsFDDJRTfy1uAiKWcAcsp5A1mDWmCd89ni4BZHD4cRs87kmjJc+0is7AF2pAL+1GOxQvTp2+F9wrzeFBmQZt41PdomgaE=
+  region: eu-central-1
+  app: opentrapp
+  env: opentrapp-prod
+  on:
+    repo: Pragmatists/OpenTrappJs
+    branch: master
