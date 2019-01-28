@@ -2,6 +2,4 @@
 # If the directory, `dist`, doesn't exist, create `dist`
 stat dist || mkdir dist
 # Archive artifacts
-cd dist
-zip -r ../opentrapp.zip ./*
-cd ..
+zip -r opentrapp.zip dist .ebextensions package.json
