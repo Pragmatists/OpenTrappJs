@@ -2,4 +2,6 @@
 # If the directory, `dist`, doesn't exist, create `dist`
 stat dist || mkdir dist
 # Archive artifacts
-zip -r opentrapp.zip dist
+cd dist
+zip -r ../opentrapp.zip ./*
+cd ..
