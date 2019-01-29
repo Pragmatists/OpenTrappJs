@@ -6,6 +6,7 @@ after_success:
 before_deploy:
 - export ELASTIC_BEANSTALK_LABEL=git-$(git rev-parse --verify HEAD --short)
 - export ELASTIC_BEANSTALK_DESCRIPTION=https://github.com/Pragmatists/OpenTrappJs/tree/$(git rev-parse HEAD)
+- yarn build
 - ./scripts/predeploy.sh
 deploy:
   provider: elasticbeanstalk
