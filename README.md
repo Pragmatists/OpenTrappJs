@@ -6,13 +6,15 @@
 ## Description
 New backend for Open Time Registration Application written in TypeScript using [Nest](https://github.com/nestjs/nest) framework.
 
-## Installation
+## Development
+
+### Installation
 
 ```bash
 $ yarn install
 ```
 
-## Running the app
+### Running the app
 
 Before starting the application you have to set:
  * `OPEN_TRAPP_DB_URI` environment variable. The value should be MongoDB connection URI.
@@ -31,14 +33,11 @@ $ yarn start:prod
 ```
 Application will be available under `localhost:3000`.
 
-## Test
+### Tests
 
 ```bash
-# unit tests
+# unit tests with coverage
 $ yarn test
-
-# test coverage
-$ yarn test:cov
 ```
 
 ### Mock security
@@ -48,5 +47,12 @@ and then add `Authorization` header with value `Bearer test-token` to each reque
 ### In-memory Mongo database
 To use in-memory Mongo in test you should `testModuleWithInMemoryDb` function from `utils/test-utils.ts` to build your test module.
 
-## Swagger
-Swagger is available under `/swagger` path, e.g. [https://open-trapp-js.herokuapp.com/swagger](https://open-trapp-js.herokuapp.com/swagger)
+## Production environment
+
+Application is deployed to AWS Elastic Beanstalk and available under following URL:
+[opentrapp.eu-central-1.elasticbeanstalk.com](opentrapp.eu-central-1.elasticbeanstalk.com)
+
+Automatic deployment is enabled and is triggered by each push to master branch.
+
+### Swagger
+Swagger is available under `/swagger` path, e.g. [PROD Swagger](opentrapp.eu-central-1.elasticbeanstalk.com/swagger)
