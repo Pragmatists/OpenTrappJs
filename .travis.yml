@@ -4,18 +4,13 @@ node_js:
 after_success:
 - npm run report-coverage
 before_deploy:
-- ./scripts/predeploy.sh
 - export ELASTIC_BEANSTALK_LABEL=git-$(git rev-parse --verify HEAD --short)
 - export ELASTIC_BEANSTALK_DESCRIPTION=https://github.com/Pragmatists/OpenTrappJs/tree/$(git rev-parse HEAD)
-after_deploy:
-- rm opentrapp.zip
 deploy:
   provider: elasticbeanstalk
   access_key_id: AKIAJMNMRUTAE75HHYGQ
   secret_access_key:
     secure: bHk35RecndLnn3cE+akoFLzJCuHDXc/GTp8EMCOHILxvJwyum4+visqlKrWbgiPPPXbQjzmG87idKJu291MTgBV6KtclE7EncpuRyzK/GuWTaNMg4Jl05HXGbtpYa8/8zFlrv/lJ02itAIyfIeKaiFE7MiNaeTRFHuoE1u4ZZc0vUSIT+hrSFGGZX8j3HTEtffIfO/YxLwJIuJm6M4ub1UnHZFeGi1dBQ0JXZ/hejBfd68z+4robOz0g7tYcSCH5cQ2tIh7UhOOMYUrcxwQsq3hnia0GQumCL0P8Jv8rzPGT/+JsmhdWaKTXIv+0arGQbEbj+amAtPVx26kAbtr1bpERcJMTYf8G4JEYq1Uf/dcG9u4v/VVAgJj+/4626gpNArS6WUxdLoBGILW2Uzc+A1oY5aoaHIM8BzchY9mqYAEtFIltpMQ/oh7kCmXwcJj4i7XDJMGchrhPYizyc257/laAmRCNJXZmSbvqq6OHqlEKWE7y0XeKAD1CDFfEvscVht1XoPKm9w0+P9l9VTHi0Xs3bAoVqR9Crrp5DmPPrNSmFB4H9gyzTEBLIJAsX1q/Dd7CRDtSbbUTvKYBzk82jnIypC629etdaxewuo33xBtsedeTyb5ee4aBrB+wPU57gnMjZVTZrCx5OiFf3nikv2KxelZ9bk/4fzA1YOOOu+I=
-  zip-file: opentrapp.zip
-  skip_cleanup: true
   region: eu-central-1
   app: opentrapp
   env: opentrapp-prod
