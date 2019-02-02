@@ -19,8 +19,8 @@ export class AuthorizedUserService {
     );
   }
 
-  findByEmail(email: string): Promise<AuthorizedUser> {
-    return this.authorizedUserModel.findOne({email}).exec();
+  findByName(name: string): Observable<AuthorizedUser> {
+    return from(this.authorizedUserModel.findOne({name}).exec());
   }
 
   updateAuthorizedUser(dto: CreateAuthorizedUserDTO): Observable<{}> {
