@@ -4,16 +4,17 @@ import { Observable } from 'rxjs';
 import { ReportingResponseDTO, ReportingWorkLogDTO } from '../time-registration.model';
 import { WorkLogService } from '../../work-log/work-log.service';
 import { map } from 'rxjs/operators';
-import { FindByYearAndMonthParams, FindByYearMonthListParams, YearDTO } from './calendar.model';
-import { ApiUseTags } from '@nestjs/swagger';
+import { FindByYearMonthListParams, YearDTO } from './calendar.model';
+import { ApiUseTags, ApiBearerAuth, ApiImplicitParam } from '@nestjs/swagger';
 import { YearMonth } from '../../work-log/time-unit';
 import { AuthGuard } from '@nestjs/passport';
 
 const CALENDAR_ROOT_URL = '/api/v1/calendar';
 
 @Controller('calendar')
-@ApiUseTags('calendar')
 @UseGuards(AuthGuard('jwt'))
+@ApiUseTags('calendar')
+@ApiBearerAuth()
 export class CalendarController {
 
   constructor(private readonly calendarService: CalendarService,
@@ -32,9 +33,9 @@ export class CalendarController {
   }
 
   @Get(':year/:month/work-log/entries')
-  @UsePipes(new ValidationPipe({transform: true}))
-  entriesForMonth(@Param() params: FindByYearAndMonthParams): Observable<ReportingResponseDTO> {
-    return this.workLogService.findByMonth(new YearMonth(params.year, params.month)).pipe(
+  entriesForMonth(@Param('year', ParseIntPipe) year: number,
+                  @Param('month', ParseIntPipe) month: number): Observable<ReportingResponseDTO> {
+    return this.workLogService.findByMonth(new YearMonth(year, month)).pipe(
       map(workLogs => workLogs.map(workLog => ReportingWorkLogDTO.fromWorkLog(workLog))),
       map(workLogs => ({items: workLogs}))
     );
@@ -42,6 +43,7 @@ export class CalendarController {
 
   @Get(':yearMonthList/work-log/entries')
   @UsePipes(new ValidationPipe({transform: true}))
+  @ApiImplicitParam({name: 'yearMonthList', required: true, description: 'List of years and months, e.g. 201811,201812,201901'})
   entriesForMonthList(@Param() params: FindByYearMonthListParams): Observable<ReportingResponseDTO> {
     return this.workLogService.findByMonthList(params.toList()).pipe(
       map(workLogs => workLogs.map(workLog => ReportingWorkLogDTO.fromWorkLog(workLog))),

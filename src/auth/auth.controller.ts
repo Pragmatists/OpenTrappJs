@@ -7,7 +7,7 @@ import {
   UserTokenResponseDTO
 } from './auth.model';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiUseTags } from '@nestjs/swagger';
+import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 
@@ -20,6 +20,7 @@ export class AuthController {
 
   @Get('status')
   @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
   public status(@Req() request: RequestWithUser): AuthStatus {
     const user = request.user;
     return new AuthStatus(

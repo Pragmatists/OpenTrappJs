@@ -62,13 +62,6 @@ export interface LinkDTO {
   readonly link: string;
 }
 
-export class FindByYearAndMonthParams {
-  @Matches(/^\d{4}$/)
-  year: string;
-  @Matches(/^(0[1-9]|1[012])$/)
-  month: string;
-}
-
 export class FindByYearMonthListParams {
   @Matches(/^(?:[\d]{6})(?:\,[\d]{6})*$/)
   yearMonthList: string;
@@ -77,6 +70,6 @@ export class FindByYearMonthListParams {
     return this.yearMonthList
       .split(',')
       .map(yearMonthString => yearMonthString.match(/(^\d{4})|(\d{2}$)/g))
-      .map(splitYearMonth => new YearMonth(splitYearMonth[0], splitYearMonth[1]));
+      .map(splitYearMonth => YearMonth.fromStringValues(splitYearMonth[0], splitYearMonth[1]));
   }
 }

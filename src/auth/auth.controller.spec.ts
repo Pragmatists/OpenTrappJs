@@ -71,7 +71,7 @@ describe('Auth Controller', () => {
           return authorizedGetRequest('/authentication/status', token)
             .expect(HttpStatus.OK)
             .then(response => {
-              const {email, name, displayName, roles, accountType, loginUrl} = response.body;
+              const {email, name, displayName, roles, accountType} = response.body;
               expect(email).toBeUndefined();
               expect(name).toEqual(clientID);
               expect(displayName).toEqual('Awesome account');

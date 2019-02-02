@@ -1,5 +1,6 @@
 import { Document } from 'mongoose';
 import { IsArray, IsEmail, IsNotEmpty } from 'class-validator';
+import { ApiModelProperty } from '@nestjs/swagger';
 
 export interface AuthorizedUser extends Document {
   email: string;
@@ -15,8 +16,16 @@ export interface AuthorizedUserDTO {
 
 export class CreateAuthorizedUserDTO {
   @IsEmail()
+  @ApiModelProperty({example: 'john.doe@pragmatists.pl'})
   email: string;
   @IsArray()
+  @ApiModelProperty({
+    isArray: true,
+    type: [String],
+    example: ['ADMIN'],
+    uniqueItems: true,
+    description: 'Allows to add, modify or remove user roles. If list is empty user will have only "USER" role'
+  })
   roles: string[];
 }
 
@@ -35,6 +44,7 @@ export interface ServiceAccountDTO {
 
 export class CreateServiceAccountDTO {
   @IsNotEmpty()
+  @ApiModelProperty({example: 'My service account'})
   name: string;
 }
 

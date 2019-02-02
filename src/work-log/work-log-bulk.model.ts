@@ -1,10 +1,13 @@
 import { WorkLogSearchCriteria } from './work-log-search-criteria';
 import { TimeUnit, YearMonth, YearMonthDay } from './time-unit';
 import { Matches } from 'class-validator';
+import { ApiModelProperty } from '@nestjs/swagger';
 
 export class BulkUpdateDTO {
+  @ApiModelProperty()
   query: string;
   @Matches(/^(\+#[^\s]*|\-#[^\s]*)(\+#[^\s]*|\-#[^\s]*|\s)*$/)
+  @ApiModelProperty()
   expression: string;
 }
 
@@ -21,7 +24,7 @@ export class WorkLogQuery {
       .map(WorkLogQuery.parseTimeUnit);
   }
 
-  toSearchCriteria(): {[key: string]: any} {
+  toSearchCriteria(): { [key: string]: any } {
     return WorkLogSearchCriteria.builer
       .userList(this.employees)
       .projectNameList(this.projects)
@@ -51,7 +54,7 @@ export class WorkLogQuery {
       return new YearMonthDay(parts[0], parts[1], parts[2]);
     } else if (YearMonth.PATTERN.test(timeUnit)) {
       const parts = timeUnit.split('/');
-      return new YearMonth(parts[0], parts[1]);
+      return YearMonth.fromStringValues(parts[0], parts[1]);
     }
     throw new Error(`Unexpected time unit: ${timeUnit}`);
   }

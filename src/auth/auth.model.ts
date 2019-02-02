@@ -1,5 +1,6 @@
 import { pragmaEmailToUsername } from '../utils/email-utils';
 import { IsNotEmpty } from 'class-validator';
+import { ApiModelProperty } from '@nestjs/swagger';
 
 export class AuthStatus {
 
@@ -85,8 +86,10 @@ export interface GoogleProfile {
 
 export class ServiceAccountTokenRequestDTO {
   @IsNotEmpty()
+  @ApiModelProperty({example: 'some-client-id'})
   clientID: string;
   @IsNotEmpty()
+  @ApiModelProperty({example: 'some-client-secret'})
   secret: string;
 }
 
