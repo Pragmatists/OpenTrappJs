@@ -6,10 +6,8 @@ declare const module: any;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.enableCors({
-    allowedHeaders: ['Authorization', 'Content-Type', 'accept'],
-    methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'OPTIONS']
-  });
+  app.enableCors();
+  app.setGlobalPrefix('api/v1');
 
   const options = new DocumentBuilder()
     .setTitle('OpenTrappJs')

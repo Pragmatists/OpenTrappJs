@@ -57,7 +57,7 @@ describe('Employee Controller', () => {
   describe('GET /employee/:employeeID/work-log/entries', () => {
     it('should return entries for given employee', done => {
       const employee = 'james.bond';
-      return getRequestWithValidToken(app, `/api/v1/employee/${employee}/work-log/entries`)
+      return getRequestWithValidToken(app, `/employee/${employee}/work-log/entries`)
         .expect(HttpStatus.OK)
         .then(response => response.body.items)
         .then(entries => {
@@ -69,7 +69,7 @@ describe('Employee Controller', () => {
 
     it('should return UNAUTHORIZED for invalid token', done => {
       const employee = 'james.bond';
-      return getRequestWithInvalidToken(app, `/api/v1/employee/${employee}/work-log/entries`)
+      return getRequestWithInvalidToken(app, `/employee/${employee}/work-log/entries`)
         .expect(HttpStatus.UNAUTHORIZED, done);
     });
   });
@@ -79,7 +79,7 @@ describe('Employee Controller', () => {
       const employee = 'andy.barber';
       const requestBody = {day: '2019-01-12', workload: '2h', projectNames: ['projects', 'nvm']};
 
-      return postRequestWithValidToken(app, `/api/v1/employee/${employee}/work-log/entries`, requestBody, 'andy.barber@pragmatists.pl')
+      return postRequestWithValidToken(app, `/employee/${employee}/work-log/entries`, requestBody, 'andy.barber@pragmatists.pl')
         .expect(HttpStatus.CREATED)
         .then(async () => {
           const entry = await workLogModel.findOne({'employeeID._id': employee}).exec();
@@ -94,7 +94,7 @@ describe('Employee Controller', () => {
       const employee = 'john.doe';
       const requestBody = {day: '11-01-07a', workload: '2h', projectNames: ['projects', 'nvm']};
 
-      return postRequestWithValidToken(app, `/api/v1/employee/${employee}/work-log/entries`, requestBody)
+      return postRequestWithValidToken(app, `/employee/${employee}/work-log/entries`, requestBody)
         .send(requestBody)
         .expect(HttpStatus.BAD_REQUEST, done);
     });
@@ -103,7 +103,7 @@ describe('Employee Controller', () => {
       const employee = 'john.doe';
       const requestBody = {day: '2019-01-07', workload: '120m', projectNames: []};
 
-      return postRequestWithValidToken(app, `/api/v1/employee/${employee}/work-log/entries`, requestBody)
+      return postRequestWithValidToken(app, `/employee/${employee}/work-log/entries`, requestBody)
         .send(requestBody)
         .expect(HttpStatus.BAD_REQUEST, done);
     });
@@ -112,7 +112,7 @@ describe('Employee Controller', () => {
       const employee = 'john.doe';
       const requestBody = {day: '2019-01-07', workload: '-10m', projectNames: ['nvm']};
 
-      return postRequestWithValidToken(app, `/api/v1/employee/${employee}/work-log/entries`, requestBody)
+      return postRequestWithValidToken(app, `/employee/${employee}/work-log/entries`, requestBody)
         .send(requestBody)
         .expect(HttpStatus.BAD_REQUEST, done);
     });
@@ -120,7 +120,7 @@ describe('Employee Controller', () => {
     it('should return UNAUTHORIZED for invalid token', done => {
       const employee = 'john.doe';
       const requestBody = {day: '2019-01-12', workload: '2h', projectNames: ['projects', 'nvm']};
-      return postRequestWithInvalidToken(app, `/api/v1/employee/${employee}/work-log/entries`, requestBody)
+      return postRequestWithInvalidToken(app, `/employee/${employee}/work-log/entries`, requestBody)
         .expect(HttpStatus.UNAUTHORIZED, done);
     });
 
@@ -128,7 +128,7 @@ describe('Employee Controller', () => {
       const employee = 'andy.barber';
       const requestBody = {day: '2019-01-12', workload: '2h', projectNames: ['projects', 'nvm']};
 
-      return postRequestWithValidToken(app, `/api/v1/employee/${employee}/work-log/entries`, requestBody, 'john.doe@pragmatists.pl')
+      return postRequestWithValidToken(app, `/employee/${employee}/work-log/entries`, requestBody, 'john.doe@pragmatists.pl')
         .send(requestBody)
         .expect(HttpStatus.FORBIDDEN, done);
     });

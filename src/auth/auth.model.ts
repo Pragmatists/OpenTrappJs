@@ -2,7 +2,6 @@ import { pragmaEmailToUsername } from '../utils/email-utils';
 import { IsNotEmpty } from 'class-validator';
 
 export class AuthStatus {
-  readonly loginUrl = '/api/v1/authentication/login';
 
   constructor(readonly displayName: string,
               readonly name: string,

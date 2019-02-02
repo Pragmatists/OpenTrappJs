@@ -8,7 +8,7 @@ import { ApiUseTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { CanCreateEntryGuard } from './can-create-entry.guard';
 
-@Controller('/api/v1/employee')
+@Controller('employee')
 @ApiUseTags('employee')
 @UseGuards(AuthGuard('jwt'))
 export class EmployeeController {

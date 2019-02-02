@@ -8,7 +8,7 @@ import { ApiBearerAuth, ApiImplicitQuery, ApiUseTags } from '@nestjs/swagger';
 import { RolesGuard } from '../shared/roles.guard';
 import { Roles } from '../shared/roles.decorator';
 
-@Controller('api/v1/admin')
+@Controller('admin')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiUseTags('admin-work-log')
 @ApiBearerAuth()

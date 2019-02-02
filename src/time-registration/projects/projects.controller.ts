@@ -7,7 +7,7 @@ import { ReportingResponseDTO, ReportingWorkLogDTO } from '../time-registration.
 import { ApiUseTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 
-@Controller('api/v1/projects')
+@Controller('projects')
 @ApiUseTags('project')
 @UseGuards(AuthGuard('jwt'))
 export class ProjectsController {

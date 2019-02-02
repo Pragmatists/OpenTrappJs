@@ -53,13 +53,13 @@ describe('Projects Controller', () => {
 
   describe('GET /projects', () => {
     it('should return list of available projects', done => {
-      return getRequestWithValidToken(app, '/api/v1/projects')
+      return getRequestWithValidToken(app, '/projects')
         .expect(HttpStatus.OK)
         .expect(['holidays', 'nvm', 'projects', 'syniverse-dsp'], done);
     });
 
     it('should return UNAUTHORIZED for invalid token', done => {
-      return getRequestWithInvalidToken(app, '/api/v1/projects')
+      return getRequestWithInvalidToken(app, '/projects')
         .expect(HttpStatus.UNAUTHORIZED, done);
     });
   });
@@ -68,7 +68,7 @@ describe('Projects Controller', () => {
     it('should return entries for given project name', done => {
       const projectName = 'syniverse-dsp';
 
-      return getRequestWithValidToken(app, `/api/v1/projects/${projectName}/work-log/entries`)
+      return getRequestWithValidToken(app, `/projects/${projectName}/work-log/entries`)
         .expect(HttpStatus.OK)
         .then(response => response.body.items)
         .then(entries => {
@@ -79,14 +79,14 @@ describe('Projects Controller', () => {
     });
 
     it('should return empty list for unknown project name', done => {
-      return getRequestWithValidToken(app, `/api/v1/projects/aaa/work-log/entries`)
+      return getRequestWithValidToken(app, `/projects/aaa/work-log/entries`)
         .expect(HttpStatus.OK, {items: []}, done);
     });
 
     it('should return UNAUTHORIZED for invalid token', done => {
       const projectName = 'syniverse-dsp';
 
-      return getRequestWithInvalidToken(app, `/api/v1/projects/${projectName}/work-log/entries`)
+      return getRequestWithInvalidToken(app, `/projects/${projectName}/work-log/entries`)
         .expect(HttpStatus.UNAUTHORIZED, done);
     });
   });

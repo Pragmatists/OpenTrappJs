@@ -54,7 +54,7 @@ describe('Calendar Controller', () => {
 
   describe('GET /calendar/:year', () => {
     it('should return particular year', done => {
-      return getRequestWithValidToken(app, '/api/v1/calendar/2014')
+      return getRequestWithValidToken(app, '/calendar/2014')
         .expect(HttpStatus.OK)
         .then(response => response.body)
         .then(responseBody => {
@@ -80,14 +80,14 @@ describe('Calendar Controller', () => {
     });
 
     it('should return UNAUTHORIZED for invalid token', done => {
-      return getRequestWithInvalidToken(app, '/api/v1/calendar/2014')
+      return getRequestWithInvalidToken(app, '/calendar/2014')
         .expect(HttpStatus.UNAUTHORIZED, done);
     });
   });
 
   describe('GET /calendar/:year/:month', () => {
     it('should return particular month', done => {
-      return getRequestWithValidToken(app, '/api/v1/calendar/2014/01')
+      return getRequestWithValidToken(app, '/calendar/2014/01')
         .expect(HttpStatus.OK)
         .then(response => response.body)
         .then(responseBody => {
@@ -111,14 +111,14 @@ describe('Calendar Controller', () => {
     });
 
     it('should return UNAUTHORIZED for invalid token', done => {
-      return getRequestWithInvalidToken(app, '/api/v1/calendar/2014/01')
+      return getRequestWithInvalidToken(app, '/calendar/2014/01')
         .expect(HttpStatus.UNAUTHORIZED, done);
     });
   });
 
   describe('GET /calendar/:year/:month:/work-log/entries', () => {
     it('should return entries for given year and month', done => {
-      return getRequestWithValidToken(app, '/api/v1/calendar/2019/01/work-log/entries')
+      return getRequestWithValidToken(app, '/calendar/2019/01/work-log/entries')
         .expect(HttpStatus.OK)
         .then(response => response.body.items)
         .then(entries => {
@@ -130,24 +130,24 @@ describe('Calendar Controller', () => {
     });
 
     it('should return BAD REQUEST for invalid year', done => {
-      return getRequestWithValidToken(app, '/api/v1/calendar/19a4/01/work-log/entries')
+      return getRequestWithValidToken(app, '/calendar/19a4/01/work-log/entries')
         .expect(HttpStatus.BAD_REQUEST, done);
     });
 
     it('should return BAD REQUEST for invalid month', done => {
-      return getRequestWithValidToken(app, '/api/v1/calendar/2018/22/work-log/entries')
+      return getRequestWithValidToken(app, '/calendar/2018/22/work-log/entries')
         .expect(HttpStatus.BAD_REQUEST, done);
     });
 
     it('should return UNAUTHORIZED for invalid token', done => {
-      getRequestWithInvalidToken(app, '/api/v1/calendar/2018/22/work-log/entries')
+      getRequestWithInvalidToken(app, '/calendar/2018/22/work-log/entries')
         .expect(HttpStatus.UNAUTHORIZED, done);
     });
   });
 
   describe('GET /calendar/:yearMonthList/work-log/entries', () => {
     it('should return entries for specified months', done => {
-      return getRequestWithValidToken(app, '/api/v1/calendar/201812,201901,201902/work-log/entries')
+      return getRequestWithValidToken(app, '/calendar/201812,201901,201902/work-log/entries')
         .expect(HttpStatus.OK)
         .then(response => response.body.items)
         .then(entries => {
@@ -160,12 +160,12 @@ describe('Calendar Controller', () => {
     });
 
     it('should return BAD REQUEST for invalid months list', done => {
-      return getRequestWithValidToken(app, '/api/v1/calendar/20181212,2019-01/work-log/entries')
+      return getRequestWithValidToken(app, '/calendar/20181212,2019-01/work-log/entries')
         .expect(HttpStatus.BAD_REQUEST, done);
     });
 
     it('should return UNAUTHORIZED for invalid token', done => {
-      return getRequestWithInvalidToken(app, '/api/v1/calendar/201812,201901,201902/work-log/entries')
+      return getRequestWithInvalidToken(app, '/calendar/201812,201901,201902/work-log/entries')
         .expect(HttpStatus.UNAUTHORIZED, done);
     });
   });

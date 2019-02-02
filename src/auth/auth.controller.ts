@@ -11,7 +11,7 @@ import { ApiUseTags } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 
-@Controller('/api/v1/authentication')
+@Controller('authentication')
 @ApiUseTags('authentication')
 export class AuthController {
 
