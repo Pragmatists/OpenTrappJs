@@ -1,5 +1,6 @@
 import { Matches } from 'class-validator';
 import { YearMonth } from '../../work-log/time-unit';
+import * as moment from 'moment';
 
 export class YearDTO {
   readonly id: string;
@@ -49,12 +50,20 @@ export class MonthDTO {
 }
 
 export class DayDTO {
+  readonly id: string;
   readonly link: string;
+  readonly weekend: boolean;
 
-  constructor(readonly id: string,
+  constructor(date: moment.Moment,
               readonly holiday: boolean,
               rootUrl: string) {
-    this.link = `${rootUrl}/${id}`;
+    this.id = date.format('YYYY/MM/DD');
+    this.link = `${rootUrl}/${this.id}`;
+    this.weekend = DayDTO.isWeekend(date);
+  }
+
+  private static isWeekend(date: moment.Moment): boolean {
+    return date.isoWeekday() === 6 || date.isoWeekday() === 7;
   }
 }
 
@@ -72,4 +81,8 @@ export class FindByYearMonthListParams {
       .map(yearMonthString => yearMonthString.match(/(^\d{4})|(\d{2}$)/g))
       .map(splitYearMonth => YearMonth.fromStringValues(splitYearMonth[0], splitYearMonth[1]));
   }
+}
+
+export interface HolidayDTO {
+  day: moment.Moment;
 }

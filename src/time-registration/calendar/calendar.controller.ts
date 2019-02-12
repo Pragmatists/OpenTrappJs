@@ -4,8 +4,8 @@ import { Observable } from 'rxjs';
 import { ReportingResponseDTO, ReportingWorkLogDTO } from '../time-registration.model';
 import { WorkLogService } from '../../work-log/work-log.service';
 import { map } from 'rxjs/operators';
-import { FindByYearMonthListParams, YearDTO } from './calendar.model';
-import { ApiUseTags, ApiBearerAuth, ApiImplicitParam } from '@nestjs/swagger';
+import { FindByYearMonthListParams, MonthDTO, YearDTO } from './calendar.model';
+import { ApiBearerAuth, ApiImplicitParam, ApiUseTags } from '@nestjs/swagger';
 import { YearMonth } from '../../work-log/time-unit';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -23,7 +23,7 @@ export class CalendarController {
 
   @Get(':year/:month')
   getMonth(@Param('year', ParseIntPipe) year: number,
-           @Param('month', ParseIntPipe) month: number) {
+           @Param('month', ParseIntPipe) month: number): Observable<MonthDTO> {
     return this.calendarService.getMonth(year, month, CALENDAR_ROOT_URL);
   }
 
