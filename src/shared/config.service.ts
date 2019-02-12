@@ -34,8 +34,4 @@ export class ConfigService {
       expiresIn: ConfigService.TOKEN_EXPIRATION_TIME
     };
   }
-
-  get uiUrl(): string {
-    return process.env.OPEN_TRAPP_UI_URL;
-  }
 }
