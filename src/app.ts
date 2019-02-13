@@ -9,7 +9,7 @@ const BASE_PATH = 'api/v1';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
-  app.setGlobalPrefix(BASE_PATH);
+  // app.setGlobalPrefix(BASE_PATH);
 
   const options = new DocumentBuilder()
     .setTitle('OpenTrappJs')
@@ -23,7 +23,7 @@ async function bootstrap() {
     .addTag('project')
     .addBearerAuth('Authorization', 'header', 'apiKey')
     .setSchemes('https', 'http')
-    .setBasePath(BASE_PATH)
+    // .setBasePath(BASE_PATH)
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('swagger', app, document);

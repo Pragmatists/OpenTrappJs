@@ -5,10 +5,11 @@ import { WorkLogModule } from '../work-log/work-log.module';
 import { AuthModule } from '../auth/auth.module';
 import { AdminAccountsController } from './admin-accounts.controller';
 import { CanDeleteServiceAccountGuard } from './can-delete-service-account.guard';
+import { WellKnownController } from './well-known.controller';
 
 @Module({
   imports: [SharedModule, WorkLogModule, AuthModule],
-  controllers: [AdminWorkLogController, AdminAccountsController],
+  controllers: [AdminWorkLogController, AdminAccountsController, WellKnownController],
   providers: [CanDeleteServiceAccountGuard]
 })
 export class AdminModule {
