@@ -55,3 +55,10 @@ Automatic deployment is enabled and is triggered by each push to master branch.
 
 ### Swagger
 Swagger is available under `/swagger` path, e.g. [PROD Swagger](opentrapp.eu-central-1.elasticbeanstalk.com/swagger)
+
+### SSL
+Certificate files are stored on S3.
+
+NGINX is configured in `.ebextensions/https-instange.config` file.
+
+Port 443 on EB EC2 instance is enabled by `.ebextensions/https-instance-single.config`.
