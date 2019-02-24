@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { TagsService } from '../../work-log/tags.service';
 import { WorkLogService } from '../../work-log/work-log.service';
 import { map } from 'rxjs/operators';
-import { ReportingResponseDTO, ReportingWorkLogDTO } from '../time-registration.model';
+import { ReportingWorkLogDTO } from '../time-registration.model';
 import { ApiUseTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -22,10 +22,9 @@ export class ProjectsController {
   }
 
   @Get(':projectName/work-log/entries')
-  entriesForProject(@Param('projectName') projectName: string): Observable<ReportingResponseDTO> {
+  entriesForProject(@Param('projectName') projectName: string): Observable<ReportingWorkLogDTO[]> {
     return this.workLogService.findByProject(projectName).pipe(
-      map(workLogs => workLogs.map(workLog => ReportingWorkLogDTO.fromWorkLog(workLog))),
-      map(workLogs => ({items: workLogs}))
+      map(workLogs => workLogs.map(workLog => ReportingWorkLogDTO.fromWorkLog(workLog)))
     );
   }
 }

@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpCode, Param, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { ReportingResponseDTO, ReportingWorkLogDTO } from '../time-registration.model';
+import { ReportingWorkLogDTO } from '../time-registration.model';
 import { WorkLogService } from '../../work-log/work-log.service';
 import { map } from 'rxjs/operators';
 import { RegisterWorkLogDTO } from '../../work-log/work-log.model';
@@ -17,10 +17,9 @@ export class EmployeeController {
   }
 
   @Get(':employeeID/work-log/entries')
-  entriesForEmployee(@Param('employeeID') employeeID: string): Observable<ReportingResponseDTO>  {
+  entriesForEmployee(@Param('employeeID') employeeID: string): Observable<ReportingWorkLogDTO[]>  {
     return this.workLogService.findByEmployeeID(employeeID).pipe(
-      map(workLogs => workLogs.map(workLog => ReportingWorkLogDTO.fromWorkLog(workLog))),
-      map(workLogs => ({items: workLogs}))
+      map(workLogs => workLogs.map(workLog => ReportingWorkLogDTO.fromWorkLog(workLog)))
     );
   }
 

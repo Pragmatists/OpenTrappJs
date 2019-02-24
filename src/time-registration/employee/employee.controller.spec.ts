@@ -59,7 +59,7 @@ describe('Employee Controller', () => {
       const employee = 'james.bond';
       return getRequestWithValidToken(app, `/employee/${employee}/work-log/entries`)
         .expect(HttpStatus.OK)
-        .then(response => response.body.items)
+        .then(response => response.body)
         .then(entries => {
           expect(entries).toHaveLength(2);
           expect(entries.map(e => e.employee).every(name => name === employee)).toBeTruthy();

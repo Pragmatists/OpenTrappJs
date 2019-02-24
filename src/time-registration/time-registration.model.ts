@@ -17,7 +17,3 @@ export class ReportingWorkLogDTO {
     );
   }
 }
-
-export interface ReportingResponseDTO {
-  items: ReportingWorkLogDTO[];
-}

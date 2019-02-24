@@ -70,7 +70,7 @@ describe('Projects Controller', () => {
 
       return getRequestWithValidToken(app, `/projects/${projectName}/work-log/entries`)
         .expect(HttpStatus.OK)
-        .then(response => response.body.items)
+        .then(response => response.body)
         .then(entries => {
           expect(entries).toHaveLength(2);
           expect(entries.every(entry => includes(entry.projectNames, projectName))).toBeTruthy();
@@ -80,7 +80,7 @@ describe('Projects Controller', () => {
 
     it('should return empty list for unknown project name', done => {
       return getRequestWithValidToken(app, `/projects/aaa/work-log/entries`)
-        .expect(HttpStatus.OK, {items: []}, done);
+        .expect(HttpStatus.OK, [], done);
     });
 
     it('should return UNAUTHORIZED for invalid token', done => {

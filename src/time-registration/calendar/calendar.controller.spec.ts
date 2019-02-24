@@ -182,7 +182,7 @@ describe('Calendar Controller', () => {
     it('should return entries for given year and month', done => {
       return getRequestWithValidToken(app, '/calendar/2019/01/work-log/entries')
         .expect(HttpStatus.OK)
-        .then(response => response.body.items)
+        .then(response => response.body)
         .then(entries => {
           expect(entries).toHaveLength(2);
           expect(entries[0].day).toEqual('2019/01/06');
@@ -211,7 +211,7 @@ describe('Calendar Controller', () => {
     it('should return entries for specified months', done => {
       return getRequestWithValidToken(app, '/calendar/201812,201901,201902/work-log/entries')
         .expect(HttpStatus.OK)
-        .then(response => response.body.items)
+        .then(response => response.body)
         .then(entries => {
           expect(entries).toHaveLength(3);
           expect(entries[0].day).toEqual('2018/12/05');

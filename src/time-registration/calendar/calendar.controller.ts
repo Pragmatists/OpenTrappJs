@@ -1,7 +1,7 @@
 import { Controller, Get, Param, ParseIntPipe, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CalendarService } from './calendar.service';
 import { Observable } from 'rxjs';
-import { ReportingResponseDTO, ReportingWorkLogDTO } from '../time-registration.model';
+import { ReportingWorkLogDTO } from '../time-registration.model';
 import { WorkLogService } from '../../work-log/work-log.service';
 import { map } from 'rxjs/operators';
 import { FindByYearMonthListParams, MonthDTO, YearDTO } from './calendar.model';
@@ -34,20 +34,18 @@ export class CalendarController {
 
   @Get(':year/:month/work-log/entries')
   entriesForMonth(@Param('year', ParseIntPipe) year: number,
-                  @Param('month', ParseIntPipe) month: number): Observable<ReportingResponseDTO> {
+                  @Param('month', ParseIntPipe) month: number): Observable<ReportingWorkLogDTO[]> {
     return this.workLogService.findByMonth(new YearMonth(year, month)).pipe(
-      map(workLogs => workLogs.map(workLog => ReportingWorkLogDTO.fromWorkLog(workLog))),
-      map(workLogs => ({items: workLogs}))
+      map(workLogs => workLogs.map(workLog => ReportingWorkLogDTO.fromWorkLog(workLog)))
     );
   }
 
   @Get(':yearMonthList/work-log/entries')
   @UsePipes(new ValidationPipe({transform: true}))
   @ApiImplicitParam({name: 'yearMonthList', required: true, description: 'List of years and months, e.g. 201811,201812,201901'})
-  entriesForMonthList(@Param() params: FindByYearMonthListParams): Observable<ReportingResponseDTO> {
+  entriesForMonthList(@Param() params: FindByYearMonthListParams): Observable<ReportingWorkLogDTO[]> {
     return this.workLogService.findByMonthList(params.toList()).pipe(
-      map(workLogs => workLogs.map(workLog => ReportingWorkLogDTO.fromWorkLog(workLog))),
-      map(workLogs => ({items: workLogs}))
+      map(workLogs => workLogs.map(workLog => ReportingWorkLogDTO.fromWorkLog(workLog)))
     );
   }
 }
