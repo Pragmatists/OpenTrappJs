@@ -4,7 +4,7 @@ export class ReportingWorkLogDTO {
   readonly link: string;
 
   constructor(readonly id: string,
-              readonly workload: string,
+              readonly workload: number,
               readonly projectNames: string[],
               readonly employee: string,
               readonly day: string) {
@@ -13,7 +13,7 @@ export class ReportingWorkLogDTO {
 
   static fromWorkLog(workLog: WorkLogDTO) {
     return new ReportingWorkLogDTO(
-      workLog.id, `${workLog.workload}`, workLog.projectNames, workLog.employeeID, workLog.day
+      workLog.id, workLog.workload, workLog.projectNames, workLog.employeeID, workLog.day
     );
   }
 }
