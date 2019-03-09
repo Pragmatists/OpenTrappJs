@@ -8,7 +8,7 @@ import { filter, map, mapTo, throwIfEmpty } from 'rxjs/operators';
 import { v4 as uuid } from 'uuid';
 import { WorkLogSearchCriteria } from './work-log-search-criteria';
 import { YearMonth } from './time-unit';
-import { isNil, has, sortBy } from 'lodash';
+import { isNil, has, sortBy, trim } from 'lodash';
 
 @Injectable()
 export class WorkLogService {
@@ -73,7 +73,7 @@ export class WorkLogService {
       employeeID: {
         _id: username
       },
-      projectNames: registerWorkLogDTO.projectNames.map(name => ({name})),
+      projectNames: registerWorkLogDTO.projectNames.map(trim).map(name => ({name})),
       workload: {
         minutes: registerWorkLogDTO.workloadMinutes
       },

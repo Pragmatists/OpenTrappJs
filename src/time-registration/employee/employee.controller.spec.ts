@@ -90,6 +90,19 @@ describe('Employee Controller', () => {
         });
     });
 
+    it('should trim project names in saved work log', done => {
+      const employee = 'andy.barber';
+      const requestBody = {day: '2019-01-12', workload: '1h', projectNames: ['projects  ', ' nvm ']};
+
+      return postRequestWithValidToken(app, `/employee/${employee}/work-log/entries`, requestBody, 'andy.barber@pragmatists.pl')
+        .expect(HttpStatus.CREATED)
+        .then(async () => {
+          const entry = await workLogModel.findOne({'employeeID._id': employee}).exec();
+          expect(entry.projectNames.map(p => p.name)).toEqual(['projects', 'nvm']);
+          done();
+        });
+    });
+
     it('should return BAD REQUEST for invalid date', done => {
       const employee = 'john.doe';
       const requestBody = {day: '11-01-07a', workload: '2h', projectNames: ['projects', 'nvm']};
