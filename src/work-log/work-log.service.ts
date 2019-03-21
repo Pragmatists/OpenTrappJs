@@ -89,7 +89,7 @@ export class WorkLogService {
 
   update(id: string, updateDTO: UpdateWorkLogDTO) {
     let workLog: any = {
-      projectNames: updateDTO.projectNames.map(name => ({name})),
+      projectNames: updateDTO.projectNames.map(trim).map(name => ({name})),
       workload: {
         minutes: updateDTO.workloadMinutes
       },
