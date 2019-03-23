@@ -107,6 +107,25 @@ export function postRequestWithInvalidToken(app: INestApplication, url: string, 
     .set('Authorization', `Bearer invalid-token`);
 }
 
+export function putRequestWithValidToken(app: INestApplication,
+                                         url: string,
+                                         body,
+                                         tokenEmail = 'john.doe@pragmatists.pl',
+                                         tokenDisplayName = 'John Doe') {
+  const token = loggedInAs(tokenEmail, tokenDisplayName);
+  return request(app.getHttpServer())
+      .put(url)
+      .send(body)
+      .set('Authorization', `Bearer ${token}`);
+}
+
+export function putRequestWithInvalidToken(app: INestApplication, url: string, body) {
+  return request(app.getHttpServer())
+      .put(url)
+      .send(body)
+      .set('Authorization', `Bearer invalid-token`);
+}
+
 export function deleteRequestWithValidToken(app: INestApplication,
                                             url: string,
                                             tokenEmail = 'john.doe@pragmatists.pl',

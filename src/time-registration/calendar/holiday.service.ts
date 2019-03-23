@@ -27,7 +27,7 @@ export class HolidayService {
     const params = this.params(year, month);
     return this.httpService.get<HolidayResponseElement[]>(HolidayService.API_ROOT_URL, {params}).pipe(
       map(resp => resp.data),
-      map(responseElements => responseElements.map(element => this.responseElementToHolidayDTO(element)))
+      map(responseElements => responseElements.map(HolidayService.responseElementToHolidayDTO))
     );
   }
 
@@ -43,7 +43,7 @@ export class HolidayService {
     };
   }
 
-  private responseElementToHolidayDTO(responseElement: HolidayResponseElement): HolidayDTO {
+  private static responseElementToHolidayDTO(responseElement: HolidayResponseElement): HolidayDTO {
     const date = responseElement.date;
     return {
       day: moment([date.year, date.month - 1, date.day])

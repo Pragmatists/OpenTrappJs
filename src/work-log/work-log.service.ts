@@ -19,13 +19,13 @@ export class WorkLogService {
     return from(this.workLogModel.findById({_id: id}).exec()).pipe(
       filter(workLog => !isNil(workLog)),
       throwIfEmpty(() => new NotFoundException(`Entry with id ${id} does not exists`)),
-      map(workLog => WorkLogService.workLogEntityToDTO(workLog))
+      map(WorkLogService.workLogEntityToDTO)
     );
   }
 
   find(queryParam: FindWorkloadQueryParams): Observable<WorkLogDTO[]> {
     queryParam.validate();
-    const query = WorkLogSearchCriteria.builer
+    const query = WorkLogSearchCriteria.builder
       .date(queryParam.date)
       .dateRange(queryParam.dateFrom, queryParam.dateTo)
       .user(queryParam.user)
@@ -35,28 +35,28 @@ export class WorkLogService {
   }
 
   findByProject(projectName: string): Observable<WorkLogDTO[]> {
-    const query = WorkLogSearchCriteria.builer
+    const query = WorkLogSearchCriteria.builder
       .projectName(projectName)
       .build();
     return this.findByQuery(query);
   }
 
   findByMonth(yearMonth: YearMonth): Observable<WorkLogDTO[]> {
-    const query = WorkLogSearchCriteria.builer
+    const query = WorkLogSearchCriteria.builder
       .timeUnit(yearMonth)
       .build();
     return this.findByQuery(query);
   }
 
   findByMonthList(monthList: YearMonth[]): Observable<WorkLogDTO[]> {
-    const query = WorkLogSearchCriteria.builer
+    const query = WorkLogSearchCriteria.builder
       .timeUnits(monthList)
       .build();
     return this.findByQuery(query);
   }
 
   findByEmployeeID(employeeID: string): Observable<WorkLogDTO[]> {
-    const query = WorkLogSearchCriteria.builer
+    const query = WorkLogSearchCriteria.builder
       .user(employeeID)
       .build();
     return this.findByQuery(query);
@@ -87,7 +87,7 @@ export class WorkLogService {
     );
   }
 
-  update(id: string, updateDTO: UpdateWorkLogDTO) {
+  update(id: string, updateDTO: UpdateWorkLogDTO): Observable<WorkLogDTO> {
     let workLog: any = {
       projectNames: updateDTO.projectNames.map(trim).map(name => ({name})),
       workload: {
@@ -102,9 +102,9 @@ export class WorkLogService {
         }
       };
     }
-    return from(this.workLogModel.findByIdAndUpdate({_id: id}, workLog).exec()).pipe(
+    return from(this.workLogModel.findByIdAndUpdate({_id: id}, workLog, {new: true}).exec()).pipe(
       filter(updatedWorkLog => !isNil(updatedWorkLog)),
-      mapTo({}),
+      map(WorkLogService.workLogEntityToDTO),
       throwIfEmpty(() => new NotFoundException(`Entity with id ${id} doesn't exist`))
     );
   }
@@ -130,7 +130,7 @@ export class WorkLogService {
 
   private findByQuery(query) {
     return from(this.workLogModel.find(query).exec()).pipe(
-      map(workLogs => workLogs.map(w => WorkLogService.workLogEntityToDTO(w))),
+      map(workLogs => workLogs.map(WorkLogService.workLogEntityToDTO)),
       map(workLogs => sortBy(workLogs, workLog => workLog.day))
     );
   }

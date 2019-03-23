@@ -10,6 +10,8 @@ import {
   getRequestWithValidToken,
   postRequestWithInvalidToken,
   postRequestWithValidToken,
+  putRequestWithInvalidToken,
+  putRequestWithValidToken,
   someWorkLog,
   testModuleWithInMemoryDb
 } from '../../utils/test-utils';
@@ -55,14 +57,21 @@ describe('WorkLog Controller', () => {
     await workLogModel.deleteMany({}).exec();
   });
 
-  describe('POST /work-log/entries/:id', () => {
+  describe('PUT /work-log/entries/:id', () => {
     it('should update existing entry', done => {
       const idToUpdate = 'id-to-update';
       const requestBody = {workload: '60m', projectNames: ['nvm']};
 
-      return postRequestWithValidToken(app, `/work-log/entries/${idToUpdate}`, requestBody, 'james.bond@pragmatists.pl')
+      return putRequestWithValidToken(app, `/work-log/entries/${idToUpdate}`, requestBody, 'james.bond@pragmatists.pl')
         .send(requestBody)
-        .expect(HttpStatus.OK, {status: 'success'})
+        .expect(HttpStatus.OK, {
+          id: 'id-to-update',
+          projectNames: ['nvm'],
+          employee: 'james.bond',
+          day: '2018/12/05',
+          workload: 60,
+          link: '/api/v1/work-log/entries/id-to-update'
+        })
         .then(async () => {
           const updatedWorkLog = await workLogModel.findById({_id: idToUpdate}).exec();
           expect(updatedWorkLog.day.date).toEqual('2018/12/05');
@@ -75,14 +84,21 @@ describe('WorkLog Controller', () => {
 
     it('should update existing entry with note', done => {
       const idToUpdate = 'id-to-update';
-      const requestBody = {workload: '60m', projectNames: ['nvm'], note: 'Updated note'};
+      const requestBody = {workload: '2h 30m', projectNames: ['nvm'], note: 'Updated note'};
 
-      return postRequestWithValidToken(app, `/work-log/entries/${idToUpdate}`, requestBody, 'james.bond@pragmatists.pl')
-        .expect(HttpStatus.OK, {status: 'success'})
+      return putRequestWithValidToken(app, `/work-log/entries/${idToUpdate}`, requestBody, 'james.bond@pragmatists.pl')
+        .expect(HttpStatus.OK, {
+          id: 'id-to-update',
+          projectNames: ['nvm'],
+          employee: 'james.bond',
+          day: '2018/12/05',
+          workload: 150,
+          link: '/api/v1/work-log/entries/id-to-update'
+        })
         .then(async () => {
           const updatedWorkLog = await workLogModel.findById({_id: idToUpdate}).exec();
           expect(updatedWorkLog.day.date).toEqual('2018/12/05');
-          expect(updatedWorkLog.workload.minutes).toEqual(60);
+          expect(updatedWorkLog.workload.minutes).toEqual(150);
           expect(updatedWorkLog.projectNames.map(p => p.name)).toEqual(['nvm']);
           expect(updatedWorkLog.note.text).toEqual('Updated note');
           done();
@@ -93,7 +109,7 @@ describe('WorkLog Controller', () => {
       const idToUpdate = 'not-existing-id';
       const requestBody = {workload: '60m', projectNames: ['nvm']};
 
-      return postRequestWithValidToken(app, `/work-log/entries/${idToUpdate}`, requestBody)
+      return putRequestWithValidToken(app, `/work-log/entries/${idToUpdate}`, requestBody)
         .expect(HttpStatus.NOT_FOUND, done);
     });
 
@@ -101,7 +117,7 @@ describe('WorkLog Controller', () => {
       const idToUpdate = 'id-to-update';
       const requestBody = {day: '2019-01-07', workload: '120m', projectNames: []};
 
-      return postRequestWithValidToken(app, `/work-log/entries/${idToUpdate}`, requestBody, 'james.bond@pragmatists.pl')
+      return putRequestWithValidToken(app, `/work-log/entries/${idToUpdate}`, requestBody, 'james.bond@pragmatists.pl')
         .expect(HttpStatus.BAD_REQUEST, done);
     });
 
@@ -109,7 +125,7 @@ describe('WorkLog Controller', () => {
       const idToUpdate = 'id-to-update';
       const requestBody = {day: '2019-01-07', workload: '-10', projectNames: ['nvm']};
 
-      return postRequestWithValidToken(app, `/work-log/entries/${idToUpdate}`, requestBody, 'james.bond@pragmatists.pl')
+      return putRequestWithValidToken(app, `/work-log/entries/${idToUpdate}`, requestBody, 'james.bond@pragmatists.pl')
         .expect(HttpStatus.BAD_REQUEST, done);
     });
 
@@ -117,7 +133,7 @@ describe('WorkLog Controller', () => {
       const idToUpdate = 'id-to-update';
       const requestBody = {workload: '60m', projectNames: ['nvm']};
 
-      return postRequestWithInvalidToken(app, `/work-log/entries/${idToUpdate}`, requestBody)
+      return putRequestWithInvalidToken(app, `/work-log/entries/${idToUpdate}`, requestBody)
         .expect(HttpStatus.UNAUTHORIZED, done);
     });
 
@@ -125,7 +141,7 @@ describe('WorkLog Controller', () => {
       const idToUpdate = 'id-to-update';
       const requestBody = {workload: '60m', projectNames: ['nvm']};
 
-      return postRequestWithValidToken(app, `/work-log/entries/${idToUpdate}`, requestBody, 'john.doe@pragmatists.com')
+      return putRequestWithValidToken(app, `/work-log/entries/${idToUpdate}`, requestBody, 'john.doe@pragmatists.com')
         .expect(HttpStatus.FORBIDDEN, done);
     });
   });

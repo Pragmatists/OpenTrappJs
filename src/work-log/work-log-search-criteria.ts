@@ -7,7 +7,7 @@ export class WorkLogSearchCriteria {
   private constructor() {
   }
 
-  static get builer(): WorkLogSearchCriteria {
+  static get builder(): WorkLogSearchCriteria {
     return new WorkLogSearchCriteria();
   }
 

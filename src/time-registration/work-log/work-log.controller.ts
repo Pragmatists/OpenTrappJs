@@ -6,14 +6,16 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  Post, Req,
+  Post,
+  Put,
+  Req,
   UseGuards,
   UsePipes,
   ValidationPipe
 } from '@nestjs/common';
 import { WorkLogService } from '../../work-log/work-log.service';
 import { UpdateWorkLogDTO } from '../../work-log/work-log.model';
-import { map, mapTo } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { ApiUseTags } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { WorkLogBulkService } from '../../work-log/work-log-bulk.service';
@@ -21,6 +23,7 @@ import { BulkUpdateDTO } from '../../work-log/work-log-bulk.model';
 import { AuthGuard } from '@nestjs/passport';
 import { CanUpdateDeleteEntryGuard } from './can-update-delete-entry.guard';
 import { RequestWithUser } from '../../auth/auth.model';
+import { ReportingWorkLogDTO } from '../time-registration.model';
 
 interface AffectedEntriesDTO {
   entriesAffected: number;
@@ -35,13 +38,13 @@ export class WorkLogController {
               private readonly workLogBulkService: WorkLogBulkService) {
   }
 
-  @Post('entries/:id')
+  @Put('entries/:id')
   @HttpCode(HttpStatus.OK)
   @UsePipes(new ValidationPipe({transform: true}))
   @UseGuards(CanUpdateDeleteEntryGuard)
-  updateEntry(@Param('id') id: string, @Body() updateDTO: UpdateWorkLogDTO) {
+  updateEntry(@Param('id') id: string, @Body() updateDTO: UpdateWorkLogDTO): Observable<ReportingWorkLogDTO> {
     return this.workLogService.update(id, updateDTO).pipe(
-      mapTo({status: 'success'})
+      map(ReportingWorkLogDTO.fromWorkLog)
     );
   }
 

@@ -24,7 +24,7 @@ export class ProjectsController {
   @Get(':projectName/work-log/entries')
   entriesForProject(@Param('projectName') projectName: string): Observable<ReportingWorkLogDTO[]> {
     return this.workLogService.findByProject(projectName).pipe(
-      map(workLogs => workLogs.map(workLog => ReportingWorkLogDTO.fromWorkLog(workLog)))
+      map(workLogs => workLogs.map(ReportingWorkLogDTO.fromWorkLog))
     );
   }
 }

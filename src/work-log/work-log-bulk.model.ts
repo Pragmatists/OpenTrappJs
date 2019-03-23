@@ -25,7 +25,7 @@ export class WorkLogQuery {
   }
 
   toSearchCriteria(): { [key: string]: any } {
-    return WorkLogSearchCriteria.builer
+    return WorkLogSearchCriteria.builder
       .userList(this.employees)
       .projectNameList(this.projects)
       .timeUnits(this.timeUnits)

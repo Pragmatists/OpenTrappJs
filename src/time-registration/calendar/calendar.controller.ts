@@ -36,7 +36,7 @@ export class CalendarController {
   entriesForMonth(@Param('year', ParseIntPipe) year: number,
                   @Param('month', ParseIntPipe) month: number): Observable<ReportingWorkLogDTO[]> {
     return this.workLogService.findByMonth(new YearMonth(year, month)).pipe(
-      map(workLogs => workLogs.map(workLog => ReportingWorkLogDTO.fromWorkLog(workLog)))
+      map(workLogs => workLogs.map(ReportingWorkLogDTO.fromWorkLog))
     );
   }
 
@@ -45,7 +45,7 @@ export class CalendarController {
   @ApiImplicitParam({name: 'yearMonthList', required: true, description: 'List of years and months, e.g. 201811,201812,201901'})
   entriesForMonthList(@Param() params: FindByYearMonthListParams): Observable<ReportingWorkLogDTO[]> {
     return this.workLogService.findByMonthList(params.toList()).pipe(
-      map(workLogs => workLogs.map(workLog => ReportingWorkLogDTO.fromWorkLog(workLog)))
+      map(workLogs => workLogs.map(ReportingWorkLogDTO.fromWorkLog))
     );
   }
 }

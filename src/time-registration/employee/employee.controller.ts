@@ -19,7 +19,7 @@ export class EmployeeController {
   @Get(':employeeID/work-log/entries')
   entriesForEmployee(@Param('employeeID') employeeID: string): Observable<ReportingWorkLogDTO[]>  {
     return this.workLogService.findByEmployeeID(employeeID).pipe(
-      map(workLogs => workLogs.map(workLog => ReportingWorkLogDTO.fromWorkLog(workLog)))
+      map(workLogs => workLogs.map(ReportingWorkLogDTO.fromWorkLog))
     );
   }
 
