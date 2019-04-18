@@ -26,6 +26,7 @@ export class AdminWorkLogController {
   @UsePipes(new ValidationPipe({transform: true}))
   @Roles('ADMIN', 'EXTERNAL_SERVICE')
   findWorkload(@Query() query: FindWorkloadQueryParams): Observable<WorkLogDTO[]> {
+    query.validate();
     return this.workLogService.find(query);
   }
 

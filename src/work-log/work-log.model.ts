@@ -66,7 +66,15 @@ export class RegisterWorkLogDTO extends UpdateWorkLogDTO {
   readonly day: string;
 }
 
-export class FindWorkloadQueryParams {
+export interface FindWorkloadQuery {
+  readonly date?: Date;
+  readonly dateFrom?: Date;
+  readonly dateTo?: Date;
+  readonly tags?: string[];
+  readonly user?: string;
+}
+
+export class FindWorkloadQueryParams implements FindWorkloadQuery {
   @Type(() => Date)
   readonly date: Date;
   @Type(() => Date)

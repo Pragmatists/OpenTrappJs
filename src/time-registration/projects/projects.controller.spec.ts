@@ -12,18 +12,34 @@ import MongoMemoryServer from 'mongodb-memory-server';
 import { WorkLogModule } from '../../work-log/work-log.module';
 import { includes } from 'lodash';
 import { MockAuthModule } from '../../auth/mock-auth.module';
+import { TagsService } from '../../work-log/tags.service';
+
+function johnDoeWorkLog(date: string, tags: string[]) {
+  return someWorkLog(date, 'john.doe', 480, tags);
+}
 
 const workLogEntries = [
   someWorkLog('2019/01/05', 'john.doe', 480, ['holidays']),
   someWorkLog('2019/01/05', 'james.bond', 480, ['projects', 'syniverse-dsp']),
   someWorkLog('2019/01/06', 'james.bond', 480, ['projects', 'syniverse-dsp']),
-  someWorkLog('2019/01/11', 'tom.hanks', 480, ['projects', 'nvm'])
+  someWorkLog('2019/01/11', 'tom.hanks', 480, ['projects', 'nvm']),
+  johnDoeWorkLog('2019/02/01', ['projects', 'nvm']),
+  johnDoeWorkLog('2019/02/02', ['projects', 'nvm']),
+  johnDoeWorkLog('2019/02/02', ['internal', 'self-dev']),
+  johnDoeWorkLog('2019/02/03', ['internal', 'self-dev', 'brown-bag']),
+  johnDoeWorkLog('2019/02/04', ['internal', 'self-dev', 'brown-bag']),
+  johnDoeWorkLog('2019/02/05', ['internal', 'self-dev']),
+  johnDoeWorkLog('2019/02/07', ['self-dev', 'internal']),
+  johnDoeWorkLog('2019/02/02', ['nvm', 'projects']),
+  johnDoeWorkLog('2019/02/08', ['holidays']),
+  johnDoeWorkLog('2019/02/09', ['vacation']),
 ];
 
 describe('Projects Controller', () => {
   let app: INestApplication;
   let workLogModel: Model<WorkLog>;
   let mongoServer: MongoMemoryServer;
+  let tagsService: TagsService;
 
   beforeAll(async () => {
     const moduleWithDb = await testModuleWithInMemoryDb({
@@ -33,6 +49,7 @@ describe('Projects Controller', () => {
     const module = moduleWithDb.module;
     mongoServer = moduleWithDb.mongoServer;
     workLogModel = module.get('WorkLogModel');
+    tagsService = module.get<TagsService>(TagsService);
 
     app = module.createNestApplication();
     await app.init();
@@ -54,13 +71,36 @@ describe('Projects Controller', () => {
   describe('GET /projects', () => {
     it('should return list of available projects', done => {
       return getRequestWithValidToken(app, '/projects')
-        .expect(HttpStatus.OK)
-        .expect(['holidays', 'nvm', 'projects', 'syniverse-dsp'], done);
+          .expect(
+              HttpStatus.OK,
+              ['brown-bag', 'holidays', 'internal', 'nvm', 'projects', 'self-dev', 'syniverse-dsp', 'vacation'],
+              done
+          );
     });
 
     it('should return UNAUTHORIZED for invalid token', done => {
       return getRequestWithInvalidToken(app, '/projects')
-        .expect(HttpStatus.UNAUTHORIZED, done);
+          .expect(HttpStatus.UNAUTHORIZED, done);
+    });
+  });
+
+  describe('GET /projects/presets', () => {
+    it('should return 2 most recent and 2 most often used presets', done => {
+      jest.spyOn(tagsService as any, 'dateFrom', 'get')
+          .mockReturnValue(new Date(2019, 0, 11));
+
+      getRequestWithValidToken(app, '/projects/presets')
+          .expect(HttpStatus.OK, [
+            ['vacation'],
+            ['holidays'],
+            ['internal', 'self-dev'],
+            ['nvm', 'projects']
+          ], done);
+    });
+
+    it('should return UNAUTHORIZED for invalid token', done => {
+      return getRequestWithInvalidToken(app, '/projects/presets')
+          .expect(HttpStatus.UNAUTHORIZED, done);
     });
   });
 
@@ -69,25 +109,25 @@ describe('Projects Controller', () => {
       const projectName = 'syniverse-dsp';
 
       return getRequestWithValidToken(app, `/projects/${projectName}/work-log/entries`)
-        .expect(HttpStatus.OK)
-        .then(response => response.body)
-        .then(entries => {
-          expect(entries).toHaveLength(2);
-          expect(entries.every(entry => includes(entry.projectNames, projectName))).toBeTruthy();
-          done();
-        });
+          .expect(HttpStatus.OK)
+          .then(response => response.body)
+          .then(entries => {
+            expect(entries).toHaveLength(2);
+            expect(entries.every(entry => includes(entry.projectNames, projectName))).toBeTruthy();
+            done();
+          });
     });
 
     it('should return empty list for unknown project name', done => {
       return getRequestWithValidToken(app, `/projects/aaa/work-log/entries`)
-        .expect(HttpStatus.OK, [], done);
+          .expect(HttpStatus.OK, [], done);
     });
 
     it('should return UNAUTHORIZED for invalid token', done => {
       const projectName = 'syniverse-dsp';
 
       return getRequestWithInvalidToken(app, `/projects/${projectName}/work-log/entries`)
-        .expect(HttpStatus.UNAUTHORIZED, done);
+          .expect(HttpStatus.UNAUTHORIZED, done);
     });
   });
 

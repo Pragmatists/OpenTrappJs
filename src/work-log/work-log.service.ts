@@ -1,7 +1,7 @@
 import { Model } from 'mongoose';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FindWorkloadQueryParams, RegisterWorkLogDTO, UpdateWorkLogDTO, WorkLog, WorkLogDTO } from './work-log.model';
+import { FindWorkloadQuery, RegisterWorkLogDTO, UpdateWorkLogDTO, WorkLog, WorkLogDTO } from './work-log.model';
 import { from, Observable } from 'rxjs';
 import * as moment from 'moment';
 import { filter, map, mapTo, throwIfEmpty } from 'rxjs/operators';
@@ -23,8 +23,7 @@ export class WorkLogService {
     );
   }
 
-  find(queryParam: FindWorkloadQueryParams): Observable<WorkLogDTO[]> {
-    queryParam.validate();
+  find(queryParam: FindWorkloadQuery): Observable<WorkLogDTO[]> {
     const query = WorkLogSearchCriteria.builder
       .date(queryParam.date)
       .dateRange(queryParam.dateFrom, queryParam.dateTo)
