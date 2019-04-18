@@ -34,14 +34,16 @@ export class TagsService {
         .map(projectNames => projectNames.sort())
         .take(2)
         .value();
+    const recentlyUsedAsStrings = theMostRecentlyUsed.map(preset => preset.join(','));
     const theMostOftenUsed = chain(workLogs)
         .map(workLog => workLog.projectNames.sort())
         .countBy(identity)
         .toPairs()
         .sortBy(pair => pair[1])
         .reverse()
-        .map(pair => pair[0].split(','))
-        .filter(tags => !includes(theMostRecentlyUsed, tags))
+        .map(pair => pair[0])
+        .filter(tags => !includes(recentlyUsedAsStrings, tags))
+        .map(tags => tags.split(','))
         .take(2)
         .value();
     return [...theMostRecentlyUsed, ...theMostOftenUsed];
