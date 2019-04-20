@@ -181,49 +181,49 @@ describe('WorkLog Controller', () => {
     });
   });
 
-  describe('GET /work-log/:query', () => {
+  describe('GET /work-log/bulk-update/:query', () => {
     it('should return total number of entries for empty query', done => {
-      return getRequestWithValidToken(app, '/work-log/')
+      return getRequestWithValidToken(app, '/work-log/bulk-update/')
         .expect(HttpStatus.OK, {entriesAffected: workLogEntries.length}, done);
     });
 
     it('should return number of entries for given project', done => {
-      return getRequestWithValidToken(app, `/work-log/!project=talkie`)
+      return getRequestWithValidToken(app, `/work-log/bulk-update/!project=talkie`)
         .expect(HttpStatus.OK, {entriesAffected: 1}, done);
     });
 
     it('should return number of entries for multiple projects', done => {
-      return getRequestWithValidToken(app, '/work-log/!project=talkie+!project=syniverse-dsp')
+      return getRequestWithValidToken(app, '/work-log/bulk-update/!project=talkie+!project=syniverse-dsp')
         .expect(HttpStatus.OK, {entriesAffected: 2}, done);
     });
 
     it('should return number of entries for given employee', done => {
-      return getRequestWithValidToken(app, `/work-log/!employee=james.bond`)
+      return getRequestWithValidToken(app, `/work-log/bulk-update/!employee=james.bond`)
         .expect(HttpStatus.OK, {entriesAffected: 2}, done);
     });
 
     it('should return number of entries for multiple employees', done => {
-      return getRequestWithValidToken(app, `/work-log/!employee=james.bond+!employee=john.doe`)
+      return getRequestWithValidToken(app, `/work-log/bulk-update/!employee=james.bond+!employee=john.doe`)
         .expect(HttpStatus.OK, {entriesAffected: 3}, done);
     });
 
     it('should return number of entries for given month', done => {
-      return getRequestWithValidToken(app, `/work-log/!date=2019:01`)
+      return getRequestWithValidToken(app, `/work-log/bulk-update/!date=2019:01`)
         .expect(HttpStatus.OK, {entriesAffected: 1}, done);
     });
 
     it('should return number of entries for given day', done => {
-      return getRequestWithValidToken(app, `/work-log/!date=2018:12:05`)
+      return getRequestWithValidToken(app, `/work-log/bulk-update/!date=2018:12:05`)
         .expect(HttpStatus.OK, {entriesAffected: 1}, done);
     });
 
     it('should return number of entries for given employee and projects and month', done => {
-      return getRequestWithValidToken(app, `/work-log/!employee=james.bond+!project=talkie+!project=syniverse-dsp+!date=2018:12`)
+      return getRequestWithValidToken(app, `/work-log/bulk-update/!employee=james.bond+!project=talkie+!project=syniverse-dsp+!date=2018:12`)
         .expect(HttpStatus.OK, {entriesAffected: 1}, done);
     });
 
     it('should return UNAUTHORIZED for invalid token', done => {
-      return getRequestWithInvalidToken(app, '/work-log/')
+      return getRequestWithInvalidToken(app, '/work-log/bulk-update/')
         .expect(HttpStatus.UNAUTHORIZED, done);
     });
   });

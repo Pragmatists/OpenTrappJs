@@ -55,14 +55,14 @@ export class WorkLogController {
     return this.workLogService.delete(id);
   }
 
-  @Get(':query')
+  @Get('bulk-update/:query')
   validateQuery(@Param('query') query: string): Observable<AffectedEntriesDTO> {
     return this.workLogBulkService.validateQuery(query).pipe(
       map(entriesAffected => ({entriesAffected}))
     );
   }
 
-  @Get('/')
+  @Get('bulk-update')
   validateEmptyQuery(): Observable<AffectedEntriesDTO> {
     return this.validateQuery('');
   }
