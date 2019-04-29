@@ -218,8 +218,9 @@ describe('WorkLog Controller', () => {
     });
 
     it('should return number of entries for given employee and projects and month', done => {
-      return getRequestWithValidToken(app, `/work-log/bulk-update/!employee=james.bond+!project=talkie+!project=syniverse-dsp+!date=2018:12`)
-        .expect(HttpStatus.OK, {entriesAffected: 1}, done);
+      return getRequestWithValidToken(
+          app, `/work-log/bulk-update/!employee=james.bond+!project=talkie+!project=syniverse-dsp+!date=2018:12`
+      ).expect(HttpStatus.OK, {entriesAffected: 1}, done);
     });
 
     it('should return UNAUTHORIZED for invalid token', done => {
