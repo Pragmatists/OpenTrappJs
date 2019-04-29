@@ -37,6 +37,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^2.6.3",
     "rxjs": "^6.5.1",
+    "swagger-ui-express": "^4.0.2",
     "typescript": "^3.4.5",
     "uuid": "^3.3.2"
   },
