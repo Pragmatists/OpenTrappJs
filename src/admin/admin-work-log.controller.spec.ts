@@ -10,7 +10,7 @@ import {
   someWorkLog,
   testModuleWithInMemoryDb
 } from '../utils/test-utils';
-import MongoMemoryServer from 'mongodb-memory-server';
+import { MongoMemoryServer } from 'mongodb-memory-server';
 
 const workLogEntries = [
   someWorkLog('2019/01/05', 'john.doe', 480, ['holidays'], 'National holidays'),

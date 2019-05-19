@@ -8,7 +8,7 @@ import {
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { WorkLog } from '../../work-log/work-log.model';
-import MongoMemoryServer from 'mongodb-memory-server';
+import { MongoMemoryServer } from 'mongodb-memory-server';
 import { WorkLogModule } from '../../work-log/work-log.module';
 import { includes } from 'lodash';
 import { MockAuthModule } from '../../auth/mock-auth.module';

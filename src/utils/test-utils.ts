@@ -3,7 +3,7 @@ import * as request from 'supertest';
 import { INestApplication, ModuleMetadata } from '@nestjs/common/interfaces';
 import { Test } from '@nestjs/testing';
 import { MongooseModule } from '@nestjs/mongoose';
-import MongoMemoryServer from 'mongodb-memory-server';
+import { MongoMemoryServer } from 'mongodb-memory-server';
 import { JWTPayload } from '../auth/auth.model';
 import { sign } from 'jsonwebtoken';
 

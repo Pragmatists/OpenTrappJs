@@ -4,7 +4,7 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import { MockGoogleClient, MockJWTStrategy } from './mock-auth.module';
 import { loggedInAs, postRequestWithRoles, testModuleWithInMemoryDb, validJWTToken } from '../utils/test-utils';
 import { AccountsModule } from '../accounts/accounts.module';
-import MongoMemoryServer from 'mongodb-memory-server';
+import { MongoMemoryServer } from 'mongodb-memory-server';
 import { Model } from 'mongoose';
 import { AuthorizedUser, ServiceAccount } from '../accounts/accounts.model';
 import { AuthService } from './auth.service';

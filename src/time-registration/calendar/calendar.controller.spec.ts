@@ -9,7 +9,7 @@ import {
 } from '../../utils/test-utils';
 import { Model } from 'mongoose';
 import { WorkLog } from '../../work-log/work-log.model';
-import MongoMemoryServer from 'mongodb-memory-server';
+import { MongoMemoryServer } from 'mongodb-memory-server';
 import { WorkLogModule } from '../../work-log/work-log.module';
 import { MockAuthModule } from '../../auth/mock-auth.module';
 import { HolidayService } from './holiday.service';

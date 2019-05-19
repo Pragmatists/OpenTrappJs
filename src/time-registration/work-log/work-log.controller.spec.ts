@@ -2,7 +2,7 @@ import { WorkLogController } from './work-log.controller';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { WorkLog } from '../../work-log/work-log.model';
-import MongoMemoryServer from 'mongodb-memory-server';
+import { MongoMemoryServer } from 'mongodb-memory-server';
 import {
   deleteRequestWithInvalidToken,
   deleteRequestWithValidToken,

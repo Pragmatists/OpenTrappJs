@@ -2,7 +2,7 @@ import { EmployeeController } from './employee.controller';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { WorkLog } from '../../work-log/work-log.model';
-import MongoMemoryServer from 'mongodb-memory-server';
+import { MongoMemoryServer } from 'mongodb-memory-server';
 import {
   getRequestWithInvalidToken,
   getRequestWithValidToken,

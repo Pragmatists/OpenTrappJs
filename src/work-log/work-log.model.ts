@@ -35,28 +35,24 @@ export interface WorkLogDTO {
   note?: string;
 }
 
+class Workload {
+  readonly minutes: number;
+  constructor(readonly expression: string) {
+    this.minutes = WorkloadParser.toMinutes(expression);
+  }
+}
+
 export class UpdateWorkLogDTO {
-  private workloadMin: number;
-  private workloadExpr: string;
+  @Transform(v => new Workload(v), {toClassOnly: true})
+  readonly workload: Workload;
   @ApiModelProperty({example: ['internal', 'hackathon']})
   @ArrayNotEmpty()
   readonly projectNames: string[];
   @ApiModelProperty({required: false, example: 'Working remotely'})
   readonly note?: string;
 
-  @ApiModelProperty({example: '1h 30m'})
-  @Matches(WorkloadParser.PATTERN)
-  set workload(expression: string) {
-    this.workloadMin = WorkloadParser.toMinutes(expression);
-    this.workloadExpr = expression;
-  }
-
-  get workload(): string {
-    return this.workloadExpr;
-  }
-
   get workloadMinutes(): number {
-    return this.workloadMin;
+    return this.workload.minutes;
   }
 }
 

@@ -4,9 +4,6 @@ import { BadRequestException } from '@nestjs/common';
 export class WorkloadParser {
   static PATTERN = /(?:([0-9]+)d)?\s?(?:([0-9]+)h)?\s?(?:([0-9]+)m)?/;
 
-  private constructor() {
-  }
-
   static toMinutes(workloadExpression: string): number {
     const matches = WorkloadParser.PATTERN.exec(workloadExpression);
     if (!WorkloadParser.validMatches(matches)) {

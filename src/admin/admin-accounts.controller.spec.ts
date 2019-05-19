@@ -1,6 +1,6 @@
 import { AdminAccountsController } from './admin-accounts.controller';
 import { HttpStatus, INestApplication } from '@nestjs/common';
-import MongoMemoryServer from 'mongodb-memory-server';
+import {MongoMemoryServer} from 'mongodb-memory-server';
 import {
   deleteRequestWithInvalidToken,
   deleteRequestWithRoles,
