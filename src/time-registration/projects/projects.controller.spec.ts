@@ -81,6 +81,15 @@ describe('Projects Controller', () => {
           );
     });
 
+    it('should return list of available projects from date', done => {
+      return getRequestWithValidToken(app, '/projects?dateFrom=2019-02-08')
+        .expect(
+          HttpStatus.OK,
+          ['holidays', 'vacation'],
+          done
+        );
+    });
+
     it('should return UNAUTHORIZED for invalid token', done => {
       return getRequestWithInvalidToken(app, '/projects')
           .expect(HttpStatus.UNAUTHORIZED, done);
@@ -88,7 +97,7 @@ describe('Projects Controller', () => {
   });
 
   describe('GET /projects/presets', () => {
-    it('should return 2 most recent and 2 most often used presets', done => {
+    it('should return 2 most recent and 2 most often used presets by default', done => {
       jest.spyOn(tagsService as any, 'dateFrom', 'get')
           .mockReturnValue(new Date(2019, 0, 11));
 
@@ -99,6 +108,29 @@ describe('Projects Controller', () => {
             ['internal', 'self-dev'],
             ['nvm', 'projects']
           ], done);
+    });
+
+    it('should return 1 most recent and 1 most often used presets for limit set to 2', done => {
+      jest.spyOn(tagsService as any, 'dateFrom', 'get')
+        .mockReturnValue(new Date(2019, 0, 11));
+
+      getRequestWithValidToken(app, '/projects/presets?limit=2')
+        .expect(HttpStatus.OK, [
+          ['vacation'],
+          ['internal', 'self-dev']
+        ], done);
+    });
+
+    it('should return 2 most recent and 1 most often used presets for limit set to 3', done => {
+      jest.spyOn(tagsService as any, 'dateFrom', 'get')
+        .mockReturnValue(new Date(2019, 0, 11));
+
+      getRequestWithValidToken(app, '/projects/presets?limit=3')
+        .expect(HttpStatus.OK, [
+          ['vacation'],
+          ['holidays'],
+          ['internal', 'self-dev']
+        ], done);
     });
 
     it('should return UNAUTHORIZED for invalid token', done => {
