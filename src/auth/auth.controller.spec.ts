@@ -11,6 +11,7 @@ import { AuthService } from './auth.service';
 import { AdminAccountsController } from '../admin/admin-accounts.controller';
 import { JWTPayload } from './auth.model';
 import { GoogleClient } from './google-client';
+import { SharedModule } from '../shared/shared.module';
 
 describe('Auth Controller', () => {
   let app: INestApplication;
@@ -20,7 +21,7 @@ describe('Auth Controller', () => {
 
   beforeAll(async () => {
     const moduleWithDb = await testModuleWithInMemoryDb({
-      imports: [AccountsModule],
+      imports: [AccountsModule, SharedModule],
       controllers: [AuthController, AdminAccountsController],
       providers: [MockJWTStrategy, AuthService, {provide: GoogleClient, useClass: MockGoogleClient}]
     });

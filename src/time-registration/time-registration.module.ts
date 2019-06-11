@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { HttpModule, Module } from '@nestjs/common';
 import { ProjectsController } from './projects/projects.controller';
 import { WorkLogModule } from '../work-log/work-log.module';
 import { CalendarController } from './calendar/calendar.controller';
@@ -11,7 +11,7 @@ import { CanUpdateDeleteEntryGuard } from './work-log/can-update-delete-entry.gu
 import { HolidayService } from './calendar/holiday.service';
 
 @Module({
-  imports: [AuthModule, WorkLogModule],
+  imports: [AuthModule, WorkLogModule, HttpModule],
   controllers: [ProjectsController, CalendarController, EmployeeController, WorkLogController],
   providers: [CalendarService, HolidayService, CanCreateEntryGuard, CanUpdateDeleteEntryGuard]
 })

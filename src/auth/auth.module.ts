@@ -12,9 +12,10 @@ import { GoogleClient } from './google-client';
   imports: [
     HttpModule,
     AccountsModule,
+    SharedModule,
     PassportModule.register({defaultStrategy: 'jwt'})
   ],
-  providers: [AuthService, SharedModule, JwtStrategy, GoogleClient],
+  providers: [AuthService, JwtStrategy, GoogleClient],
   exports: [PassportModule]
 })
 export class AuthModule {}

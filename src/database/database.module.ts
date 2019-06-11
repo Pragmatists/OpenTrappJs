@@ -8,7 +8,8 @@ import { ConfigService } from '../shared/config.service';
     MongooseModule.forRootAsync({
       imports: [SharedModule],
       useFactory: async (configService: ConfigService) => ({
-        uri: configService.dbUri
+        uri: configService.dbUri,
+        useNewUrlParser: true
       }),
       inject: [ConfigService]
     })
