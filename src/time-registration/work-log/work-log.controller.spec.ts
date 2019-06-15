@@ -240,9 +240,9 @@ describe('WorkLog Controller', () => {
         .expect(HttpStatus.OK, {entriesAffected: 3})
         .then(async () => {
           const updatedEntries = await workLogModel.find({'projectNames.name': 'projects'}).exec();
-          expect(updatedEntries[0].projectNames.map(p => p.name).sort())
+          expect(sortedProjectNames(updatedEntries[0]))
             .toEqual(['completed', 'projects', 'syniverse-dsp']);
-          expect(updatedEntries[1].projectNames.map(p => p.name).sort())
+          expect(sortedProjectNames(updatedEntries[1]))
             .toEqual(['completed', 'projects', 'talkie']);
           done();
         });
@@ -278,5 +278,9 @@ describe('WorkLog Controller', () => {
       return postRequestWithValidToken(app, '/work-log/bulk-update', requestBody, 'john.doe@pragmatists.pl')
         .expect(HttpStatus.FORBIDDEN, done);
     });
+
+    function sortedProjectNames(workLog: WorkLog): string[] {
+      return Array.from(workLog.projectNames.map(p => p.name).sort());
+    }
   });
 });

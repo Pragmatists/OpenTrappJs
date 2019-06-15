@@ -166,9 +166,9 @@ describe('AdminAccounts Controller', () => {
     });
   });
 
-  describe('GET /authorized-users', () => {
+  describe('GET /users', () => {
     it('should return all users with custom privileges', done => {
-      return getRequestWithValidToken(app, '/admin/authorized-users', ['ADMIN'])
+      return getRequestWithValidToken(app, '/admin/users', ['ADMIN'])
         .expect(HttpStatus.OK)
         .then(response => {
           const users: AuthorizedUserDTO[] = response.body;
@@ -180,21 +180,21 @@ describe('AdminAccounts Controller', () => {
     });
 
     it('should return UNAUTHORIZED for invalid token', done => {
-      getRequestWithInvalidToken(app, '/admin/authorized-users')
+      getRequestWithInvalidToken(app, '/admin/users')
         .expect(HttpStatus.UNAUTHORIZED, done);
     });
 
     it('should return FORBIDDEN for token without ADMIN role', done => {
-      getRequestWithValidToken(app, '/admin/authorized-users', ['EXTERNAL_SERVICE'])
+      getRequestWithValidToken(app, '/admin/users', ['EXTERNAL_SERVICE'])
         .expect(HttpStatus.FORBIDDEN, done);
     });
   });
 
-  describe('POST /authorized-users', () => {
+  describe('POST /users', () => {
     it('should create authorized user with roles if provided name does not exist', done => {
       const requestBody = {email: 'new.user@pragmatists.com', roles: ['ADMIN']};
 
-      return postRequestWithRoles(app, '/admin/authorized-users', requestBody, ['ADMIN'])
+      return postRequestWithRoles(app, '/admin/users', requestBody, ['ADMIN'])
         .expect(HttpStatus.OK)
         .then(async () => {
           const createdUser = await authorizedUserModel.findOne({name: 'new.user'}).exec();
@@ -207,7 +207,7 @@ describe('AdminAccounts Controller', () => {
     it('should update authorized user if provided name already exist', done => {
       const requestBody = {email: 'andy.barber@pragmatists.pl', roles: ['NEW-ROLE']};
 
-      return postRequestWithRoles(app, '/admin/authorized-users', requestBody, ['ADMIN'])
+      return postRequestWithRoles(app, '/admin/users', requestBody, ['ADMIN'])
         .expect(HttpStatus.OK)
         .then(async () => {
           const allUsersCount = await authorizedUserModel.countDocuments({}).exec();
@@ -222,7 +222,7 @@ describe('AdminAccounts Controller', () => {
     it('should remove authorized user if roles list is empty', done => {
       const requestBody = {email: 'andy.barber@pragmatists.pl', roles: []};
 
-      return postRequestWithRoles(app, '/admin/authorized-users', requestBody, ['ADMIN'])
+      return postRequestWithRoles(app, '/admin/users', requestBody, ['ADMIN'])
         .expect(HttpStatus.OK)
         .then(async () => {
           const allUsersCount = await authorizedUserModel.countDocuments({}).exec();
@@ -236,21 +236,21 @@ describe('AdminAccounts Controller', () => {
     it('should return UNAUTHORIZED for invalid token', done => {
       const requestBody = {email: 'new.user@pragmatists.com', roles: ['ADMIN']};
 
-      return postRequestWithInvalidToken(app, '/admin/authorized-users', requestBody)
+      return postRequestWithInvalidToken(app, '/admin/users', requestBody)
         .expect(HttpStatus.UNAUTHORIZED, done);
     });
 
     it('should return FORBIDDEN for token without ADMIN role', done => {
       const requestBody = {email: 'new.user@pragmatists.com', roles: ['ADMIN']};
 
-      return postRequestWithRoles(app, '/admin/authorized-users', requestBody, ['EXTERNAL_SERVICE'])
+      return postRequestWithRoles(app, '/admin/users', requestBody, ['EXTERNAL_SERVICE'])
         .expect(HttpStatus.FORBIDDEN, done);
     });
 
     it('should return BAD REQUEST for invalid email', done => {
       const requestBody = {email: 'invalid-email', roles: ['ADMIN']};
 
-      return postRequestWithRoles(app, '/admin/authorized-users', requestBody, ['ADMIN'])
+      return postRequestWithRoles(app, '/admin/users', requestBody, ['ADMIN'])
         .expect(HttpStatus.BAD_REQUEST, done);
     });
   });

@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
-import { AuthorizedUserService } from '../accounts/authorized-user.service';
+import { UsersService } from '../accounts/users.service';
 import {
   AuthorizedUserDTO,
   CreateAuthorizedUserDTO,
@@ -22,7 +22,7 @@ import { CanDeleteServiceAccountGuard } from './can-delete-service-account.guard
 @ApiBearerAuth()
 export class AdminAccountsController {
 
-  constructor(private readonly authorizedUserService: AuthorizedUserService,
+  constructor(private readonly usersService: UsersService,
               private readonly serviceAccountService: ServiceAccountService) {
   }
 
@@ -47,18 +47,18 @@ export class AdminAccountsController {
     return this.serviceAccountService.delete(id);
   }
 
-  @Get('authorized-users')
+  @Get('users')
   @Roles('ADMIN')
-  authorizedUsers(): Observable<AuthorizedUserDTO[]> {
-    return this.authorizedUserService.findAll();
+  getUsers(): Observable<AuthorizedUserDTO[]> {
+    return this.usersService.findAll();
   }
 
-  @Post('authorized-users')
+  @Post('users')
   @Roles('ADMIN')
   @HttpCode(HttpStatus.OK)
   @UsePipes(new ValidationPipe({transform: true}))
-  updateAuthorizedUser(@Body() dto: CreateAuthorizedUserDTO): Observable<{}> {
-    return this.authorizedUserService.updateAuthorizedUser(dto);
+  updateUserRoles(@Body() dto: CreateAuthorizedUserDTO): Observable<{}> {
+    return this.usersService.updateAuthorizedUser(dto);
   }
 
 }

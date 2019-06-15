@@ -8,7 +8,7 @@ import { pragmaEmailToUsername } from '../utils/email-utils';
 import { sortBy } from 'lodash';
 
 @Injectable()
-export class AuthorizedUserService {
+export class UsersService {
   constructor(@InjectModel('AuthorizedUser') private readonly authorizedUserModel: Model<AuthorizedUser>) {
   }
 

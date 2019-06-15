@@ -8,7 +8,7 @@ import { catchError, defaultIfEmpty, filter, flatMap, map, throwIfEmpty } from '
 import { TokenPayload } from 'google-auth-library/build/src/auth/loginticket';
 import { pragmaEmailToUsername } from '../utils/email-utils';
 import { GoogleClient } from './google-client';
-import { AuthorizedUserService } from '../accounts/authorized-user.service';
+import { UsersService } from '../accounts/users.service';
 import { isNil, uniq } from 'lodash';
 
 export interface AuthorizedUser {
@@ -21,7 +21,7 @@ export class AuthService {
   private readonly config: JWTConfig;
 
   constructor(private readonly serviceAccountService: ServiceAccountService,
-              private readonly authorizedUserService: AuthorizedUserService,
+              private readonly authorizedUserService: UsersService,
               private readonly googleClient: GoogleClient,
               configService: ConfigService) {
     this.config = configService.jwtConfig;
