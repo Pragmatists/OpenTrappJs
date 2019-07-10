@@ -22,7 +22,7 @@ export class AdminWorkLogController {
   @ApiImplicitQuery({name: 'dateFrom', required: false, description: 'Day in format "YYYY-MM-DD"'})
   @ApiImplicitQuery({name: 'dateTo', required: false, description: 'Day in format "YYYY-MM-DD"'})
   @ApiImplicitQuery({name: 'user', required: false, description: 'Username same as email but without domain'})
-  @ApiImplicitQuery({name: 'tags', required: false, description: 'List of tags coma to search for separated with, e.g "holidays,self-dev"'})
+  @ApiImplicitQuery({name: 'tags', required: false, description: 'List of tags to search for separated with coma, e.g "holidays,self-dev"'})
   @UsePipes(new ValidationPipe({transform: true}))
   @Roles('ADMIN', 'EXTERNAL_SERVICE')
   findWorkload(@Query() query: FindWorkloadQueryParams): Observable<WorkLogDTO[]> {
