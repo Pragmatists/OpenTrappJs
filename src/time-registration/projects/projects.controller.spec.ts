@@ -36,6 +36,7 @@ const workLogEntries = [
   johnDoeWorkLog('2019/02/02', ['nvm', 'projects']),
   johnDoeWorkLog('2019/02/08', ['holidays']),
   johnDoeWorkLog('2019/02/09', ['vacation']),
+  johnDoeWorkLog('2019/02/10', ['vacation']),
 ];
 
 describe('Projects Controller', () => {

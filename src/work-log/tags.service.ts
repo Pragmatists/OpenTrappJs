@@ -42,6 +42,7 @@ export class TagsService {
       .reverse()
       .map(workLog => workLog.projectNames)
       .map(projectNames => projectNames.sort())
+      .uniqBy(projectNames => projectNames.join())
       .take(mostRecentLimit)
       .value();
     const recentlyUsedAsStrings = theMostRecentlyUsed.map(preset => preset.join(','));
@@ -54,6 +55,7 @@ export class TagsService {
       .map(pair => pair[0])
       .filter(tags => !includes(recentlyUsedAsStrings, tags))
       .map(tags => tags.split(','))
+      .uniqBy(projectNames => projectNames.join())
       .take(mostOftenLimit)
       .value();
     return [...theMostRecentlyUsed, ...theMostOftenUsed];
