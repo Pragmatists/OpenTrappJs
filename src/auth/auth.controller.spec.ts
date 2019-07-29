@@ -50,21 +50,25 @@ describe('Auth Controller', () => {
         .expect(HttpStatus.UNAUTHORIZED, done);
     });
 
-    it('should return user details for authorized user', done => {
-      const token = loggedInAs('homer.simpson@pragmatists.com', 'Homer Simpson');
+    [
+      'homer.simpson@pragmatists.com',
+      'homer.simpson@pragmatists.pl',
+      'homer.simpson@talkie.ai'
+    ].forEach(userEmail => it(`should return user details for authorized user ${userEmail}`, done => {
+      const token = loggedInAs(userEmail, 'Homer Simpson');
 
       return authorizedGetRequest('/authentication/status', token)
         .expect(HttpStatus.OK)
         .then(response => {
-          const {email, name, displayName, roles, accountType, loginUrl} = response.body;
-          expect(email).toEqual('homer.simpson@pragmatists.com');
+          const {email, name, displayName, roles, accountType} = response.body;
+          expect(email).toEqual(userEmail);
           expect(name).toEqual('homer.simpson');
           expect(displayName).toEqual('Homer Simpson');
           expect(roles).toEqual(['USER']);
           expect(accountType).toEqual('user');
           done();
         });
-    });
+    }));
 
     it('should return details for service account', done => {
       return serviceAccountToken('Awesome account')
@@ -178,7 +182,7 @@ describe('Auth Controller', () => {
       .set('Authorization', `Bearer ${token}`);
   }
 
-  function someServiceAccount(serviceAccountName = 'Service account'): Promise<{ clientID: string, secret: string }> {
+  function someServiceAccount(serviceAccountName = 'Service account'): Promise<{clientID: string, secret: string}> {
     const createServiceAccountRequestBody = {name: serviceAccountName};
     return postRequestWithRoles(app, '/admin/service-accounts', createServiceAccountRequestBody, ['ADMIN'])
       .then(createServiceAccountResponse => createServiceAccountResponse.body);

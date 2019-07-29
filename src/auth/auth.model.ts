@@ -29,7 +29,7 @@ export class JWTPayload {
                         roles: string[],
                         provider = 'google',
                         thirdPartyId?: string) {
-    if (!email.match(/.+@pragmatists\.(com|pl)$/g)) {
+    if (!email.match(/(.+@pragmatists\.(com|pl))|(.+@talkie\.ai)$/g)) {
       throw new Error('Provided email must be in pragmatists domain');
     }
     return new JWTPayload(displayName, pragmaEmailToUsername(email), roles, 'user', provider, email, thirdPartyId);
@@ -66,22 +66,6 @@ export interface UserDetails {
 
 export interface RequestWithUser {
   user: UserDetails;
-}
-
-export interface GoogleProfile {
-  id: string;
-  displayName: string;
-  name: {
-    familyName: string;
-    givenName: string;
-  };
-  emails: {value: string; type: string}[];
-  provider: string;
-  _json: {
-    domain: string;
-    objectType: string;
-    language: string;
-  };
 }
 
 export class ServiceAccountTokenRequestDTO {
