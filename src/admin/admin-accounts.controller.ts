@@ -21,7 +21,6 @@ import { CanDeleteServiceAccountGuard } from './can-delete-service-account.guard
 @ApiUseTags('admin-accounts')
 @ApiBearerAuth()
 export class AdminAccountsController {
-
   constructor(private readonly usersService: UsersService,
               private readonly serviceAccountService: ServiceAccountService) {
   }
@@ -60,5 +59,4 @@ export class AdminAccountsController {
   updateUserRoles(@Body() dto: CreateAuthorizedUserDTO): Observable<{}> {
     return this.usersService.updateAuthorizedUser(dto);
   }
-
 }
