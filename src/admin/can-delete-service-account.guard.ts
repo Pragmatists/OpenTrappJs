@@ -6,7 +6,6 @@ import { map } from 'rxjs/operators';
 
 @Injectable()
 export class CanDeleteServiceAccountGuard implements CanActivate {
-
   constructor(private readonly serviceAccountService: ServiceAccountService) {
   }
 
