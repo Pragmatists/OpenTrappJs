@@ -73,7 +73,7 @@ describe('WorkLog Controller', () => {
           link: '/api/v1/work-log/entries/id-to-update'
         })
         .then(async () => {
-          const updatedWorkLog = await workLogModel.findById({_id: idToUpdate}).exec();
+          const updatedWorkLog = await workLogModel.findById({_id: idToUpdate}).lean().exec();
           expect(updatedWorkLog.day.date).toEqual('2018/12/05');
           expect(updatedWorkLog.workload.minutes).toEqual(60);
           expect(updatedWorkLog.projectNames.map(p => p.name)).toEqual(['nvm']);
@@ -96,7 +96,7 @@ describe('WorkLog Controller', () => {
           link: '/api/v1/work-log/entries/id-to-update'
         })
         .then(async () => {
-          const updatedWorkLog = await workLogModel.findById({_id: idToUpdate}).exec();
+          const updatedWorkLog = await workLogModel.findById({_id: idToUpdate}).lean().exec();
           expect(updatedWorkLog.day.date).toEqual('2018/12/05');
           expect(updatedWorkLog.workload.minutes).toEqual(150);
           expect(updatedWorkLog.projectNames.map(p => p.name)).toEqual(['nvm']);

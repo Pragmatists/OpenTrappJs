@@ -191,7 +191,7 @@ describe('AdminWorkLogController', () => {
       return postRequestWithRoles(app, `/admin/work-log/${username}/entries`, requestBody, ['ADMIN'])
         .expect(HttpStatus.CREATED)
         .then(async () => {
-          const matchingWorkLogs = await workLogModel.find({'employeeID._id': username}).exec();
+          const matchingWorkLogs = await workLogModel.find({'employeeID._id': username}).lean().exec();
           expect(matchingWorkLogs).toHaveLength(1);
           expect(matchingWorkLogs[0].day.date).toEqual('2019/01/07');
           expect(matchingWorkLogs[0].workload.minutes).toEqual(120);

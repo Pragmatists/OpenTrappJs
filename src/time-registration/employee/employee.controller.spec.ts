@@ -82,7 +82,7 @@ describe('Employee Controller', () => {
       return postRequestWithValidToken(app, `/employee/${employee}/work-log/entries`, requestBody, 'andy.barber@pragmatists.pl')
         .expect(HttpStatus.CREATED)
         .then(async () => {
-          const entry = await workLogModel.findOne({'employeeID._id': employee}).exec();
+          const entry = await workLogModel.findOne({'employeeID._id': employee}).lean().exec();
           expect(entry.day.date).toEqual('2019/01/12');
           expect(entry.workload.minutes).toEqual(120);
           expect(entry.projectNames.map(p => p.name)).toEqual(['projects', 'nvm']);
@@ -97,7 +97,7 @@ describe('Employee Controller', () => {
       return postRequestWithValidToken(app, `/employee/${employee}/work-log/entries`, requestBody, 'andy.barber@pragmatists.pl')
         .expect(HttpStatus.CREATED)
         .then(async () => {
-          const entry = await workLogModel.findOne({'employeeID._id': employee}).exec();
+          const entry = await workLogModel.findOne({'employeeID._id': employee}).lean().exec();
           expect(entry.projectNames.map(p => p.name)).toEqual(['projects', 'nvm']);
           done();
         });
