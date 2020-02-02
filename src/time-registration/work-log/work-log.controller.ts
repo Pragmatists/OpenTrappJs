@@ -29,7 +29,7 @@ interface AffectedEntriesDTO {
   entriesAffected: number;
 }
 
-@Controller('work-log')
+@Controller('api/v1/work-log')
 @ApiUseTags('work-log')
 @UseGuards(AuthGuard('jwt'))
 export class WorkLogController {

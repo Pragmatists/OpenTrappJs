@@ -53,25 +53,25 @@ describe('AdminWorkLogController', () => {
 
   describe('GET /tags', () => {
     it('should return list of available tags', done => {
-      return getRequestWithValidToken(app, '/admin/tags', ['ADMIN'])
+      return getRequestWithValidToken(app, 'admin/tags', ['ADMIN'])
         .expect(HttpStatus.OK)
         .expect(['holidays', 'nvm', 'projects', 'syniverse-dsp'], done);
     });
 
     it('should allow service account to fetch data', done => {
-      return getRequestWithValidToken(app, '/admin/tags', ['EXTERNAL_SERVICE'])
+      return getRequestWithValidToken(app, 'admin/tags', ['EXTERNAL_SERVICE'])
         .expect(HttpStatus.OK, done);
     });
 
     it('should return FORBIDDEN if token has neither ADMIN nor EXTERNAL_SERVICE role', done => {
-      return getRequestWithValidToken(app, '/admin/tags', ['USER'])
+      return getRequestWithValidToken(app, 'admin/tags', ['USER'])
         .expect(HttpStatus.FORBIDDEN, done);
     });
   });
 
   describe('GET /work-log/entries', () => {
     it('should return complete list of entries if neither user nor date is specified', done => {
-      return getRequestWithValidToken(app, '/admin/work-log/entries', ['ADMIN'])
+      return getRequestWithValidToken(app, 'admin/work-log/entries', ['ADMIN'])
         .expect(HttpStatus.OK)
         .then(response => {
           const workLogs: WorkLogDTO[] = response.body;
@@ -91,7 +91,7 @@ describe('AdminWorkLogController', () => {
     });
 
     it('should return entries for user', done => {
-      return getRequestWithValidToken(app, '/admin/work-log/entries?user=john.doe', ['ADMIN'])
+      return getRequestWithValidToken(app, 'admin/work-log/entries?user=john.doe', ['ADMIN'])
         .expect(HttpStatus.OK)
         .then(response => {
           const workLogs = response.body;
@@ -104,7 +104,7 @@ describe('AdminWorkLogController', () => {
     });
 
     it('should return entries for date', done => {
-      return getRequestWithValidToken(app, '/admin/work-log/entries?date=2019-01-05', ['ADMIN'])
+      return getRequestWithValidToken(app, 'admin/work-log/entries?date=2019-01-05', ['ADMIN'])
         .expect(HttpStatus.OK)
         .then(response => {
           const workLogs = response.body;
@@ -116,7 +116,7 @@ describe('AdminWorkLogController', () => {
     });
 
     it('should return entries for dates range', done => {
-      return getRequestWithValidToken(app, '/admin/work-log/entries?dateFrom=2019-01-06&dateTo=2019-01-07', ['ADMIN'])
+      return getRequestWithValidToken(app, 'admin/work-log/entries?dateFrom=2019-01-06&dateTo=2019-01-07', ['ADMIN'])
         .expect(HttpStatus.OK)
         .then(response => {
           const workLogs = response.body;
@@ -128,7 +128,7 @@ describe('AdminWorkLogController', () => {
     });
 
     it('should return entries after date', done => {
-      return getRequestWithValidToken(app, '/admin/work-log/entries?dateFrom=2019-01-07', ['ADMIN'])
+      return getRequestWithValidToken(app, 'admin/work-log/entries?dateFrom=2019-01-07', ['ADMIN'])
         .expect(HttpStatus.OK)
         .then(response => {
           const workLogs = response.body;
@@ -140,7 +140,7 @@ describe('AdminWorkLogController', () => {
     });
 
     it('should return entries before date', done => {
-      return getRequestWithValidToken(app, '/admin/work-log/entries?dateTo=2019-01-05', ['ADMIN'])
+      return getRequestWithValidToken(app, 'admin/work-log/entries?dateTo=2019-01-05', ['ADMIN'])
         .expect(HttpStatus.OK)
         .then(response => {
           const workLogs = response.body;
@@ -152,7 +152,7 @@ describe('AdminWorkLogController', () => {
     });
 
     it('should return entries for user and tags', done => {
-      return getRequestWithValidToken(app, '/admin/work-log/entries?user=john.doe&tags=holidays,nvm', ['ADMIN'])
+      return getRequestWithValidToken(app, 'admin/work-log/entries?user=john.doe&tags=holidays,nvm', ['ADMIN'])
         .expect(HttpStatus.OK)
         .then(response => {
           const workLogs = response.body;
@@ -167,18 +167,18 @@ describe('AdminWorkLogController', () => {
 
     it('should return BAD REQUEST if both date and dateFrom or dateTo are specified', done => {
       return getRequestWithValidToken(
-        app, '/admin/work-log/entries?dateFrom=2019-01-06&dateTo=2019-01-07&date=2019-01-04', ['ADMIN']
+        app, 'admin/work-log/entries?dateFrom=2019-01-06&dateTo=2019-01-07&date=2019-01-04', ['ADMIN']
       )
         .expect(HttpStatus.BAD_REQUEST, done);
     });
 
     it('should allow service account to fetch data', done => {
-      return getRequestWithValidToken(app, '/admin/work-log/entries', ['EXTERNAL_SERVICE'])
+      return getRequestWithValidToken(app, 'admin/work-log/entries', ['EXTERNAL_SERVICE'])
         .expect(HttpStatus.OK, done);
     });
 
     it('should return FORBIDDEN if token has neither ADMIN nor EXTERNAL_SERVICE role', done => {
-      return getRequestWithValidToken(app, '/admin/work-log/entries', ['USER'])
+      return getRequestWithValidToken(app, 'admin/work-log/entries', ['USER'])
         .expect(HttpStatus.FORBIDDEN, done);
     });
   });
@@ -188,7 +188,7 @@ describe('AdminWorkLogController', () => {
       const username = 'tom.hanks';
       const requestBody = {day: '2019-01-07', workload: '2h', projectNames: ['projects', 'nvm']};
 
-      return postRequestWithRoles(app, `/admin/work-log/${username}/entries`, requestBody, ['ADMIN'])
+      return postRequestWithRoles(app, `admin/work-log/${username}/entries`, requestBody, ['ADMIN'])
         .expect(HttpStatus.CREATED)
         .then(async () => {
           const matchingWorkLogs = await workLogModel.find({'employeeID._id': username}).lean().exec();
@@ -204,7 +204,7 @@ describe('AdminWorkLogController', () => {
       const username = 'tom.hanks';
       const requestBody = {day: '11-01-07a', workload: '2h', projectNames: ['projects', 'nvm']};
 
-      return postRequestWithRoles(app, `/admin/work-log/${username}/entries`, requestBody, ['ADMIN'])
+      return postRequestWithRoles(app, `admin/work-log/${username}/entries`, requestBody, ['ADMIN'])
         .expect(HttpStatus.BAD_REQUEST, done);
     });
 
@@ -212,7 +212,7 @@ describe('AdminWorkLogController', () => {
       const username = 'tom.hanks';
       const requestBody = {day: '2019-01-07', workload: '2h', projectNames: []};
 
-      return postRequestWithRoles(app, `/admin/work-log/${username}/entries`, requestBody, ['ADMIN'])
+      return postRequestWithRoles(app, `admin/work-log/${username}/entries`, requestBody, ['ADMIN'])
         .expect(HttpStatus.BAD_REQUEST, done);
     });
 
@@ -220,7 +220,7 @@ describe('AdminWorkLogController', () => {
       const username = 'tom.hanks';
       const requestBody = {day: '2019-01-07', workload: '-10m', projectNames: ['nvm']};
 
-      return postRequestWithRoles(app, `/admin/work-log/${username}/entries`, requestBody, ['ADMIN'])
+      return postRequestWithRoles(app, `admin/work-log/${username}/entries`, requestBody, ['ADMIN'])
         .expect(HttpStatus.BAD_REQUEST, done);
     });
 
@@ -228,7 +228,7 @@ describe('AdminWorkLogController', () => {
       const username = 'tom.hanks';
       const requestBody = {day: '2019-01-07', workload: '2h', projectNames: ['projects', 'nvm']};
 
-      return postRequestWithRoles(app, `/admin/work-log/${username}/entries`, requestBody, ['EXTERNAL_SERVICE'])
+      return postRequestWithRoles(app, `admin/work-log/${username}/entries`, requestBody, ['EXTERNAL_SERVICE'])
         .expect(HttpStatus.CREATED, done);
     });
 
@@ -236,7 +236,7 @@ describe('AdminWorkLogController', () => {
       const username = 'tom.hanks';
       const requestBody = {day: '2019-01-07', workload: '2h', projectNames: ['projects', 'nvm']};
 
-      return postRequestWithRoles(app, `/admin/work-log/${username}/entries`, requestBody, ['USER'])
+      return postRequestWithRoles(app, `admin/work-log/${username}/entries`, requestBody, ['USER'])
         .expect(HttpStatus.FORBIDDEN, done);
     });
   });

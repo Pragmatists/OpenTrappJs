@@ -46,7 +46,7 @@ describe('Auth Controller', () => {
   describe('GET /status', () => {
     it('should return UNAUTHORIZED if token is not present', done => {
       return request(app.getHttpServer())
-        .get('/authentication/status')
+        .get('/api/v1/authentication/status')
         .expect(HttpStatus.UNAUTHORIZED, done);
     });
 
@@ -57,7 +57,7 @@ describe('Auth Controller', () => {
     ].forEach(userEmail => it(`should return user details for authorized user ${userEmail}`, done => {
       const token = loggedInAs(userEmail, 'Homer Simpson');
 
-      return authorizedGetRequest('/authentication/status', token)
+      return authorizedGetRequest('authentication/status', token)
         .expect(HttpStatus.OK)
         .then(response => {
           const {email, name, displayName, roles, accountType} = response.body;
@@ -73,7 +73,7 @@ describe('Auth Controller', () => {
     it('should return details for service account', done => {
       return serviceAccountToken('Awesome account')
         .then(({token, clientID}) => {
-          return authorizedGetRequest('/authentication/status', token)
+          return authorizedGetRequest('authentication/status', token)
             .expect(HttpStatus.OK)
             .then(response => {
               const {email, name, displayName, roles, accountType} = response.body;
@@ -93,7 +93,7 @@ describe('Auth Controller', () => {
       return someServiceAccount()
         .then(({clientID, secret}) =>
           request(app.getHttpServer())
-            .post('/authentication/service-token')
+            .post('/api/v1/authentication/service-token')
             .send({clientID, secret})
             .expect(HttpStatus.OK)
             .then(tokenResponse => {
@@ -107,7 +107,7 @@ describe('Auth Controller', () => {
       return someServiceAccount()
         .then(({secret}) =>
           request(app.getHttpServer())
-            .post('/authentication/service-token')
+            .post('/api/v1/authentication/service-token')
             .send({clientID: 'invalid-id', secret})
             .expect(HttpStatus.UNAUTHORIZED)
             .then(() => done())
@@ -118,7 +118,7 @@ describe('Auth Controller', () => {
       return someServiceAccount()
         .then(({clientID}) =>
           request(app.getHttpServer())
-            .post('/authentication/service-token')
+            .post('/api/v1/authentication/service-token')
             .send({clientID, secret: 'invalid-secret'})
             .expect(HttpStatus.UNAUTHORIZED)
             .then(() => done())
@@ -129,7 +129,7 @@ describe('Auth Controller', () => {
       return someServiceAccount()
         .then(({clientID, secret}) =>
           request(app.getHttpServer())
-            .post('/authentication/service-token')
+            .post('/api/v1/authentication/service-token')
             .send({clientID2: clientID, secret2: secret})
             .expect(HttpStatus.BAD_REQUEST)
             .then(() => done())
@@ -148,7 +148,7 @@ describe('Auth Controller', () => {
 
     it('should return user details and token for valid Google ID token', done => {
       request(app.getHttpServer())
-        .get('/authentication/user-token')
+        .get('/api/v1/authentication/user-token')
         .set('id-token', 'valid.google.token')
         .expect(HttpStatus.OK)
         .then(response => {
@@ -164,13 +164,13 @@ describe('Auth Controller', () => {
 
     it('should return UNAUTHORIZED if token header is not present', done => {
       request(app.getHttpServer())
-        .get('/authentication/user-token')
+        .get('/api/v1/authentication/user-token')
         .expect(HttpStatus.UNAUTHORIZED, done);
     });
 
     it('should return UNAUTHORIZED if provided ID token is invalid', done => {
       request(app.getHttpServer())
-        .get('/authentication/user-token')
+        .get('/api/v1/authentication/user-token')
         .set('id-token', 'invalid-token')
         .expect(HttpStatus.UNAUTHORIZED, done);
     });
@@ -178,13 +178,13 @@ describe('Auth Controller', () => {
 
   function authorizedGetRequest(url: string, token: string) {
     return request(app.getHttpServer())
-      .get(url)
+      .get(`/api/v1/${url}`)
       .set('Authorization', `Bearer ${token}`);
   }
 
   function someServiceAccount(serviceAccountName = 'Service account'): Promise<{clientID: string, secret: string}> {
     const createServiceAccountRequestBody = {name: serviceAccountName};
-    return postRequestWithRoles(app, '/admin/service-accounts', createServiceAccountRequestBody, ['ADMIN'])
+    return postRequestWithRoles(app, 'admin/service-accounts', createServiceAccountRequestBody, ['ADMIN'])
       .then(createServiceAccountResponse => createServiceAccountResponse.body);
   }
 

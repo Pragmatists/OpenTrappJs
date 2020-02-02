@@ -62,7 +62,7 @@ describe('WorkLog Controller', () => {
       const idToUpdate = 'id-to-update';
       const requestBody = {workload: '60m', projectNames: ['nvm']};
 
-      return putRequestWithValidToken(app, `/work-log/entries/${idToUpdate}`, requestBody, 'james.bond@pragmatists.pl')
+      return putRequestWithValidToken(app, `work-log/entries/${idToUpdate}`, requestBody, 'james.bond@pragmatists.pl')
         .send(requestBody)
         .expect(HttpStatus.OK, {
           id: 'id-to-update',
@@ -86,7 +86,7 @@ describe('WorkLog Controller', () => {
       const idToUpdate = 'id-to-update';
       const requestBody = {workload: '2h 30m', projectNames: ['nvm'], note: 'Updated note'};
 
-      return putRequestWithValidToken(app, `/work-log/entries/${idToUpdate}`, requestBody, 'james.bond@pragmatists.pl')
+      return putRequestWithValidToken(app, `work-log/entries/${idToUpdate}`, requestBody, 'james.bond@pragmatists.pl')
         .expect(HttpStatus.OK, {
           id: 'id-to-update',
           projectNames: ['nvm'],
@@ -109,7 +109,7 @@ describe('WorkLog Controller', () => {
       const idToUpdate = 'not-existing-id';
       const requestBody = {workload: '60m', projectNames: ['nvm']};
 
-      return putRequestWithValidToken(app, `/work-log/entries/${idToUpdate}`, requestBody)
+      return putRequestWithValidToken(app, `work-log/entries/${idToUpdate}`, requestBody)
         .expect(HttpStatus.NOT_FOUND, done);
     });
 
@@ -117,7 +117,7 @@ describe('WorkLog Controller', () => {
       const idToUpdate = 'id-to-update';
       const requestBody = {day: '2019-01-07', workload: '120m', projectNames: []};
 
-      return putRequestWithValidToken(app, `/work-log/entries/${idToUpdate}`, requestBody, 'james.bond@pragmatists.pl')
+      return putRequestWithValidToken(app, `work-log/entries/${idToUpdate}`, requestBody, 'james.bond@pragmatists.pl')
         .expect(HttpStatus.BAD_REQUEST, done);
     });
 
@@ -125,7 +125,7 @@ describe('WorkLog Controller', () => {
       const idToUpdate = 'id-to-update';
       const requestBody = {day: '2019-01-07', workload: '-10', projectNames: ['nvm']};
 
-      return putRequestWithValidToken(app, `/work-log/entries/${idToUpdate}`, requestBody, 'james.bond@pragmatists.pl')
+      return putRequestWithValidToken(app, `work-log/entries/${idToUpdate}`, requestBody, 'james.bond@pragmatists.pl')
         .expect(HttpStatus.BAD_REQUEST, done);
     });
 
@@ -133,7 +133,7 @@ describe('WorkLog Controller', () => {
       const idToUpdate = 'id-to-update';
       const requestBody = {workload: '60m', projectNames: ['nvm']};
 
-      return putRequestWithInvalidToken(app, `/work-log/entries/${idToUpdate}`, requestBody)
+      return putRequestWithInvalidToken(app, `work-log/entries/${idToUpdate}`, requestBody)
         .expect(HttpStatus.UNAUTHORIZED, done);
     });
 
@@ -141,7 +141,7 @@ describe('WorkLog Controller', () => {
       const idToUpdate = 'id-to-update';
       const requestBody = {workload: '60m', projectNames: ['nvm']};
 
-      return putRequestWithValidToken(app, `/work-log/entries/${idToUpdate}`, requestBody, 'john.doe@pragmatists.com')
+      return putRequestWithValidToken(app, `work-log/entries/${idToUpdate}`, requestBody, 'john.doe@pragmatists.com')
         .expect(HttpStatus.FORBIDDEN, done);
     });
   });
@@ -150,7 +150,7 @@ describe('WorkLog Controller', () => {
     it('should delete entry with given id', done => {
       const idToRemove = 'id-to-remove';
 
-      return deleteRequestWithValidToken(app, `/work-log/entries/${idToRemove}`, 'john.doe@pragmatists.com')
+      return deleteRequestWithValidToken(app, `work-log/entries/${idToRemove}`, 'john.doe@pragmatists.com')
         .expect(HttpStatus.NO_CONTENT)
         .then(async () => {
           const removedWorkLog = await workLogModel.findById({_id: idToRemove}).exec();
@@ -162,69 +162,69 @@ describe('WorkLog Controller', () => {
     it('should return NOT FOUND if entry with id does not exist', done => {
       const idToRemove = 'not-existing-id';
 
-      return deleteRequestWithValidToken(app, `/work-log/entries/${idToRemove}`)
+      return deleteRequestWithValidToken(app, `work-log/entries/${idToRemove}`)
         .expect(HttpStatus.NOT_FOUND, done);
     });
 
     it('should return UNAUTHORIZED for invalid token', done => {
       const idToRemove = 'id-to-remove';
 
-      return deleteRequestWithInvalidToken(app, `/work-log/entries/${idToRemove}`)
+      return deleteRequestWithInvalidToken(app, `work-log/entries/${idToRemove}`)
         .expect(HttpStatus.UNAUTHORIZED, done);
     });
 
     it('should return FORBIDDEN if entry employee different from name in token', done => {
       const idToRemove = 'id-to-remove';
 
-      return deleteRequestWithValidToken(app, `/work-log/entries/${idToRemove}`, 'andy.barber@pragmatists.pl')
+      return deleteRequestWithValidToken(app, `work-log/entries/${idToRemove}`, 'andy.barber@pragmatists.pl')
         .expect(HttpStatus.FORBIDDEN, done);
     });
   });
 
   describe('GET /work-log/bulk-update/:query', () => {
     it('should return total number of entries for empty query', done => {
-      return getRequestWithValidToken(app, '/work-log/bulk-update/')
+      return getRequestWithValidToken(app, 'work-log/bulk-update/')
         .expect(HttpStatus.OK, {entriesAffected: workLogEntries.length}, done);
     });
 
     it('should return number of entries for given project', done => {
-      return getRequestWithValidToken(app, `/work-log/bulk-update/!project=talkie`)
+      return getRequestWithValidToken(app, `work-log/bulk-update/!project=talkie`)
         .expect(HttpStatus.OK, {entriesAffected: 1}, done);
     });
 
     it('should return number of entries for multiple projects', done => {
-      return getRequestWithValidToken(app, '/work-log/bulk-update/!project=talkie+!project=syniverse-dsp')
+      return getRequestWithValidToken(app, 'work-log/bulk-update/!project=talkie+!project=syniverse-dsp')
         .expect(HttpStatus.OK, {entriesAffected: 2}, done);
     });
 
     it('should return number of entries for given employee', done => {
-      return getRequestWithValidToken(app, `/work-log/bulk-update/!employee=james.bond`)
+      return getRequestWithValidToken(app, `work-log/bulk-update/!employee=james.bond`)
         .expect(HttpStatus.OK, {entriesAffected: 2}, done);
     });
 
     it('should return number of entries for multiple employees', done => {
-      return getRequestWithValidToken(app, `/work-log/bulk-update/!employee=james.bond+!employee=john.doe`)
+      return getRequestWithValidToken(app, `work-log/bulk-update/!employee=james.bond+!employee=john.doe`)
         .expect(HttpStatus.OK, {entriesAffected: 3}, done);
     });
 
     it('should return number of entries for given month', done => {
-      return getRequestWithValidToken(app, `/work-log/bulk-update/!date=2019:01`)
+      return getRequestWithValidToken(app, `work-log/bulk-update/!date=2019:01`)
         .expect(HttpStatus.OK, {entriesAffected: 1}, done);
     });
 
     it('should return number of entries for given day', done => {
-      return getRequestWithValidToken(app, `/work-log/bulk-update/!date=2018:12:05`)
+      return getRequestWithValidToken(app, `work-log/bulk-update/!date=2018:12:05`)
         .expect(HttpStatus.OK, {entriesAffected: 1}, done);
     });
 
     it('should return number of entries for given employee and projects and month', done => {
       return getRequestWithValidToken(
-          app, `/work-log/bulk-update/!employee=james.bond+!project=talkie+!project=syniverse-dsp+!date=2018:12`
+          app, `work-log/bulk-update/!employee=james.bond+!project=talkie+!project=syniverse-dsp+!date=2018:12`
       ).expect(HttpStatus.OK, {entriesAffected: 1}, done);
     });
 
     it('should return UNAUTHORIZED for invalid token', done => {
-      return getRequestWithInvalidToken(app, '/work-log/bulk-update/')
+      return getRequestWithInvalidToken(app, 'work-log/bulk-update/')
         .expect(HttpStatus.UNAUTHORIZED, done);
     });
   });
@@ -236,7 +236,7 @@ describe('WorkLog Controller', () => {
         expression: '+#completed -#in-progress'
       };
 
-      return postRequestWithValidToken(app, '/work-log/bulk-update', requestBody, 'james.bond@pragmatists.pl')
+      return postRequestWithValidToken(app, 'work-log/bulk-update', requestBody, 'james.bond@pragmatists.pl')
         .expect(HttpStatus.OK, {entriesAffected: 3})
         .then(async () => {
           const updatedEntries = await workLogModel.find({'projectNames.name': 'projects'}).exec();
@@ -254,7 +254,7 @@ describe('WorkLog Controller', () => {
         expression: '+#completed -#in-progress ++#to-add to-remove'
       };
 
-      return postRequestWithValidToken(app, '/work-log/bulk-update', requestBody)
+      return postRequestWithValidToken(app, 'work-log/bulk-update', requestBody)
         .send(requestBody)
         .expect(HttpStatus.BAD_REQUEST, done);
     });
@@ -265,7 +265,7 @@ describe('WorkLog Controller', () => {
         expression: '+#completed -#in-progress'
       };
 
-      return postRequestWithInvalidToken(app, '/work-log/bulk-update', requestBody)
+      return postRequestWithInvalidToken(app, 'work-log/bulk-update', requestBody)
         .expect(HttpStatus.UNAUTHORIZED, done);
     });
 
@@ -275,7 +275,7 @@ describe('WorkLog Controller', () => {
         expression: '+#completed -#in-progress'
       };
 
-      return postRequestWithValidToken(app, '/work-log/bulk-update', requestBody, 'john.doe@pragmatists.pl')
+      return postRequestWithValidToken(app, 'work-log/bulk-update', requestBody, 'john.doe@pragmatists.pl')
         .expect(HttpStatus.FORBIDDEN, done);
     });
 

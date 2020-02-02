@@ -9,7 +9,8 @@ import { ConfigService } from '../shared/config.service';
       imports: [SharedModule],
       useFactory: async (configService: ConfigService) => ({
         uri: configService.dbUri,
-        useNewUrlParser: true
+        useNewUrlParser: true,
+        useUnifiedTopology: true
       }),
       inject: [ConfigService]
     })

@@ -16,7 +16,7 @@ import { ServiceAccountService } from '../accounts/service-account.service';
 import { RequestWithUser } from '../auth/auth.model';
 import { CanDeleteServiceAccountGuard } from './can-delete-service-account.guard';
 
-@Controller('admin')
+@Controller('api/v1/admin')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiUseTags('admin-accounts')
 @ApiBearerAuth()

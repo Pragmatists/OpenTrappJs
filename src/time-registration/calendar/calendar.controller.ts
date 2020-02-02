@@ -11,7 +11,7 @@ import { AuthGuard } from '@nestjs/passport';
 
 const CALENDAR_ROOT_URL = '/api/v1/calendar';
 
-@Controller('calendar')
+@Controller('api/v1/calendar')
 @UseGuards(AuthGuard('jwt'))
 @ApiUseTags('calendar')
 @ApiBearerAuth()

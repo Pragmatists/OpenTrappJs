@@ -41,7 +41,7 @@ export async function testModuleWithInMemoryDb(moduleMetadata: ModuleMetadata) {
     ...moduleMetadata,
     imports: [
       ...moduleMetadata.imports,
-      MongooseModule.forRoot(uri, {useNewUrlParser: true})
+      MongooseModule.forRoot(uri, {useNewUrlParser: true, useUnifiedTopology: true})
     ]
   }).compile();
   return {
@@ -67,13 +67,13 @@ export function loggedInAs(email: string, displayName: string, roles = ['USER'])
 export function getRequestWithValidToken(app: INestApplication, url: string, roles = ['USER']) {
   const token = loggedInAs('john.doe@pragmatists.pl', 'John Doe', roles);
   return request(app.getHttpServer())
-    .get(url)
+    .get(`/api/v1/${url}`)
     .set('Authorization', `Bearer ${token}`);
 }
 
 export function getRequestWithInvalidToken(app: INestApplication, url: string) {
   return request(app.getHttpServer())
-    .get(url)
+    .get(`/api/v1/${url}`)
     .set('Authorization', 'Bearer invalid-token');
 }
 
@@ -84,25 +84,22 @@ export function postRequestWithValidToken(app: INestApplication,
                                           tokenDisplayName = 'John Doe') {
   const token = loggedInAs(tokenEmail, tokenDisplayName);
   return request(app.getHttpServer())
-    .post(url)
+    .post(`/api/v1/${url}`)
     .send(body)
     .set('Authorization', `Bearer ${token}`);
 }
 
-export function postRequestWithRoles(app: INestApplication,
-                                     url: string,
-                                     body,
-                                     roles: string[]) {
+export function postRequestWithRoles(app: INestApplication, url: string, body, roles: string[]) {
   const token = loggedInAs('john.doe@pragmatists.pl', 'John Doe', roles);
   return request(app.getHttpServer())
-    .post(url)
+    .post(`/api/v1/${url}`)
     .send(body)
     .set('Authorization', `Bearer ${token}`);
 }
 
 export function postRequestWithInvalidToken(app: INestApplication, url: string, body) {
   return request(app.getHttpServer())
-    .post(url)
+    .post(`/api/v1/${url}`)
     .send(body)
     .set('Authorization', `Bearer invalid-token`);
 }
@@ -114,14 +111,14 @@ export function putRequestWithValidToken(app: INestApplication,
                                          tokenDisplayName = 'John Doe') {
   const token = loggedInAs(tokenEmail, tokenDisplayName);
   return request(app.getHttpServer())
-      .put(url)
+      .put(`/api/v1/${url}`)
       .send(body)
       .set('Authorization', `Bearer ${token}`);
 }
 
 export function putRequestWithInvalidToken(app: INestApplication, url: string, body) {
   return request(app.getHttpServer())
-      .put(url)
+      .put(`/api/v1/${url}`)
       .send(body)
       .set('Authorization', `Bearer invalid-token`);
 }
@@ -132,13 +129,13 @@ export function deleteRequestWithValidToken(app: INestApplication,
                                             tokenDisplayName = 'John Doe') {
   const token = loggedInAs(tokenEmail, tokenDisplayName);
   return request(app.getHttpServer())
-    .delete(url)
+    .delete(`/api/v1/${url}`)
     .set('Authorization', `Bearer ${token}`);
 }
 
 export function deleteRequestWithInvalidToken(app: INestApplication, url: string) {
   return request(app.getHttpServer())
-    .delete(url)
+    .delete(`/api/v1/${url}`)
     .set('Authorization', 'Bearer invalid-token');
 }
 
@@ -148,6 +145,6 @@ export function deleteRequestWithRoles(app: INestApplication,
                                        tokenEmail = 'john.doe@pragmatists.pl') {
   const token = loggedInAs(tokenEmail, 'John Doe', roles);
   return request(app.getHttpServer())
-    .delete(url)
+    .delete(`/api/v1/${url}`)
     .set('Authorization', `Bearer ${token}`);
 }

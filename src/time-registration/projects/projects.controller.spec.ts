@@ -74,7 +74,7 @@ describe('Projects Controller', () => {
 
   describe('GET /projects', () => {
     it('should return list of available projects', done => {
-      return getRequestWithValidToken(app, '/projects')
+      return getRequestWithValidToken(app, 'projects')
           .expect(
               HttpStatus.OK,
               ['brown-bag', 'holidays', 'internal', 'nvm', 'projects', 'self-dev', 'syniverse-dsp', 'vacation'],
@@ -83,7 +83,7 @@ describe('Projects Controller', () => {
     });
 
     it('should return list of available projects from date', done => {
-      return getRequestWithValidToken(app, '/projects?dateFrom=2019-02-08')
+      return getRequestWithValidToken(app, 'projects?dateFrom=2019-02-08')
         .expect(
           HttpStatus.OK,
           ['holidays', 'vacation'],
@@ -92,7 +92,7 @@ describe('Projects Controller', () => {
     });
 
     it('should return UNAUTHORIZED for invalid token', done => {
-      return getRequestWithInvalidToken(app, '/projects')
+      return getRequestWithInvalidToken(app, 'projects')
           .expect(HttpStatus.UNAUTHORIZED, done);
     });
   });
@@ -102,7 +102,7 @@ describe('Projects Controller', () => {
       jest.spyOn(tagsService as any, 'dateFrom', 'get')
           .mockReturnValue(new Date(2019, 0, 11));
 
-      getRequestWithValidToken(app, '/projects/presets')
+      getRequestWithValidToken(app, 'projects/presets')
           .expect(HttpStatus.OK, [
             ['vacation'],
             ['holidays'],
@@ -115,7 +115,7 @@ describe('Projects Controller', () => {
       jest.spyOn(tagsService as any, 'dateFrom', 'get')
         .mockReturnValue(new Date(2019, 0, 11));
 
-      getRequestWithValidToken(app, '/projects/presets?limit=2')
+      getRequestWithValidToken(app, 'projects/presets?limit=2')
         .expect(HttpStatus.OK, [
           ['vacation'],
           ['internal', 'self-dev']
@@ -126,7 +126,7 @@ describe('Projects Controller', () => {
       jest.spyOn(tagsService as any, 'dateFrom', 'get')
         .mockReturnValue(new Date(2019, 0, 11));
 
-      getRequestWithValidToken(app, '/projects/presets?limit=3')
+      getRequestWithValidToken(app, 'projects/presets?limit=3')
         .expect(HttpStatus.OK, [
           ['vacation'],
           ['holidays'],
@@ -135,7 +135,7 @@ describe('Projects Controller', () => {
     });
 
     it('should return UNAUTHORIZED for invalid token', done => {
-      return getRequestWithInvalidToken(app, '/projects/presets')
+      return getRequestWithInvalidToken(app, 'projects/presets')
           .expect(HttpStatus.UNAUTHORIZED, done);
     });
   });
@@ -144,7 +144,7 @@ describe('Projects Controller', () => {
     it('should return entries for given project name', done => {
       const projectName = 'syniverse-dsp';
 
-      return getRequestWithValidToken(app, `/projects/${projectName}/work-log/entries`)
+      return getRequestWithValidToken(app, `projects/${projectName}/work-log/entries`)
           .expect(HttpStatus.OK)
           .then(response => response.body)
           .then(entries => {
@@ -155,14 +155,14 @@ describe('Projects Controller', () => {
     });
 
     it('should return empty list for unknown project name', done => {
-      return getRequestWithValidToken(app, `/projects/aaa/work-log/entries`)
+      return getRequestWithValidToken(app, `projects/aaa/work-log/entries`)
           .expect(HttpStatus.OK, [], done);
     });
 
     it('should return UNAUTHORIZED for invalid token', done => {
       const projectName = 'syniverse-dsp';
 
-      return getRequestWithInvalidToken(app, `/projects/${projectName}/work-log/entries`)
+      return getRequestWithInvalidToken(app, `projects/${projectName}/work-log/entries`)
           .expect(HttpStatus.UNAUTHORIZED, done);
     });
   });

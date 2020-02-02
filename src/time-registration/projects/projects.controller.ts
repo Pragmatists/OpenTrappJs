@@ -9,7 +9,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { UserDetails } from '../../auth/auth.model';
 import { FindProjectsQueryParams } from './projects.model';
 
-@Controller('projects')
+@Controller('api/v1/projects')
 @ApiUseTags('project')
 @UseGuards(AuthGuard('jwt'))
 export class ProjectsController {
