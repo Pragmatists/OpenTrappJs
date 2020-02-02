@@ -29,6 +29,7 @@ export class WellKnownController {
   setChallenge(@Param('key') key: string, @Body() updateDTO: UpdateChallengeDTO) {
     return new Observable(subscriber => {
       this.challengesMap[key] = updateDTO.secret;
+      subscriber.next({});
       subscriber.complete();
     });
   }
