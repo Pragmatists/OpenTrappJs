@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -13,7 +13,12 @@ export class CustomerReportService {
 
     findTagsByCustomerNameAndToken(customerName: string, token: string): Observable<string[]> {
         return from(this.customerTokenModel.findOne({customerName, token}).lean().exec()).pipe(
-            map(customerToken => customerToken.tags)
+            map(customerToken => {
+                if (!customerToken) {
+                    throw new NotFoundException(`Couldn't find a token for customer '${customerName}'`);
+                }
+                return customerToken.tags;
+            })
         );
     }
 
