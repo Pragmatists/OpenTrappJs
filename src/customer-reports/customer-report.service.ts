@@ -25,7 +25,7 @@ export class CustomerReportService {
     register(customerName: string, tags: string[]): Observable<CustomerTokenDTO> {
         const token = uuid();
         const customerToken: CustomerTokenDTO = {customerName, tags, token};
-        return from(this.customerTokenModel.create(customerToken)).pipe(map(() => customerToken));
+        return from(this.customerTokenModel.findOneAndUpdate({customerName}, customerToken, {upsert: true, })).pipe(map(() => customerToken));
     }
 
 }

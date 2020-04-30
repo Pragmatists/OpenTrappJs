@@ -46,6 +46,18 @@ describe('WorkLog Controller', () => {
     });
 
     describe('POST customer-reports', () => {
+        const customerTokenEntries: CustomerTokenDTO[] = [
+            {customerName: 'customer', tags: ['old-tag'], token: 'old-token'}
+        ];
+
+        beforeEach(async () => {
+            await customerTokenModel.create(customerTokenEntries);
+        });
+
+        afterEach(async () => {
+            await customerTokenModel.deleteMany({});
+        });
+
         it('should fail when no customerName provided', async () => {
             const requestBody = {customerName: '', tags: ['nvm']};
 
@@ -67,7 +79,7 @@ describe('WorkLog Controller', () => {
                 .send(requestBody)
                 .expect(HttpStatus.FORBIDDEN);
         });
-        it('should generate customer token ', async () => {
+        it('should generate customer token if not already present', async () => {
             const requestBody = {customerName: 'newvoicemedia', tags: ['nvm']};
 
             const {body: {token}} = await postRequestWithRoles(app, `customer-reports`, requestBody, ['ADMIN'])
@@ -76,6 +88,18 @@ describe('WorkLog Controller', () => {
 
             const tags = await customerReportService.findTagsByCustomerNameAndToken(requestBody.customerName, token).toPromise();
             expect(tags).toEqual(['nvm']);
+        });
+        it('should update customer token if already present', async () => {
+            const requestBody = {customerName: 'customer', tags: ['new-tag']};
+
+            const {body: {token}} = await postRequestWithRoles(app, `customer-reports`, requestBody, ['ADMIN'])
+                .send(requestBody)
+                .expect(HttpStatus.CREATED);
+
+            const newTags = await customerReportService.findTagsByCustomerNameAndToken(requestBody.customerName, token).toPromise();
+            var oldTokenQueryResult: CustomerToken[] = await customerTokenModel.find({customerName: 'customer', tags: ['old-tag']});
+            expect(newTags).toEqual(['new-tag']);
+            expect(oldTokenQueryResult.length).toEqual(0);
         });
     });
 
@@ -95,9 +119,14 @@ describe('WorkLog Controller', () => {
             {customerName: 'jeanluisdavid', tags: ['jld'], token: 'jld-token'},
         ];
 
-        beforeAll(async () => {
+        beforeEach(async () => {
             await workLogModel.create(workLogEntries);
             await customerTokenModel.create(customerTokenEntries);
+        });
+
+        afterEach(async () => {
+            await workLogModel.deleteMany({});
+            await customerTokenModel.deleteMany({});
         });
 
         it('should return correct report', async () => {
@@ -106,11 +135,9 @@ describe('WorkLog Controller', () => {
             expect(report.length).toEqual(3);
             report.forEach(entry => expect(entry.projectNames).toContain('nvm'));
         });
-
         it('should return 404 when token missing for customer ', async () => {
             await getCustomerReport('no-such-customer', 2019, 1, 'some-token').expect(HttpStatus.NOT_FOUND);
         });
-
         it('should return empty result when no matching entries for the tag', async () => {
             const {body: report} = await getCustomerReport('jeanluisdavid', 2019, 1, 'jld-token');
 
