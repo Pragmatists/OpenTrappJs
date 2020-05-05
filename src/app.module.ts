@@ -5,6 +5,7 @@ import { WorkLogModule } from './work-log/work-log.module';
 import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
 import { TimeRegistrationModule } from './time-registration/time-registration.module';
+import { CustomerReportsModule } from './customer-reports/customer-reports.module';
 
 @Module({
   imports: [
@@ -13,7 +14,8 @@ import { TimeRegistrationModule } from './time-registration/time-registration.mo
     SharedModule,
     WorkLogModule,
     AuthModule,
-    TimeRegistrationModule
+    TimeRegistrationModule,
+    CustomerReportsModule
   ]
 })
 export class AppModule {}
