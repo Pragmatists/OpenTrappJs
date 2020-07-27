@@ -5,12 +5,12 @@ import {CustomerReportService} from './customer-report.service';
 import {ArrayNotEmpty, IsNotEmpty} from 'class-validator';
 import {AuthGuard} from '@nestjs/passport';
 import {CustomerTokenDTO} from './customer-token.model';
-import {WorkLogService} from "../work-log/work-log.service";
-import {flatMap} from "rxjs/operators";
+import {WorkLogService} from '../work-log/work-log.service';
+import {flatMap} from 'rxjs/operators';
 import * as moment from 'moment';
-import {WorkLogDTO} from "../work-log/work-log.model";
-import {Roles} from "../shared/roles.decorator";
-import {RolesGuard} from "../shared/roles.guard";
+import {WorkLogDTO} from '../work-log/work-log.model';
+import {Roles} from '../shared/roles.decorator';
+import {RolesGuard} from '../shared/roles.guard';
 
 export class GenerateCustomerTokenBody {
     @IsNotEmpty()

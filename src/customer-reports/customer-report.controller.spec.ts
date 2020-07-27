@@ -11,11 +11,11 @@ import {CustomerReportController} from './customer-report.controller';
 import {CustomerReportService} from './customer-report.service';
 import {MongooseModule} from '@nestjs/mongoose';
 import {CustomerTokenSchema} from './customer-token.schema';
-import {Model} from "mongoose";
-import {WorkLog} from "../work-log/work-log.model";
-import * as request from "supertest";
-import {Test} from "supertest";
-import {CustomerToken, CustomerTokenDTO} from "./customer-token.model";
+import {Model} from 'mongoose';
+import {WorkLog} from '../work-log/work-log.model';
+import * as request from 'supertest';
+import {Test} from 'supertest';
+import {CustomerToken, CustomerTokenDTO} from './customer-token.model';
 
 describe('WorkLog Controller', () => {
     let app: INestApplication;
@@ -97,7 +97,7 @@ describe('WorkLog Controller', () => {
                 .expect(HttpStatus.CREATED);
 
             const newTags = await customerReportService.findTagsByCustomerNameAndToken(requestBody.customerName, token).toPromise();
-            var oldTokenQueryResult: CustomerToken[] = await customerTokenModel.find({customerName: 'customer', tags: ['old-tag']});
+            const oldTokenQueryResult: CustomerToken[] = await customerTokenModel.find({customerName: 'customer', tags: ['old-tag']});
             expect(newTags).toEqual(['new-tag']);
             expect(oldTokenQueryResult.length).toEqual(0);
         });

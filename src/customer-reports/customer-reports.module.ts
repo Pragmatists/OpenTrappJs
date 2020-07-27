@@ -4,7 +4,7 @@ import {CustomerReportController} from './customer-report.controller';
 import {MongooseModule} from '@nestjs/mongoose';
 import {CustomerTokenSchema} from './customer-token.schema';
 import {CustomerReportService} from './customer-report.service';
-import {WorkLogModule} from "../work-log/work-log.module";
+import {WorkLogModule} from '../work-log/work-log.module';
 
 @Module({
     imports: [AuthModule, HttpModule, WorkLogModule,
