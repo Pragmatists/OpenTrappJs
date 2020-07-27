@@ -49,12 +49,12 @@ To use in-memory Mongo in test you should `testModuleWithInMemoryDb` function fr
 ## Production environment
 
 Application is deployed to AWS Elastic Beanstalk and available under following URL:
-[opentrapp.eu-central-1.elasticbeanstalk.com](opentrapp.eu-central-1.elasticbeanstalk.com)
+[opentrapp.eu-central-1.elasticbeanstalk.com](https://opentrapp.eu-central-1.elasticbeanstalk.com)
 
 Automatic deployment is enabled and is triggered by each push to master branch.
 
 ### Swagger
-Swagger is available under `/swagger` path, e.g. [PROD Swagger](opentrapp.eu-central-1.elasticbeanstalk.com/swagger)
+Swagger is available under `/swagger` path, e.g. [PROD Swagger](https://opentrapp.eu-central-1.elasticbeanstalk.com/swagger)
 
 ### SSL
 Certificate files are stored on S3.

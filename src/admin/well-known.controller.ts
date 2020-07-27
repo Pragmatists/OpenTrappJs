@@ -14,7 +14,7 @@ class UpdateChallengeDTO {
 export class WellKnownController {
   private challengesMap: {[key: string]: string} = {};
 
-  @Get('/acme-challenge/:key')
+  @Get('/pki-validation/:key')
   challenge(@Param('key') key: string): Observable<string> {
     return of(this.challengesMap[key])
       .pipe(
@@ -23,7 +23,7 @@ export class WellKnownController {
       );
   }
 
-  @Put('/acme-challenge/:key')
+  @Put('/pki-validation/:key')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('ADMIN')
   setChallenge(@Param('key') key: string, @Body() updateDTO: UpdateChallengeDTO) {

@@ -28,20 +28,20 @@ describe('WellKnownController', () => {
   it('admin can set challenge', async done => {
     const token = loggedInAs('john.doe@pragmatists.pl', 'John Doe', ['ADMIN']);
     await request(app.getHttpServer())
-      .put('/.well-known/acme-challenge/some-key')
+      .put('/.well-known/pki-validation/some-key')
       .send({secret: 'secret'})
       .set('Authorization', `Bearer ${token}`)
       .expect(200, {});
 
     request(app.getHttpServer())
-      .get('/.well-known/acme-challenge/some-key')
+      .get('/.well-known/pki-validation/some-key')
       .expect(200, 'secret', done);
   });
 
   it('should return FORBIDDEN if token has neither ADMIN nor EXTERNAL_SERVICE role', done => {
     const token = loggedInAs('john.doe@pragmatists.pl', 'John Doe', ['USER']);
     request(app.getHttpServer())
-      .put('/.well-known/acme-challenge/some-key')
+      .put('/.well-known/pki-validation/some-key')
       .send({secret: 'secret'})
       .set('Authorization', `Bearer ${token}`)
       .expect(HttpStatus.FORBIDDEN, done);
@@ -49,7 +49,7 @@ describe('WellKnownController', () => {
 
   it('should return NOT FOUND if secret is not set', done => {
     request(app.getHttpServer())
-      .get('/.well-known/acme-challenge/unexpected-key')
+      .get('/.well-known/pki-validation/unexpected-key')
       .expect(404, {statusCode: 404, error: 'Not Found', message: 'Secret is not set'}, done);
   });
 });
