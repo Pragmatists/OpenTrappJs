@@ -4,13 +4,13 @@ import { Observable } from 'rxjs';
 import { FindWorkloadQueryParams, RegisterWorkLogDTO, WorkLogDTO } from '../work-log/work-log.model';
 import { TagsService } from '../work-log/tags.service';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiImplicitQuery, ApiUseTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { RolesGuard } from '../shared/roles.guard';
 import { Roles } from '../shared/roles.decorator';
 
 @Controller('api/v1/admin')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
-@ApiUseTags('admin-work-log')
+@ApiTags('admin-work-log')
 @ApiBearerAuth()
 export class AdminWorkLogController {
   constructor(private readonly workLogService: WorkLogService,
@@ -18,11 +18,11 @@ export class AdminWorkLogController {
   }
 
   @Get('/work-log/entries')
-  @ApiImplicitQuery({name: 'date', required: false, description: 'Day in format "YYYY-MM-DD"'})
-  @ApiImplicitQuery({name: 'dateFrom', required: false, description: 'Day in format "YYYY-MM-DD"'})
-  @ApiImplicitQuery({name: 'dateTo', required: false, description: 'Day in format "YYYY-MM-DD"'})
-  @ApiImplicitQuery({name: 'user', required: false, description: 'Username same as email but without domain'})
-  @ApiImplicitQuery({name: 'tags', required: false, description: 'List of tags to search for separated with coma, e.g "holidays,self-dev"'})
+  @ApiQuery({name: 'date', required: false, description: 'Day in format "YYYY-MM-DD"'})
+  @ApiQuery({name: 'dateFrom', required: false, description: 'Day in format "YYYY-MM-DD"'})
+  @ApiQuery({name: 'dateTo', required: false, description: 'Day in format "YYYY-MM-DD"'})
+  @ApiQuery({name: 'user', required: false, description: 'Username same as email but without domain'})
+  @ApiQuery({name: 'tags', required: false, description: 'List of tags to search for separated with coma, e.g "holidays,self-dev"'})
   @UsePipes(new ValidationPipe({transform: true}))
   @Roles('ADMIN', 'EXTERNAL_SERVICE')
   findWorkload(@Query() query: FindWorkloadQueryParams): Observable<WorkLogDTO[]> {

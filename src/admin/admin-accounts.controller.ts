@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
-import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { UsersService } from '../accounts/users.service';
 import {
@@ -18,7 +18,7 @@ import { CanDeleteServiceAccountGuard } from './can-delete-service-account.guard
 
 @Controller('api/v1/admin')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
-@ApiUseTags('admin-accounts')
+@ApiTags('admin-accounts')
 @ApiBearerAuth()
 export class AdminAccountsController {
   constructor(private readonly usersService: UsersService,

@@ -1,6 +1,6 @@
 import { Document } from 'mongoose';
 import { IsArray, IsEmail, IsNotEmpty } from 'class-validator';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export interface AuthorizedUser extends Document {
   email: string;
@@ -16,10 +16,10 @@ export interface AuthorizedUserDTO {
 
 export class CreateAuthorizedUserDTO {
   @IsEmail()
-  @ApiModelProperty({example: 'john.doe@pragmatists.pl'})
+  @ApiProperty({example: 'john.doe@pragmatists.pl'})
   email: string;
   @IsArray()
-  @ApiModelProperty({
+  @ApiProperty({
     isArray: true,
     type: [String],
     example: ['ADMIN'],
@@ -44,7 +44,7 @@ export interface ServiceAccountDTO {
 
 export class CreateServiceAccountDTO {
   @IsNotEmpty()
-  @ApiModelProperty({example: 'My service account'})
+  @ApiProperty({example: 'My service account'})
   name: string;
 }
 

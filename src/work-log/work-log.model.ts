@@ -1,6 +1,6 @@
 import { Document } from 'mongoose';
 import { ArrayNotEmpty, Matches } from 'class-validator';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { WorkloadParser } from './workload-parser';
 import { Transform, Type } from 'class-transformer';
 import { BadRequestException } from '@nestjs/common';
@@ -45,10 +45,10 @@ class Workload {
 export class UpdateWorkLogDTO {
   @Transform(v => new Workload(v), {toClassOnly: true})
   readonly workload: Workload;
-  @ApiModelProperty({example: ['internal', 'hackathon']})
+  @ApiProperty({example: ['internal', 'hackathon']})
   @ArrayNotEmpty()
   readonly projectNames: string[];
-  @ApiModelProperty({required: false, example: 'Working remotely'})
+  @ApiProperty({required: false, example: 'Working remotely'})
   readonly note?: string;
 
   get workloadMinutes(): number {
@@ -57,7 +57,7 @@ export class UpdateWorkLogDTO {
 }
 
 export class RegisterWorkLogDTO extends UpdateWorkLogDTO {
-  @ApiModelProperty({example: '2019-01-05'})
+  @ApiProperty({example: '2019-01-05'})
   @Matches(/^\d{4}[\/\-](0[1-9]|1[012])[\/\-](0[1-9]|[12][0-9]|3[01])$/)
   readonly day: string;
 }

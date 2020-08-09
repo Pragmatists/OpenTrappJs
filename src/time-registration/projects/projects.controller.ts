@@ -4,13 +4,13 @@ import { TagsService } from '../../work-log/tags.service';
 import { WorkLogService } from '../../work-log/work-log.service';
 import { map } from 'rxjs/operators';
 import { ReportingWorkLogDTO } from '../time-registration.model';
-import { ApiImplicitQuery, ApiUseTags } from '@nestjs/swagger';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { UserDetails } from '../../auth/auth.model';
 import { FindProjectsQueryParams } from './projects.model';
 
 @Controller('api/v1/projects')
-@ApiUseTags('project')
+@ApiTags('project')
 @UseGuards(AuthGuard('jwt'))
 export class ProjectsController {
 
@@ -20,7 +20,7 @@ export class ProjectsController {
 
   @Get()
   @UsePipes(new ValidationPipe({transform: true}))
-  @ApiImplicitQuery({name: 'dateFrom', required: false, description: 'Day in format "YYYY-MM-DD"'})
+  @ApiQuery({name: 'dateFrom', required: false, description: 'Day in format "YYYY-MM-DD"'})
   getProjectNames(@Query() queryParams: FindProjectsQueryParams): Observable<string[]> {
     return this.tagsService.findAll(queryParams.dateFrom);
   }

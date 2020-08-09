@@ -1,13 +1,13 @@
 import { WorkLogSearchCriteria } from './work-log-search-criteria';
 import { TimeUnit, YearMonth, YearMonthDay } from './time-unit';
 import { Matches } from 'class-validator';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class BulkUpdateDTO {
-  @ApiModelProperty()
+  @ApiProperty()
   query: string;
   @Matches(/^(\+#[^\s]*|\-#[^\s]*)(\+#[^\s]*|\-#[^\s]*|\s)*$/)
-  @ApiModelProperty()
+  @ApiProperty()
   expression: string;
 }
 

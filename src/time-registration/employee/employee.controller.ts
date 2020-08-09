@@ -4,12 +4,12 @@ import { ReportingWorkLogDTO } from '../time-registration.model';
 import { WorkLogService } from '../../work-log/work-log.service';
 import { map } from 'rxjs/operators';
 import { RegisterWorkLogDTO } from '../../work-log/work-log.model';
-import { ApiUseTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { CanCreateEntryGuard } from './can-create-entry.guard';
 
 @Controller('api/v1/employee')
-@ApiUseTags('employee')
+@ApiTags('employee')
 @UseGuards(AuthGuard('jwt'))
 export class EmployeeController {
 

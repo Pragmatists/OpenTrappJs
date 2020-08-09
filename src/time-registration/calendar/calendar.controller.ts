@@ -5,7 +5,7 @@ import { ReportingWorkLogDTO } from '../time-registration.model';
 import { WorkLogService } from '../../work-log/work-log.service';
 import { map } from 'rxjs/operators';
 import { FindByYearMonthListParams, MonthDTO, YearDTO } from './calendar.model';
-import { ApiBearerAuth, ApiImplicitParam, ApiUseTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { YearMonth } from '../../work-log/time-unit';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -13,7 +13,7 @@ const CALENDAR_ROOT_URL = '/api/v1/calendar';
 
 @Controller('api/v1/calendar')
 @UseGuards(AuthGuard('jwt'))
-@ApiUseTags('calendar')
+@ApiTags('calendar')
 @ApiBearerAuth()
 export class CalendarController {
 
@@ -42,7 +42,7 @@ export class CalendarController {
 
   @Get(':yearMonthList/work-log/entries')
   @UsePipes(new ValidationPipe({transform: true}))
-  @ApiImplicitParam({name: 'yearMonthList', required: true, description: 'List of years and months, e.g. 201811,201812,201901'})
+  @ApiParam({name: 'yearMonthList', required: true, description: 'List of years and months, e.g. 201811,201812,201901'})
   entriesForMonthList(@Param() params: FindByYearMonthListParams): Observable<ReportingWorkLogDTO[]> {
     return this.workLogService.findByMonthList(params.toList()).pipe(
       map(workLogs => workLogs.map(ReportingWorkLogDTO.fromWorkLog))

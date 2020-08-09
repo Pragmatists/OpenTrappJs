@@ -7,12 +7,12 @@ import {
   UserTokenResponseDTO
 } from './auth.model';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 
 @Controller('api/v1/authentication')
-@ApiUseTags('authentication')
+@ApiTags('authentication')
 export class AuthController {
 
   constructor(private readonly authService: AuthService) {

@@ -16,7 +16,7 @@ import {
 import { WorkLogService } from '../../work-log/work-log.service';
 import { UpdateWorkLogDTO } from '../../work-log/work-log.model';
 import { map } from 'rxjs/operators';
-import { ApiUseTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { WorkLogBulkService } from '../../work-log/work-log-bulk.service';
 import { BulkUpdateDTO } from '../../work-log/work-log-bulk.model';
@@ -30,7 +30,7 @@ interface AffectedEntriesDTO {
 }
 
 @Controller('api/v1/work-log')
-@ApiUseTags('work-log')
+@ApiTags('work-log')
 @UseGuards(AuthGuard('jwt'))
 export class WorkLogController {
 

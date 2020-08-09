@@ -20,8 +20,9 @@ async function bootstrap() {
     .addTag('calendar')
     .addTag('employee')
     .addTag('project')
-    .addBearerAuth('Authorization', 'header', 'apiKey')
-    .setSchemes('https', 'http')
+    .addBearerAuth()
+    .addServer('http://')
+    .addServer('https://')
     .setBasePath(BASE_PATH)
     .build();
   const document = SwaggerModule.createDocument(app, options);

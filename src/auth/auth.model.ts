@@ -1,6 +1,6 @@
 import { pragmaEmailToUsername } from '../utils/email-utils';
 import { IsNotEmpty } from 'class-validator';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class AuthStatus {
 
@@ -70,10 +70,10 @@ export interface RequestWithUser {
 
 export class ServiceAccountTokenRequestDTO {
   @IsNotEmpty()
-  @ApiModelProperty({example: 'some-client-id'})
+  @ApiProperty({example: 'some-client-id'})
   clientID: string;
   @IsNotEmpty()
-  @ApiModelProperty({example: 'some-client-secret'})
+  @ApiProperty({example: 'some-client-secret'})
   secret: string;
 }
 

@@ -62,3 +62,5 @@ Certificate files are stored on S3.
 NGINX is configured in `.ebextensions/https-instange.config` file.
 
 Port 443 on EB EC2 instance is enabled by `.ebextensions/https-instance-single.config`.
+
+To create `cert_chain.crt` file you have to merge content of `certificate.crt` and `ca_bundle.crt`.
