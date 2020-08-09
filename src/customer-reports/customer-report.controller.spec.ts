@@ -51,7 +51,7 @@ describe('WorkLog Controller', () => {
         ];
 
         beforeEach(async () => {
-            await customerTokenModel.create(customerTokenEntries);
+            await customerTokenModel.insertMany(customerTokenEntries);
         });
 
         afterEach(async () => {
@@ -120,8 +120,8 @@ describe('WorkLog Controller', () => {
         ];
 
         beforeEach(async () => {
-            await workLogModel.create(workLogEntries);
-            await customerTokenModel.create(customerTokenEntries);
+            await workLogModel.insertMany(workLogEntries);
+            await customerTokenModel.insertMany(customerTokenEntries);
         });
 
         afterEach(async () => {

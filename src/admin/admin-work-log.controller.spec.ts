@@ -44,7 +44,7 @@ describe('AdminWorkLogController', () => {
   });
 
   beforeEach(async () => {
-    await workLogModel.create(workLogEntries);
+    await workLogModel.insertMany(workLogEntries);
   });
 
   afterEach(async () => {

@@ -65,7 +65,7 @@ describe('Projects Controller', () => {
   });
 
   beforeEach(async () => {
-    await workLogModel.create(workLogEntries);
+    await workLogModel.insertMany(workLogEntries);
   });
 
   afterEach(async () => {

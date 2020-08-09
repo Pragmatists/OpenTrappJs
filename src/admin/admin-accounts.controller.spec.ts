@@ -55,8 +55,8 @@ describe('AdminAccounts Controller', () => {
   });
 
   beforeEach(async () => {
-    await authorizedUserModel.create(authorizedUsers);
-    await serviceAccountModel.create(serviceAccounts);
+    await authorizedUserModel.insertMany(authorizedUsers);
+    await serviceAccountModel.insertMany(serviceAccounts);
   });
 
   afterEach(async () => {
