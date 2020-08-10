@@ -4,7 +4,7 @@ import { JWTPayload, ServiceAccountTokenRequestDTO, ServiceAccountTokenResponseD
 import { sign } from 'jsonwebtoken';
 import { Observable } from 'rxjs';
 import { ServiceAccountService } from '../accounts/service-account.service';
-import { catchError, defaultIfEmpty, filter, flatMap, map, throwIfEmpty } from 'rxjs/operators';
+import { catchError, defaultIfEmpty, filter, mergeMap, map, throwIfEmpty } from 'rxjs/operators';
 import { TokenPayload } from 'google-auth-library/build/src/auth/loginticket';
 import { pragmaEmailToUsername } from '../utils/email-utils';
 import { GoogleClient } from './google-client';
@@ -38,7 +38,7 @@ export class AuthService {
 
   tokenForUser(token: string): Observable<UserTokenResponseDTO> {
     return this.googleClient.verifyToken(token).pipe(
-      flatMap(payload => this.googlePayloadToTokenResponse(payload)),
+      mergeMap(payload => this.googlePayloadToTokenResponse(payload)),
       catchError(err => {
         throw new UnauthorizedException(err);
       })

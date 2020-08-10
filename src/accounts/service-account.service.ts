@@ -3,7 +3,7 @@ import { Model } from 'mongoose';
 import { CreateServiceAccountDTO, CreateServiceAccountResponse, ServiceAccount, ServiceAccountDTO } from './accounts.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { from, Observable } from 'rxjs';
-import { catchError, filter, flatMap, map, mapTo } from 'rxjs/operators';
+import { catchError, filter, mergeMap, map, mapTo } from 'rxjs/operators';
 import { v4 as uuid } from 'uuid';
 import { BcryptService } from '../shared/bcrypt.service';
 import { isNil, sortBy } from 'lodash';
@@ -35,7 +35,7 @@ export class ServiceAccountService {
   findByClientIDAndSecret(id: string, secret: string) {
     return from(this.serviceAccountModel.findOne({clientID: id}).exec()).pipe(
       filter(serviceAccount => !isNil(serviceAccount)),
-      flatMap(serviceAccount => this.bcryptService.compare(secret, serviceAccount.secret).pipe(
+      mergeMap(serviceAccount => this.bcryptService.compare(secret, serviceAccount.secret).pipe(
         map(valid => ({serviceAccount, valid}))
       )),
       filter(({serviceAccount, valid}) => valid),
@@ -47,7 +47,7 @@ export class ServiceAccountService {
     const clientID = uuid();
     const clientSecret = uuid();
     return this.bcryptService.encrypt(clientSecret).pipe(
-      flatMap(secret => this.createServiceAccount(username, dto, clientID, secret)),
+      mergeMap(secret => this.createServiceAccount(username, dto, clientID, secret)),
       mapTo({clientID, secret: clientSecret})
     );
   }
@@ -59,12 +59,7 @@ export class ServiceAccountService {
   }
 
   private createServiceAccount(username: string, dto: CreateServiceAccountDTO, clientID: string, secret: string) {
-    return from(this.serviceAccountModel.create({
-      owner: username,
-      name: dto.name,
-      clientID,
-      secret
-    })).pipe(
+    return from(this.serviceAccountModel.create({owner: username, name: dto.name, clientID, secret})).pipe(
       catchError(err => {
         if (err.name === 'MongoError' && err.code === 11000) {
           throw new ConflictException(`Service account with name ${dto.name} already exists`);

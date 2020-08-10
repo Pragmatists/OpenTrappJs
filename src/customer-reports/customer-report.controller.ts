@@ -6,7 +6,7 @@ import { ArrayNotEmpty, IsNotEmpty } from 'class-validator';
 import { AuthGuard } from '@nestjs/passport';
 import { CustomerTokenDTO } from './customer-token.model';
 import { WorkLogService } from '../work-log/work-log.service';
-import { flatMap } from 'rxjs/operators';
+import { mergeMap } from 'rxjs/operators';
 import * as moment from 'moment';
 import { WorkLogDTO } from '../work-log/work-log.model';
 import { Roles } from '../shared/roles.decorator';
@@ -40,9 +40,9 @@ export class CustomerReportController {
             @Query('token') token: string): Observable<WorkLogDTO[]> {
     const dateFrom = moment([year, month - 1]).toDate();
     const dateTo = moment(dateFrom).endOf('month').toDate();
-
-    return this.customerReportService.findTagsByCustomerNameAndToken(customer, token)
-      .pipe(flatMap(tags => this.workLogService.find({dateFrom, dateTo, tags})));
+    return this.customerReportService.findTagsByCustomerNameAndToken(customer, token).pipe(
+      mergeMap(tags => this.workLogService.find({dateFrom, dateTo, tags}))
+    );
   }
 
 }

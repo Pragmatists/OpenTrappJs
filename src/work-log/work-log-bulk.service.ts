@@ -1,10 +1,10 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { from, Observable, of } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { BulkUpdateDTO, WorkLogQuery } from './work-log-bulk.model';
 import { Model } from 'mongoose';
 import { WorkLog } from './work-log.model';
-import { filter, flatMap, map, throwIfEmpty } from 'rxjs/operators';
+import { filter, mergeMap, map, throwIfEmpty } from 'rxjs/operators';
 import { WorkLogBulkUpdater } from './work-log-bulk-updater';
 
 @Injectable()
@@ -35,7 +35,7 @@ export class WorkLogBulkService {
     return this.canModifyEntries(searchQuery, authenticatedUserID).pipe(
       filter(canModify => canModify),
       throwIfEmpty(() => new ForbiddenException(`Can't modify entries created by another users`)),
-      flatMap(() => from(this.workLogModel.bulkWrite(bulkQuery))),
+      mergeMap(() => from(this.workLogModel.bulkWrite(bulkQuery))),
       map(result => result.modifiedCount)
     );
   }
