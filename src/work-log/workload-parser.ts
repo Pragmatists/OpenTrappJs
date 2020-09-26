@@ -12,8 +12,11 @@ export class WorkloadParser {
     const days = WorkloadParser.parseGroup(matches[1]);
     const hours = WorkloadParser.parseGroup(matches[2]);
     const minutes = WorkloadParser.parseGroup(matches[3]);
-
-    return days * 8 * 60 + hours * 60 + minutes;
+    const workload = days * 8 * 60 + hours * 60 + minutes;
+    if (workload > 24 * 60) {
+      throw new BadRequestException('You cannot report more than 24 hours per day')
+    }
+    return workload;
   }
 
   private static parseGroup(group: string): number {
