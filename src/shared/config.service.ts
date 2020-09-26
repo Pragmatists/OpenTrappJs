@@ -14,7 +14,7 @@ export interface JWTConfig {
 
 @Injectable()
 export class ConfigService {
-  private static TOKEN_EXPIRATION_TIME = 3600; // 1 hour
+  private static TOKEN_EXPIRATION_TIME = 30 * 24 * 60 * 60; // 30 days
   private static JWT_SECRET = uuid();
 
   get dbUri(): string {
