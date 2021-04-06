@@ -12,7 +12,11 @@ class UpdateChallengeDTO {
 
 @Controller('.well-known')
 export class WellKnownController {
-  private challengesMap: {[key: string]: string} = {};
+  private challengesMap: {[key: string]: string} = {
+    'EDD020FD320D44BCB25FE004180CA6B3.txt': '14FB839C80DAB408047CD564DA76BC419CBF6766E04E28A6474BD0C594F98DDE\n' +
+      'comodoca.com\n' +
+      '1cce11aa473fb1a'
+  };
 
   @Get('/pki-validation/:key')
   challenge(@Param('key') key: string): Observable<string> {
